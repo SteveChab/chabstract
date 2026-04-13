@@ -62,7 +62,7 @@
       inset: 0;
     }
     .mode-container.active { display: block; }
-    #mode-circles { overflow: hidden; } /* clip orbs that overhang edges */
+    #mode-circles { overflow: hidden; }
 
     /* ── Stripes: Rush Hour ─────────────────────────────────────────────────── */
 
@@ -75,6 +75,7 @@
       animation-name: stripe-scroll;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
+      animation-play-state: paused;
     }
 
     @keyframes stripe-scroll {
@@ -95,6 +96,7 @@
       animation-name: square-skew;
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
+      animation-play-state: paused;
     }
 
     @keyframes square-skew {
@@ -110,18 +112,19 @@
       position: absolute;
       border-radius: 50%;
       overflow: hidden;
-      background-size: cover;
       background-repeat: no-repeat;
+      background-size: cover;         /* always fills the circle */
       animation-name: circle-wobble;
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
+      animation-play-state: paused;
     }
 
     @keyframes circle-wobble {
-      0%,  100% { transform: translate(   0,    0) scale(1)     }
-      25%        { transform: translate( 4px,  -5px) scale(1.02)  }
-      50%        { transform: translate(-5px,   3px) scale(0.98)  }
-      75%        { transform: translate( 3px,   5px) scale(1.015) }
+      0%,  100% { transform: rotate(var(--orb-rot, 0deg)) translate(   0,    0) scale(1)     }
+      25%        { transform: rotate(var(--orb-rot, 0deg)) translate( 4px,  -5px) scale(1.02)  }
+      50%        { transform: rotate(var(--orb-rot, 0deg)) translate(-5px,   3px) scale(0.98)  }
+      75%        { transform: rotate(var(--orb-rot, 0deg)) translate( 3px,   5px) scale(1.015) }
     }
 
     /* ── Mode switcher ──────────────────────────────────────────────────────── */
@@ -135,6 +138,19 @@
       display: flex;
       gap: 0.25rem;
       white-space: nowrap;
+    }
+
+    /*
+     * Glyph buttons: square-ish, sized so the unicode character reads clearly.
+     * No override of the inherited [aria-pressed="true"] rotate — that comes
+     * from main.css and stays as-is per the project's existing pattern.
+     */
+    .mode-btn {
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 0.35rem 0.55rem;
+      min-width: 2.2rem;
+      text-align: center;
     }
 
     /* ── Existing: other UI ─────────────────────────────────────────────────── */
@@ -181,6 +197,7 @@
       z-index: 1;
       top: 0; right: 0; bottom: 0; left: 0;
       mix-blend-mode: overlay;
+      opacity: .65;
     }
   </style>
 </head>
@@ -245,7 +262,7 @@
   >
 
   <div class="control-container">
-    <button class="icon control" aria-pressed="true" data-art="images/bg.gif">Crosshatch Filter</button>
+    <button class="icon control" aria-pressed="true"  data-art="images/bg.gif">Crosshatch Filter</button>
     <button class="icon control" aria-pressed="false" data-art="images/bg-moving-black.gif">Crawling Diagonals</button>
     <button class="icon control" aria-pressed="false" data-art="images/bg-noise.gif">Animated Noise</button>
     <button class="icon control" aria-pressed="false" data-art="images/bg-t.gif">RGB Strobe</button>
@@ -255,12 +272,18 @@
   <div class="overlay"></div>
 
   <!-- ── Mode switcher ──────────────────────────────────────────────────────── -->
-
+  <!--
+    Glyphs chosen from the Unicode geometric / symbol blocks:
+      ꩜  U+AA5C  Cham Punctuation Spiral     → The Wormhole
+      ☰  U+2630  Trigram for Heaven           → Rush Hour   (3 horizontal bars)
+      ▦  U+25A6  Sq. with Orthogonal Xhatch  → Rubik's Fever (grid-in-square)
+      ◎  U+25CE  Bullseye                     → Carnival Eyes (concentric rings)
+  -->
   <nav class="mode-nav" aria-label="Choose your affliction">
-    <button class="mode-btn" data-mode="spiral"  aria-pressed="true" >The Wormhole</button>
-    <button class="mode-btn" data-mode="stripes" aria-pressed="false">Rush Hour</button>
-    <button class="mode-btn" data-mode="squares" aria-pressed="false">Rubik's Fever</button>
-    <button class="mode-btn" data-mode="circles" aria-pressed="false">Carnival Eyes</button>
+    <button class="mode-btn" data-mode="spiral"  aria-pressed="true"  aria-label="The Wormhole">꩜</button>
+    <button class="mode-btn" data-mode="stripes" aria-pressed="false" aria-label="Rush Hour">☰</button>
+    <button class="mode-btn" data-mode="squares" aria-pressed="false" aria-label="Rubik's Fever">▦</button>
+    <button class="mode-btn" data-mode="circles" aria-pressed="false" aria-label="Carnival Eyes">◎</button>
   </nav>
 
   <script>
@@ -269,6 +292,7 @@
       var DEFAULT_IMAGE   = 'https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg';
       var currentImageUrl = DEFAULT_IMAGE;
       var currentMode     = 'spiral';
+      var isPlaying       = false;
       var spiralInterval  = null;
       var spiralDegrees   = 45.0;
       var spiralBgOffset  = 0;
@@ -293,9 +317,7 @@
       function setImageUrl(url) {
         currentImageUrl = url || DEFAULT_IMAGE;
         var imgVal = url ? 'url(' + url + ')' : '';
-        // Spiral panels fall back to CSS background if input is cleared
         artPanels.forEach(function (p) { p.style.backgroundImage = imgVal; });
-        // Propagate to any already-built mode elements
         document.querySelectorAll('.stripe, .square-cell, .circle-orb').forEach(function (el) {
           el.style.backgroundImage = 'url(' + currentImageUrl + ')';
         });
@@ -314,7 +336,32 @@
         });
       });
 
-      // ── Mode: Spiral (The Wormhole) ──────────────────────────────────────────
+      // ── Play / pause ─────────────────────────────────────────────────────────
+
+      function applyPlayState() {
+        actionButton.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+
+        if (currentMode === 'spiral') {
+          if (isPlaying) {
+            if (!spiralInterval) spiralInterval = setInterval(spiralTick, 40);
+          } else {
+            clearInterval(spiralInterval);
+            spiralInterval = null;
+          }
+        } else {
+          var state = isPlaying ? 'running' : 'paused';
+          modes[currentMode].querySelectorAll('.stripe, .square-cell, .circle-orb').forEach(function (el) {
+            el.style.animationPlayState = state;
+          });
+        }
+      }
+
+      actionButton.addEventListener('click', function () {
+        isPlaying = !isPlaying;
+        applyPlayState();
+      });
+
+      // ── Mode: Spiral ─────────────────────────────────────────────────────────
 
       function spiralTick() {
         spiralDegrees++;
@@ -325,25 +372,7 @@
         });
       }
 
-      actionButton.addEventListener('click', function () {
-        if (currentMode !== 'spiral') return;
-        document.body.classList.toggle('animate');
-        var isAnimating = document.body.classList.contains('animate');
-        if (isAnimating) {
-          spiralInterval = setInterval(spiralTick, 40);
-          actionButton.setAttribute('aria-pressed', 'true');
-        } else {
-          clearInterval(spiralInterval);
-          spiralInterval = null;
-          actionButton.setAttribute('aria-pressed', 'false');
-        }
-      });
-
       // ── Mode: Stripes (Rush Hour) ─────────────────────────────────────────────
-      //
-      // 16 horizontal strips. Each shows a different vertical crop of the image
-      // (via background-position-y). Even strips scroll left, odd right.
-      // Speeds are hand-tuned so no two adjacent strips feel in rhythm.
 
       function buildStripes() {
         var container = modes.stripes;
@@ -361,39 +390,39 @@
           strip.style.backgroundPositionY  = (i / (N - 1) * 100) + '%';
           strip.style.animationDuration    = speeds[i] + 's';
           strip.style.animationDirection   = i % 2 === 0 ? 'normal' : 'reverse';
+          strip.style.animationPlayState   = 'paused';
           container.appendChild(strip);
         }
       }
 
       // ── Mode: Squares (Rubik's Fever) ─────────────────────────────────────────
       //
-      // 5×5 grid where background-size/position math tiles the image exactly across
-      // all cells (they read as one continuous image). Each cell skews independently
-      // on a random phase offset, so the whole thing writhes rather than pulses.
+      // 7×7 grid of square cells. Each cell gets its own random zoom (150–350%)
+      // and random crop, so the mosaic reads as remixed fragments rather than
+      // one image. Durations 3–8s for a frantic, skittering feel.
 
       function buildSquares() {
         var container = modes.squares;
         if (container.children.length) return;
 
-        var COLS = 5, ROWS = 5;
+        var N = 7; // 7 cols × 7 rows = 49 cells
         var grid = document.createElement('div');
         grid.className                 = 'squares-grid';
-        grid.style.gridTemplateColumns = 'repeat(' + COLS + ', 1fr)';
-        grid.style.gridTemplateRows    = 'repeat(' + ROWS + ', 1fr)';
+        grid.style.gridTemplateColumns = 'repeat(' + N + ', 1fr)';
+        grid.style.gridTemplateRows    = 'repeat(' + N + ', 1fr)';
 
-        for (var row = 0; row < ROWS; row++) {
-          for (var col = 0; col < COLS; col++) {
-            var cell = document.createElement('div');
-            cell.className                = 'square-cell';
-            cell.style.backgroundImage    = 'url(' + currentImageUrl + ')';
-            // Spread image across the full grid
-            cell.style.backgroundSize     = (COLS * 100) + '% ' + (ROWS * 100) + '%';
-            cell.style.backgroundPosition = (col / (COLS - 1) * 100) + '% ' + (row / (ROWS - 1) * 100) + '%';
-            // Randomise duration + use negative delay to start each cell mid-cycle
-            cell.style.animationDuration  = (8 + Math.random() * 8).toFixed(1) + 's';
-            cell.style.animationDelay     = (-1 * Math.random() * 12).toFixed(2) + 's';
-            grid.appendChild(cell);
-          }
+        for (var i = 0; i < N * N; i++) {
+          var cell = document.createElement('div');
+          cell.className                = 'square-cell';
+          cell.style.backgroundImage    = 'url(' + currentImageUrl + ')';
+          var zoom = (150 + Math.random() * 200).toFixed(0);
+          cell.style.backgroundSize     = zoom + '%';
+          cell.style.backgroundPosition = (Math.random() * 100).toFixed(1) + '% ' +
+                                          (Math.random() * 100).toFixed(1) + '%';
+          cell.style.animationDuration  = (3 + Math.random() * 5).toFixed(1) + 's';
+          cell.style.animationDelay     = (-1 * Math.random() * 8).toFixed(2) + 's';
+          cell.style.animationPlayState = 'paused';
+          grid.appendChild(cell);
         }
 
         container.appendChild(grid);
@@ -401,45 +430,40 @@
 
       // ── Mode: Circles (Carnival Eyes) ─────────────────────────────────────────
       //
-      // Overlapping circles of varying sizes. Each micro-vibrates on its own clock
-      // — slightly different duration and a random negative delay so they're never
-      // in phase. background-position mirrors each orb's viewport position so the
-      // image reads as one surface seen through portholes.
+      // 40 orbs, fully randomly placed each page load. background-size: cover
+      // (set in CSS) ensures the image always fills the circle. Each orb gets
+      // a random --orb-rot baked into every keyframe step, plus a random
+      // background-position so each circle shows a different crop.
 
       function buildCircles() {
         var container = modes.circles;
         if (container.children.length) return;
 
-        // [size px, x %, y %]
-        var ORBS = [
-          [380, 50, 50],
-          [200, 15, 20],
-          [150, 80, 15],
-          [120, 25, 72],
-          [260, 73, 68],
-          [ 90, 45, 85],
-          [110,  8, 50],
-          [ 80, 87, 40],
-          [ 70, 60, 28],
-          [140, 90, 83],
-          [ 60,  5, 88],
-          [100, 33, 35],
-        ];
+        var COUNT = 40;
 
-        ORBS.forEach(function (o) {
-          var size = o[0], x = o[1], y = o[2];
+        for (var i = 0; i < COUNT; i++) {
+          // Random size: mix of large statement orbs and small filler orbs
+          var size = Math.round(50 + Math.random() * 350);
+          // Random centre position — allow orbs to hang off edges intentionally
+          var x = -10 + Math.random() * 120;  // -10% to 110%
+          var y = -10 + Math.random() * 120;
+          var rot = Math.round(Math.random() * 360);
+
           var orb = document.createElement('div');
-          orb.className                 = 'circle-orb';
+          orb.className = 'circle-orb';
+          orb.style.setProperty('--orb-rot', rot + 'deg');
           orb.style.width               = size + 'px';
           orb.style.height              = size + 'px';
           orb.style.left                = 'calc(' + x + '% - ' + (size / 2) + 'px)';
           orb.style.top                 = 'calc(' + y + '% - ' + (size / 2) + 'px)';
           orb.style.backgroundImage     = 'url(' + currentImageUrl + ')';
-          orb.style.backgroundPosition  = x + '% ' + y + '%';
-          orb.style.animationDuration   = (2.5 + Math.random() * 3).toFixed(2) + 's';
-          orb.style.animationDelay      = (-1 * Math.random() * 5).toFixed(2) + 's';
+          orb.style.backgroundPosition  = (Math.random() * 100).toFixed(1) + '% ' +
+                                          (Math.random() * 100).toFixed(1) + '%';
+          orb.style.animationDuration   = (2 + Math.random() * 4).toFixed(2) + 's';
+          orb.style.animationDelay      = (-1 * Math.random() * 6).toFixed(2) + 's';
+          orb.style.animationPlayState  = 'paused';
           container.appendChild(orb);
-        });
+        }
       }
 
       // ── Mode switching ───────────────────────────────────────────────────────
@@ -447,32 +471,22 @@
       var modeBuilders = { stripes: buildStripes, squares: buildSquares, circles: buildCircles };
 
       function switchMode(name) {
-        // Kill spiral spin if running
-        if (spiralInterval) {
-          clearInterval(spiralInterval);
-          spiralInterval = null;
-          document.body.classList.remove('animate');
-          actionButton.setAttribute('aria-pressed', 'false');
-        }
+        clearInterval(spiralInterval);
+        spiralInterval = null;
 
-        // Show/hide containers
         Object.keys(modes).forEach(function (key) {
           modes[key].classList.toggle('active', key === name);
           modes[key].setAttribute('aria-hidden', key !== name ? 'true' : 'false');
         });
 
-        // Update nav
         modeButtons.forEach(function (btn) {
           btn.setAttribute('aria-pressed', btn.dataset.mode === name ? 'true' : 'false');
         });
 
-        // Spin button is spiral-only
-        actionButton.style.display = name === 'spiral' ? '' : 'none';
-
         currentMode = name;
 
-        // Lazy-build each mode's DOM on first visit
         if (modeBuilders[name]) modeBuilders[name]();
+        applyPlayState();
       }
 
       modeButtons.forEach(function (btn) {
