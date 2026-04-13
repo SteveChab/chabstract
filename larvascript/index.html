@@ -27,64 +27,119 @@
       background-color: var(--color-dark);
     }
 
-    .main {
-        color: white;
-        text-shadow: 0 0 1rem #000;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        height: 100vh;
-        position: absolute;
-        width: 100vw;
-    }
+    /* ── Existing: Spiral ───────────────────────────────────────────────────── */
 
     .art-container {
-        height: 100vh;
-        width: 100vw;
-        transform: rotate(45deg) scale(2);
-        position: absolute;
-        z-index: 0;
+      height: 100vh;
+      width: 100vw;
+      transform: rotate(45deg) scale(2);
+      position: absolute;
+      z-index: 0;
     }
 
     .art {
-        background: url(https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg);
-        background-repeat: repeat;
-        background-position-x: 0;
-        background-position-y: center;
-        display: block;
-        position: absolute;
-        left: -50vw;
-        top: -50vh;
-        height: 100vh;
-        width: 100vw;
+      background: url(https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg);
+      background-repeat: repeat;
+      background-position-x: 0;
+      background-position-y: center;
+      display: block;
+      position: absolute;
+      left: -50vw;
+      top: -50vh;
+      height: 100vh;
+      width: 100vw;
     }
 
-    .art--2 {
-        transform: rotate(90deg);
-        transform-origin: bottom right;
+    .art--2 { transform: rotate(90deg);  transform-origin: bottom right; }
+    .art--3 { transform: rotate(180deg); transform-origin: bottom right; }
+    .art--4 { transform: rotate(270deg); transform-origin: bottom right; }
+
+    /* ── Mode system ────────────────────────────────────────────────────────── */
+
+    .mode-container {
+      display: none;
+      position: absolute;
+      inset: 0;
+    }
+    .mode-container.active { display: block; }
+    #mode-circles { overflow: hidden; } /* clip orbs that overhang edges */
+
+    /* ── Stripes: Rush Hour ─────────────────────────────────────────────────── */
+
+    .stripe {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      background-repeat: repeat-x;
+      background-size: cover;
+      animation-name: stripe-scroll;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
 
-    .art--3 {
-        transform: rotate(180deg);
-        transform-origin: bottom right;
+    @keyframes stripe-scroll {
+      from { background-position-x: 0      }
+      to   { background-position-x: -100vw }
     }
 
-    .art--4 {
-        transform: rotate(270deg);
-        transform-origin: bottom right;
+    /* ── Squares: Rubik's Fever ─────────────────────────────────────────────── */
+
+    .squares-grid {
+      display: grid;
+      width: 100%;
+      height: 100%;
     }
 
-    .icon-container {
-        position: fixed;
-        right: 1rem;
-        bottom: 1rem;
-        line-height: 0;
-        z-index: 5;
+    .square-cell {
+      overflow: hidden;
+      animation-name: square-skew;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
     }
 
-    .action-button {
-      z-index: 100;
+    @keyframes square-skew {
+      0%,  100% { transform: skew(  0deg,  0deg) }
+      25%        { transform: skew(  8deg, -4deg) }
+      50%        { transform: skew( -6deg,  6deg) }
+      75%        { transform: skew(  4deg, -8deg) }
     }
+
+    /* ── Circles: Carnival Eyes ─────────────────────────────────────────────── */
+
+    .circle-orb {
+      position: absolute;
+      border-radius: 50%;
+      overflow: hidden;
+      background-size: cover;
+      background-repeat: no-repeat;
+      animation-name: circle-wobble;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes circle-wobble {
+      0%,  100% { transform: translate(   0,    0) scale(1)     }
+      25%        { transform: translate( 4px,  -5px) scale(1.02)  }
+      50%        { transform: translate(-5px,   3px) scale(0.98)  }
+      75%        { transform: translate( 3px,   5px) scale(1.015) }
+    }
+
+    /* ── Mode switcher ──────────────────────────────────────────────────────── */
+
+    .mode-nav {
+      position: absolute;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+
+    /* ── Existing: other UI ─────────────────────────────────────────────────── */
+
+    .action-button { z-index: 100; }
 
     .url-input {
       position: absolute;
@@ -101,168 +156,331 @@
     }
 
     .control-container {
-        position: absolute;
-        bottom: 1rem;
-        right: 1rem;
-        line-height: 0;
-        z-index: 5;
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      line-height: 0;
+      z-index: 5;
     }
 
     .control {
-        background: white 0 0 scroll repeat;
-        text-indent: -9999px;
-        line-height: 0;
+      background: white 0 0 scroll repeat;
+      text-indent: -9999px;
+      line-height: 0;
     }
 
     @media (max-width: 767px) {
-      .control {
-        display: block;
-        margin: .5em 0 0 0;
-      }
+      .control { display: block; margin: .5em 0 0 0; }
     }
 
-    [aria-pressed="true"] {
-      transform: rotate(45deg);
-    }
+    [aria-pressed="true"] { transform: rotate(45deg); }
 
     .overlay {
-        background: url(images/bg.gif) center center scroll repeat transparent;
-        position: absolute;
-        z-index: 1;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        mix-blend-mode: overlay;
+      background: url(images/bg.gif) center center scroll repeat transparent;
+      position: absolute;
+      z-index: 1;
+      top: 0; right: 0; bottom: 0; left: 0;
+      mix-blend-mode: overlay;
     }
   </style>
 </head>
 
 <body class="page-container">
-    <a class="header__link-home" href="/">
-      <span class="sr-only">Steve Chab Homepage</span>
-      <svg aria-hidden="true" class="header__link-home__wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
-        <g class="steve-chab">
-          <g class="steve steve1" data-name="steve">
-            <polyline class="no-fill s1 s" points="26.5 7.1 9.5 24.1 43.5 24.1 26.5 41.1"/>
-            <g class="t1 t">
-              <line class="no-fill" x1="60.6" y1="7.1" x2="60.6" y2="41.1"/>
-              <line class="no-fill" x1="77.6" y1="24.1" x2="43.5" y2="24.1"/>
-            </g>
-            <polyline class="no-fill e1-1 e" points="111.6 24.1 77.6 24.1 94.6 41.1"/>
-            <polyline class="no-fill v1 v" points="111.6 24.1 128.6 41.1 145.6 24.1"/>
-            <polyline class="no-fill e1-2 e" points="179.6 24.1 145.6 24.1 162.6 41.1"/>
+  <a class="header__link-home" href="/">
+    <span class="sr-only">Steve Chab Homepage</span>
+    <svg aria-hidden="true" class="header__link-home__wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
+      <g class="steve-chab">
+        <g class="steve steve1" data-name="steve">
+          <polyline class="no-fill s1 s" points="26.5 7.1 9.5 24.1 43.5 24.1 26.5 41.1"/>
+          <g class="t1 t">
+            <line class="no-fill" x1="60.6" y1="7.1" x2="60.6" y2="41.1"/>
+            <line class="no-fill" x1="77.6" y1="24.1" x2="43.5" y2="24.1"/>
           </g>
-          <g class="chab chab1" data-name="chab">
-            <polyline class="no-fill c1 c" points="230.2 41.5 196.1 41.5 230.2 7.5 230.2 24.5"/>
-            <g class="h1 h">
-              <line class="no-fill" x1="264.2" y1="7.5" x2="230.2" y2="41.5"/>
-              <line class="no-fill" x1="264.2" y1="41.5" x2="247.2" y2="24.5"/>
-            </g>
-            <polyline class="no-fill a1 a" points="298.2 41.5 281.2 24.5 264.2 41.5"/>
-            <polyline class="no-fill b1 b" points="332.2 7.5 298.2 41.5 332.2 41.5 315.2 24.5"/>
-          </g>
+          <polyline class="no-fill e1-1 e" points="111.6 24.1 77.6 24.1 94.6 41.1"/>
+          <polyline class="no-fill v1 v"   points="111.6 24.1 128.6 41.1 145.6 24.1"/>
+          <polyline class="no-fill e1-2 e" points="179.6 24.1 145.6 24.1 162.6 41.1"/>
         </g>
-      </svg>
-    </a>
+        <g class="chab chab1" data-name="chab">
+          <polyline class="no-fill c1 c" points="230.2 41.5 196.1 41.5 230.2 7.5 230.2 24.5"/>
+          <g class="h1 h">
+            <line class="no-fill" x1="264.2" y1="7.5" x2="230.2" y2="41.5"/>
+            <line class="no-fill" x1="264.2" y1="41.5" x2="247.2" y2="24.5"/>
+          </g>
+          <polyline class="no-fill a1 a" points="298.2 41.5 281.2 24.5 264.2 41.5"/>
+          <polyline class="no-fill b1 b" points="332.2 7.5 298.2 41.5 332.2 41.5 315.2 24.5"/>
+        </g>
+      </g>
+    </svg>
+  </a>
 
-    <main class="art-container" aria-hidden="true">
-      <h1 class="sr-only">LarvaScript: your retinas asked for this</h1>
+  <h1 class="sr-only">LarvaScript: your retinas asked for this</h1>
+
+  <!-- ── Mode containers ────────────────────────────────────────────────────── -->
+
+  <div id="mode-spiral" class="mode-container active" aria-hidden="true">
+    <main class="art-container">
       <div class="art art--1"></div>
       <div class="art art--2"></div>
       <div class="art art--3"></div>
       <div class="art art--4"></div>
     </main>
+  </div>
 
-    <button class="icon action-button" aria-pressed="false">
-      <span class="sr-only">Induce Seizures</span>
-    </button>
+  <div id="mode-stripes" class="mode-container" aria-hidden="true"></div>
+  <div id="mode-squares" class="mode-container" aria-hidden="true"></div>
+  <div id="mode-circles" class="mode-container" aria-hidden="true"></div>
 
-    <input
-      class="url-input"
-      type="url"
-      value=""
-      placeholder="Paste an image URL to use as the art source"
-      aria-label="Paste an image URL to use as the art source"
-    >
+  <!-- ── Existing controls ──────────────────────────────────────────────────── -->
 
-    <div class="control-container">
-        <button class="icon control" aria-pressed="true" data-art="images/bg.gif">Crosshatch Filter</button>
-        <button class="icon control" aria-pressed="false" data-art="images/bg-moving-black.gif">Crawling Diagonals</button>
-        <button class="icon control" aria-pressed="false" data-art="images/bg-noise.gif">Animated Noise</button>
-        <button class="icon control" aria-pressed="false" data-art="images/bg-t.gif">RGB Strobe</button>
-        <button class="icon control" aria-pressed="false" data-art="images/bg-strobe.gif">Black and White Strobe</button>
-    </div>
+  <button class="icon action-button" aria-pressed="false">
+    <span class="sr-only">Play Animation</span>
+  </button>
 
-    <div class="overlay"></div>
+  <input
+    class="url-input"
+    type="url"
+    value=""
+    placeholder="Paste an image URL to use as the art source"
+    aria-label="Paste an image URL to use as the art source"
+  >
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
+  <div class="control-container">
+    <button class="icon control" aria-pressed="true" data-art="images/bg.gif">Crosshatch Filter</button>
+    <button class="icon control" aria-pressed="false" data-art="images/bg-moving-black.gif">Crawling Diagonals</button>
+    <button class="icon control" aria-pressed="false" data-art="images/bg-noise.gif">Animated Noise</button>
+    <button class="icon control" aria-pressed="false" data-art="images/bg-t.gif">RGB Strobe</button>
+    <button class="icon control" aria-pressed="false" data-art="images/bg-strobe.gif">Black and White Strobe</button>
+  </div>
 
-        const overlay       = document.querySelector('.overlay');
-        const artContainer  = document.querySelector('.art-container');
-        const artPanels     = document.querySelectorAll('.art');
-        const actionButton  = document.querySelector('.action-button');
-        const urlInput      = document.querySelector('.url-input');
-        const controls      = document.querySelectorAll('.control');
+  <div class="overlay"></div>
 
-        // ── Overlay filter buttons ──────────────────────────────────────────────
+  <!-- ── Mode switcher ──────────────────────────────────────────────────────── -->
 
-        controls.forEach(function (btn) {
-          // Stamp each button's own gif as its background so it's self-labelling
-          btn.style.backgroundImage = 'url(' + btn.dataset.art + ')';
+  <nav class="mode-nav" aria-label="Choose your affliction">
+    <button class="mode-btn" data-mode="spiral"  aria-pressed="true" >The Wormhole</button>
+    <button class="mode-btn" data-mode="stripes" aria-pressed="false">Rush Hour</button>
+    <button class="mode-btn" data-mode="squares" aria-pressed="false">Rubik's Fever</button>
+    <button class="mode-btn" data-mode="circles" aria-pressed="false">Carnival Eyes</button>
+  </nav>
 
-          btn.addEventListener('click', function () {
-            controls.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-            btn.setAttribute('aria-pressed', 'true');
-            overlay.style.backgroundImage = 'url(' + btn.dataset.art + ')';
-          });
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      var DEFAULT_IMAGE   = 'https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg';
+      var currentImageUrl = DEFAULT_IMAGE;
+      var currentMode     = 'spiral';
+      var spiralInterval  = null;
+      var spiralDegrees   = 45.0;
+      var spiralBgOffset  = 0;
+
+      var overlay      = document.querySelector('.overlay');
+      var artContainer = document.querySelector('.art-container');
+      var artPanels    = document.querySelectorAll('.art');
+      var actionButton = document.querySelector('.action-button');
+      var urlInput     = document.querySelector('.url-input');
+      var controls     = document.querySelectorAll('.control');
+      var modeButtons  = document.querySelectorAll('.mode-btn');
+
+      var modes = {
+        spiral:  document.getElementById('mode-spiral'),
+        stripes: document.getElementById('mode-stripes'),
+        squares: document.getElementById('mode-squares'),
+        circles: document.getElementById('mode-circles'),
+      };
+
+      // ── Image management ─────────────────────────────────────────────────────
+
+      function setImageUrl(url) {
+        currentImageUrl = url || DEFAULT_IMAGE;
+        var imgVal = url ? 'url(' + url + ')' : '';
+        // Spiral panels fall back to CSS background if input is cleared
+        artPanels.forEach(function (p) { p.style.backgroundImage = imgVal; });
+        // Propagate to any already-built mode elements
+        document.querySelectorAll('.stripe, .square-cell, .circle-orb').forEach(function (el) {
+          el.style.backgroundImage = 'url(' + currentImageUrl + ')';
         });
+      }
 
-        // ── Spin / animate button ───────────────────────────────────────────────
+      urlInput.addEventListener('input', function () { setImageUrl(urlInput.value); });
 
-        var degrees      = 45.0;
-        var bgOffset     = 0;
-        var intervalSpin = null;
+      // ── Overlay filter buttons ───────────────────────────────────────────────
 
-        function startRotate() {
-          degrees++;
-          bgOffset++;
-          artContainer.style.transform = 'rotate(' + degrees + 'deg) scale(2)';
-          artPanels.forEach(function (panel) {
-            panel.style.backgroundPosition = bgOffset + 'px center';
-          });
+      controls.forEach(function (btn) {
+        btn.style.backgroundImage = 'url(' + btn.dataset.art + ')';
+        btn.addEventListener('click', function () {
+          controls.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+          btn.setAttribute('aria-pressed', 'true');
+          overlay.style.backgroundImage = 'url(' + btn.dataset.art + ')';
+        });
+      });
+
+      // ── Mode: Spiral (The Wormhole) ──────────────────────────────────────────
+
+      function spiralTick() {
+        spiralDegrees++;
+        spiralBgOffset++;
+        artContainer.style.transform = 'rotate(' + spiralDegrees + 'deg) scale(2)';
+        artPanels.forEach(function (p) {
+          p.style.backgroundPosition = spiralBgOffset + 'px center';
+        });
+      }
+
+      actionButton.addEventListener('click', function () {
+        if (currentMode !== 'spiral') return;
+        document.body.classList.toggle('animate');
+        var isAnimating = document.body.classList.contains('animate');
+        if (isAnimating) {
+          spiralInterval = setInterval(spiralTick, 40);
+          actionButton.setAttribute('aria-pressed', 'true');
+        } else {
+          clearInterval(spiralInterval);
+          spiralInterval = null;
+          actionButton.setAttribute('aria-pressed', 'false');
+        }
+      });
+
+      // ── Mode: Stripes (Rush Hour) ─────────────────────────────────────────────
+      //
+      // 16 horizontal strips. Each shows a different vertical crop of the image
+      // (via background-position-y). Even strips scroll left, odd right.
+      // Speeds are hand-tuned so no two adjacent strips feel in rhythm.
+
+      function buildStripes() {
+        var container = modes.stripes;
+        if (container.children.length) return;
+
+        var N = 16;
+        var speeds = [7, 11, 6, 18, 9, 14, 8, 22, 12, 7, 20, 10, 15, 8, 13, 16];
+
+        for (var i = 0; i < N; i++) {
+          var strip = document.createElement('div');
+          strip.className                  = 'stripe';
+          strip.style.top                  = (i / N * 100) + '%';
+          strip.style.height               = (100 / N) + '%';
+          strip.style.backgroundImage      = 'url(' + currentImageUrl + ')';
+          strip.style.backgroundPositionY  = (i / (N - 1) * 100) + '%';
+          strip.style.animationDuration    = speeds[i] + 's';
+          strip.style.animationDirection   = i % 2 === 0 ? 'normal' : 'reverse';
+          container.appendChild(strip);
+        }
+      }
+
+      // ── Mode: Squares (Rubik's Fever) ─────────────────────────────────────────
+      //
+      // 5×5 grid where background-size/position math tiles the image exactly across
+      // all cells (they read as one continuous image). Each cell skews independently
+      // on a random phase offset, so the whole thing writhes rather than pulses.
+
+      function buildSquares() {
+        var container = modes.squares;
+        if (container.children.length) return;
+
+        var COLS = 5, ROWS = 5;
+        var grid = document.createElement('div');
+        grid.className                 = 'squares-grid';
+        grid.style.gridTemplateColumns = 'repeat(' + COLS + ', 1fr)';
+        grid.style.gridTemplateRows    = 'repeat(' + ROWS + ', 1fr)';
+
+        for (var row = 0; row < ROWS; row++) {
+          for (var col = 0; col < COLS; col++) {
+            var cell = document.createElement('div');
+            cell.className                = 'square-cell';
+            cell.style.backgroundImage    = 'url(' + currentImageUrl + ')';
+            // Spread image across the full grid
+            cell.style.backgroundSize     = (COLS * 100) + '% ' + (ROWS * 100) + '%';
+            cell.style.backgroundPosition = (col / (COLS - 1) * 100) + '% ' + (row / (ROWS - 1) * 100) + '%';
+            // Randomise duration + use negative delay to start each cell mid-cycle
+            cell.style.animationDuration  = (8 + Math.random() * 8).toFixed(1) + 's';
+            cell.style.animationDelay     = (-1 * Math.random() * 12).toFixed(2) + 's';
+            grid.appendChild(cell);
+          }
         }
 
-        actionButton.addEventListener('click', function () {
-          document.body.classList.toggle('animate');
-          var isAnimating = document.body.classList.contains('animate');
+        container.appendChild(grid);
+      }
 
-          if (isAnimating) {
-            intervalSpin = setInterval(startRotate, 40);
-            actionButton.setAttribute('aria-pressed', 'true');
-          } else {
-            clearInterval(intervalSpin);
-            intervalSpin = null;
-            actionButton.setAttribute('aria-pressed', 'false');
-          }
+      // ── Mode: Circles (Carnival Eyes) ─────────────────────────────────────────
+      //
+      // Overlapping circles of varying sizes. Each micro-vibrates on its own clock
+      // — slightly different duration and a random negative delay so they're never
+      // in phase. background-position mirrors each orb's viewport position so the
+      // image reads as one surface seen through portholes.
+
+      function buildCircles() {
+        var container = modes.circles;
+        if (container.children.length) return;
+
+        // [size px, x %, y %]
+        var ORBS = [
+          [380, 50, 50],
+          [200, 15, 20],
+          [150, 80, 15],
+          [120, 25, 72],
+          [260, 73, 68],
+          [ 90, 45, 85],
+          [110,  8, 50],
+          [ 80, 87, 40],
+          [ 70, 60, 28],
+          [140, 90, 83],
+          [ 60,  5, 88],
+          [100, 33, 35],
+        ];
+
+        ORBS.forEach(function (o) {
+          var size = o[0], x = o[1], y = o[2];
+          var orb = document.createElement('div');
+          orb.className                 = 'circle-orb';
+          orb.style.width               = size + 'px';
+          orb.style.height              = size + 'px';
+          orb.style.left                = 'calc(' + x + '% - ' + (size / 2) + 'px)';
+          orb.style.top                 = 'calc(' + y + '% - ' + (size / 2) + 'px)';
+          orb.style.backgroundImage     = 'url(' + currentImageUrl + ')';
+          orb.style.backgroundPosition  = x + '% ' + y + '%';
+          orb.style.animationDuration   = (2.5 + Math.random() * 3).toFixed(2) + 's';
+          orb.style.animationDelay      = (-1 * Math.random() * 5).toFixed(2) + 's';
+          container.appendChild(orb);
+        });
+      }
+
+      // ── Mode switching ───────────────────────────────────────────────────────
+
+      var modeBuilders = { stripes: buildStripes, squares: buildSquares, circles: buildCircles };
+
+      function switchMode(name) {
+        // Kill spiral spin if running
+        if (spiralInterval) {
+          clearInterval(spiralInterval);
+          spiralInterval = null;
+          document.body.classList.remove('animate');
+          actionButton.setAttribute('aria-pressed', 'false');
+        }
+
+        // Show/hide containers
+        Object.keys(modes).forEach(function (key) {
+          modes[key].classList.toggle('active', key === name);
+          modes[key].setAttribute('aria-hidden', key !== name ? 'true' : 'false');
         });
 
-        // ── Custom image URL input ──────────────────────────────────────────────
-
-        urlInput.addEventListener('input', function () {
-          if (!urlInput.value) {
-            artPanels.forEach(function (panel) {
-              panel.style.backgroundImage = '';
-            });
-          } else {
-            artPanels.forEach(function (panel) {
-              panel.style.backgroundImage = 'url(' + urlInput.value + ')';
-            });
-          }
+        // Update nav
+        modeButtons.forEach(function (btn) {
+          btn.setAttribute('aria-pressed', btn.dataset.mode === name ? 'true' : 'false');
         });
 
+        // Spin button is spiral-only
+        actionButton.style.display = name === 'spiral' ? '' : 'none';
+
+        currentMode = name;
+
+        // Lazy-build each mode's DOM on first visit
+        if (modeBuilders[name]) modeBuilders[name]();
+      }
+
+      modeButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () { switchMode(btn.dataset.mode); });
       });
-    </script>
+
+    });
+  </script>
 </body>
+
 </html>
