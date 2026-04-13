@@ -1,13 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
   <title>LarvaScript: trippy, glitchy, nauseating, abstract art animations - Steve Chab</title>
   <meta name="description" content="Trippy, glitchy, nauseating, computer art animations">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
 
   <meta name="author" content="Steve Chab">
   <meta name="msapplication-TileImage" content="../tile.png">
@@ -17,7 +15,7 @@
   <link rel="apple-touch-icon" href="../icon.png">
 
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css?v=20250915">
 
   <style>
@@ -31,7 +29,7 @@
 
     .main {
         color: white;
-        text-shadow:0 0 1rem #000;
+        text-shadow: 0 0 1rem #000;
         overflow: hidden;
         display: flex;
         align-items: center;
@@ -48,12 +46,6 @@
         z-index: 0;
     }
 
-    /* JS setInterval is better on CPU than CSS keyframes (see "setInterval" in JS below) */
-    /* @keyframes move-right {
-        0% {background-position-x: 0}
-        50% {background-position-x: -150vw}
-    } */
-
     .art {
         background: url(https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg);
         background-repeat: repeat;
@@ -65,10 +57,6 @@
         top: -50vh;
         height: 100vh;
         width: 100vw;
-        /* animation-name: move-right;
-        animation-duration: 45s;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite; */
     }
 
     .art--2 {
@@ -119,10 +107,9 @@
         line-height: 0;
         z-index: 5;
     }
-    .no-js .control-container {display: none}
 
     .control {
-        background:white 0 0 scroll repeat;
+        background: white 0 0 scroll repeat;
         text-indent: -9999px;
         line-height: 0;
     }
@@ -139,19 +126,19 @@
     }
 
     .overlay {
-        background:url(images/bg.gif) center center scroll repeat transparent;
+        background: url(images/bg.gif) center center scroll repeat transparent;
         position: absolute;
         z-index: 1;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
-        mix-blend-mode:overlay;
+        mix-blend-mode: overlay;
     }
   </style>
 </head>
 
-<body class="page-container no-js">
+<body class="page-container">
     <a class="header__link-home" href="/">
       <span class="sr-only">Steve Chab Homepage</span>
       <svg aria-hidden="true" class="header__link-home__wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
@@ -178,17 +165,27 @@
         </g>
       </svg>
     </a>
+
     <main class="art-container" aria-hidden="true">
-        <h1 class="sr-only">LarvaScript: trippy, glitchy, nauseating, abstract art animations</h1>
-        <div class="art art--1"></div>
-        <div class="art art--2"></div>
-        <div class="art art--3"></div>
-        <div class="art art--4"></div>
+      <h1 class="sr-only">LarvaScript: your retinas asked for this</h1>
+      <div class="art art--1"></div>
+      <div class="art art--2"></div>
+      <div class="art art--3"></div>
+      <div class="art art--4"></div>
     </main>
+
     <button class="icon action-button" aria-pressed="false">
       <span class="sr-only">Induce Seizures</span>
     </button>
-    <input class="url-input" type="url" value="" placeholder="Try your own image URL" aria-label="Try your own image URL">
+
+    <input
+      class="url-input"
+      type="url"
+      value=""
+      placeholder="Paste an image URL to use as the art source"
+      aria-label="Paste an image URL to use as the art source"
+    >
+
     <div class="control-container">
         <button class="icon control" aria-pressed="true" data-art="images/bg.gif">Crosshatch Filter</button>
         <button class="icon control" aria-pressed="false" data-art="images/bg-moving-black.gif">Crawling Diagonals</button>
@@ -196,56 +193,76 @@
         <button class="icon control" aria-pressed="false" data-art="images/bg-t.gif">RGB Strobe</button>
         <button class="icon control" aria-pressed="false" data-art="images/bg-strobe.gif">Black and White Strobe</button>
     </div>
+
     <div class="overlay"></div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-    $(document).ready(function() {
+      document.addEventListener('DOMContentLoaded', function () {
 
-        $(".no-js").removeClass("no-js");
+        const overlay       = document.querySelector('.overlay');
+        const artContainer  = document.querySelector('.art-container');
+        const artPanels     = document.querySelectorAll('.art');
+        const actionButton  = document.querySelector('.action-button');
+        const urlInput      = document.querySelector('.url-input');
+        const controls      = document.querySelectorAll('.control');
 
-        // load effects navigation 
-        $('.control').each(function(){
-            var setArt = 'background-image:url(' + $(this).attr('data-art') + ')';
-            $(this).attr('style', setArt);
-        }).click(function(){
-            $('.control').attr('aria-pressed','false');
-            $(this).attr('aria-pressed','true');
-            var setArt = 'background-image:url(' + $(this).attr('data-art') + ')';
-            $('.overlay').attr('style', setArt);
+        // ── Overlay filter buttons ──────────────────────────────────────────────
+
+        controls.forEach(function (btn) {
+          // Stamp each button's own gif as its background so it's self-labelling
+          btn.style.backgroundImage = 'url(' + btn.dataset.art + ')';
+
+          btn.addEventListener('click', function () {
+            controls.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+            btn.setAttribute('aria-pressed', 'true');
+            overlay.style.backgroundImage = 'url(' + btn.dataset.art + ')';
+          });
         });
 
-        var degrees = 45.0;
-        var intervalSpin;
-        var i = 0;
+        // ── Spin / animate button ───────────────────────────────────────────────
 
-        $('.action-button').click(function(){
-          $('body').toggleClass('animate');
-            
-            function startRotate(){
-              $('.art-container').css({ transform: 'rotate(' + degrees++ + 'deg) scale(2)' });
-              $('.art').css({ backgroundPosition: i++ });
-            }
+        var degrees      = 45.0;
+        var bgOffset     = 0;
+        var intervalSpin = null;
 
-            if($('.animate').length) {
-              intervalSpin = setInterval(startRotate, 40);
-              $('.action-button').attr('aria-pressed','true');
-            } else {
-              clearInterval(intervalSpin);
-              $('.action-button').attr('aria-pressed','false');
-            }
-        });
-    });
-
-    function listenForNewImg(){
-      $('.url-input').on('input', function(){
-        if (!this.value) {
-          $('.art').removeAttr('style');
-        } else {
-          $('.art').attr('style', 'background-image:url(' + this.value + ')');
+        function startRotate() {
+          degrees++;
+          bgOffset++;
+          artContainer.style.transform = 'rotate(' + degrees + 'deg) scale(2)';
+          artPanels.forEach(function (panel) {
+            panel.style.backgroundPosition = bgOffset + 'px center';
+          });
         }
-      })
-    }
 
-    listenForNewImg();
+        actionButton.addEventListener('click', function () {
+          document.body.classList.toggle('animate');
+          var isAnimating = document.body.classList.contains('animate');
+
+          if (isAnimating) {
+            intervalSpin = setInterval(startRotate, 40);
+            actionButton.setAttribute('aria-pressed', 'true');
+          } else {
+            clearInterval(intervalSpin);
+            intervalSpin = null;
+            actionButton.setAttribute('aria-pressed', 'false');
+          }
+        });
+
+        // ── Custom image URL input ──────────────────────────────────────────────
+
+        urlInput.addEventListener('input', function () {
+          if (!urlInput.value) {
+            artPanels.forEach(function (panel) {
+              panel.style.backgroundImage = '';
+            });
+          } else {
+            artPanels.forEach(function (panel) {
+              panel.style.backgroundImage = 'url(' + urlInput.value + ')';
+            });
+          }
+        });
+
+      });
     </script>
 </body>
+</html>
