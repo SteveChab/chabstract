@@ -1,208 +1,170 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
-  <title>Make the Logo Bigger</title>
-  <meta name="description" content="Make the Logo Bigger: my animated SVG logo synced to music via JS - Steve Chab">
+  <title>Make the Logo Bigger, an Animated Signature by Steve Chab</title>
+  <meta name="description" content="One stroke of a hand-drawn signature, blown up until it fills the screen and animated in three layers against boom bap beats.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://stevechab.com/logo/">
 
   <meta name="author" content="Steve Chab">
-  <meta name="msapplication-TileImage" content="../tile.png">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="icon" href="../favicon.svg">
+  <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steve Chab">
+  <meta property="og:url" content="https://stevechab.com/logo/">
+  <meta property="og:title" content="Make the Logo Bigger, an Animated Signature by Steve Chab">
+  <meta property="og:description" content="One stroke of a hand-drawn signature, blown up until it fills the screen and animated in three layers against boom bap beats.">
+  <meta property="og:image" content="https://stevechab.com/share-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Steve Chab's signature mark over his name and the line: I make the internet pretty.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="Steve Chab's signature mark over his name and the line: I make the internet pretty.">
+
+  <link rel="icon" href="../favicon.ico" sizes="32x32">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../icon.png">
 
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/main.css?v=20250915">
+  <link rel="preload" href="../fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/roboto-slab-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/piece.css">
+
   <style>
-    .main {
-      background-color: var(--color-light);
-      transition: background-color ease calc(var(--animation-speed-slow));
-      overflow: hidden;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+    /* ==================================================================
+       Make the Logo Bigger
+       ==================================================================
+       Three drawings of one signature stacked in a single SVG. Every
+       animation hangs off the beat of whichever track is playing, so
+       the page keeps time with the music.
+
+       --beats-per-minute is measured per track; every other duration is
+       derived from it.
+       ================================================================== */
+
+    .piece__stage--logo {
+      background: var(--surface);
+      transition: background-color var(--duration-slow) ease;
     }
 
-    .js-animate {
-      --beats-per-minute: 60; /* default BPM */
-      --beat-half: calc(60s / (var(--beats-per-minute) / 2)); /* every 2 beats */
-      --beat-whole: calc(60s / (var(--beats-per-minute) / 4)); /* every 4 beats */
+    .is-animating {
+      --beats-per-minute: 60;
+      --beat-half:  calc(60s / (var(--beats-per-minute) / 2));
+      --beat-whole: calc(60s / (var(--beats-per-minute) / 4));
+      animation-name: blink;
+      animation-duration: var(--beat-whole);
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
 
-    .song1 {
+    /* Each track brings its own tempo, ground, and crop into the
+       signature. The grounds are deep enough to carry the line art in
+       paper ink at full strength. */
+
+    .piece__stage--song-1 {
       --beats-per-minute: 84.6;
-      background-color: var(--color1);
       --transform: scale(5) rotate(135deg) translate(-20%, 1%);
+      background-color: #2a1730;
     }
 
-    .song2 {
+    .piece__stage--song-2 {
       --beats-per-minute: 97;
-      background-color: var(--color2);
       --transform: scale(10) rotate(45deg) translate(33%, 1%);
+      background-color: #0f2c38;
     }
 
-    .song3 {
+    .piece__stage--song-3 {
       --beats-per-minute: 80;
-      background-color: var(--color3);
       --transform: scale(7) rotate(90deg) translate(23%, 2%);
+      background-color: #2d2410;
     }
 
-    .song1 .audio-player__button--next::before {
-      content: "\002318";
-    }
+    /* Two classes deep on purpose: the .signature__mark rules below are
+       the same weight and come later, so a single-class selector would
+       lose and the strokes would stay dark ink on a dark ground. */
+    .piece__stage--logo.piece__stage--song-1 .no-fill,
+    .piece__stage--logo.piece__stage--song-2 .no-fill,
+    .piece__stage--logo.piece__stage--song-3 .no-fill { stroke: #f2f0ee; }
 
-    .song2 .audio-player__button--next::before {
-      content: "\002667";
-    }
+    .piece__stage--logo.piece__stage--song-1 .fill,
+    .piece__stage--logo.piece__stage--song-2 .fill,
+    .piece__stage--logo.piece__stage--song-3 .fill { fill: #f2f0ee; }
 
-    .song3 .audio-player__button--next::before {
-      content: "\002766";
-    }
+    /* ── The signature ────────────────────────────────────────────────── */
 
-    .js-animate .wordmark-container__wordmark {
-      transform: var(--transform);
-    }
-
-    .wordmark-container {
+    .signature {
+      position: absolute;
+      inset: 0;
       margin: 0;
-      position: relative;
       z-index: 1;
     }
 
-    .wordmark-container__wordmark {
+    .signature__mark {
       width: 100%;
-      height: 100vh;
+      height: 100%;
       padding: 2rem;
       padding-top: 0;
       overflow: visible;
-      transition: transform ease var(--animation-speed-slow);
+      transition: transform ease var(--duration-slow);
     }
 
-    .wordmark-container__wordmark .no-fill {
+    .signature__mark .no-fill {
       fill: none;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke: var(--color-dark);
-      stroke-width: 0.5px;
+      stroke: var(--text);
+      stroke-width: .5px;
     }
 
-    .wordmark-container__wordmark .fill {
-      fill: var(--color-dark);
-    }
+    .signature__mark .fill { fill: var(--text); }
 
-    .audio-player {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
-    }
+    .is-animating .signature__mark { transform: var(--transform); }
 
-    .audio-player__song {
-      position: absolute;
-      left: -9999px;
-    }
-
-    .no-js .audio-player__song {
-      position: relative;
-      left: auto;
-      margin: 1rem;
-      margin-right: 0;
-    }
-
-    .audio-player__track-title {
-      background-color: var(--color-light);
-      position: relative;
-      opacity: 0;
-    }
-
-    .js-animate .audio-player__track-title {
-      opacity: 1;
-    }
-
-    .no-js .audio-player__track-title {
-      display: none;
-    }
-
-    .audio-player__track-title__heading {
-      margin: .5rem;
-      font-size: 1rem;
-    }
-
-    .audio-player__button {
-      margin: 1rem;
-      margin-right: 0;
-    }
-
-    .no-js .audio-player__button {
-      display: none;
-    }
-
-    .audio-player__button--next {
-      display: none;
-    }
-
-    .js-animate .audio-player__button--next {
-      display: inline-block;
-    }
+    /* ── The clocks ───────────────────────────────────────────────────── */
 
     @keyframes rotate {
-      0% { transform: rotate(0deg); }
+      0%   { transform: rotate(0deg);   }
       100% { transform: rotate(360deg); }
     }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1.1); }
-      2%, 98% { transform: scale(1); }
+      2%, 98%  { transform: scale(1);   }
     }
 
     @keyframes blink {
       0%, 100% { filter: invert(1); }
-      5%, 95% { filter: invert(0); }
+      5%, 95%  { filter: invert(0); }
     }
 
     @keyframes draw {
-      0% {
-        stroke-dasharray: 0 60px;
-        stroke-opacity: 1;
-      }
-      10% {
-        stroke-dasharray: 60px 0;
-      }
-      80% {
-        stroke-dasharray: 60px 0;
-        stroke-opacity: 1;
-      }
-      83% {
-        stroke-opacity: 0;
-      }
-      100% {
-        stroke-opacity: 0;
-      }
+      0%   { stroke-dasharray: 0 60px;  stroke-opacity: 1; }
+      10%  { stroke-dasharray: 60px 0;                     }
+      80%  { stroke-dasharray: 60px 0;  stroke-opacity: 1; }
+      83%  {                            stroke-opacity: 0; }
+      100% {                            stroke-opacity: 0; }
     }
 
-    .js-animate .wordmark-container {
+    .is-animating .signature {
       animation-name: rotate;
       animation-duration: calc(var(--beat-whole) * 16);
       animation-iteration-count: infinite;
       animation-timing-function: linear;
-      animation-delay: var(--animation-speed-slow);
+      animation-delay: var(--duration-slow);
     }
 
-    .js-animate .steve-chab-abstract .s,
-    .js-animate .steve-chab-abstract .t,
-    .js-animate .steve-chab-abstract .e,
-    .js-animate .steve-chab-abstract .v,
-    .js-animate .steve-chab-abstract .c,
-    .js-animate .steve-chab-abstract .h,
-    .js-animate .steve-chab-abstract .a,
-    .js-animate .steve-chab-abstract .b {
+    .is-animating .steve-chab-abstract .s,
+    .is-animating .steve-chab-abstract .t,
+    .is-animating .steve-chab-abstract .e,
+    .is-animating .steve-chab-abstract .v,
+    .is-animating .steve-chab-abstract .c,
+    .is-animating .steve-chab-abstract .h,
+    .is-animating .steve-chab-abstract .a,
+    .is-animating .steve-chab-abstract .b {
       animation-name: draw;
       animation-duration: 4s;
       animation-iteration-count: infinite;
@@ -213,104 +175,54 @@
       stroke-dashoffset: 60px;
     }
 
-    .js-animate .steve-chab-abstract .s { animation-delay: 0; }
-    .js-animate .steve-chab-abstract .t { animation-delay: -.1s; }
-    .js-animate .steve-chab-abstract .e { animation-delay: -.2s; }
-    .js-animate .steve-chab-abstract .v { animation-delay: -.3s; }
-    .js-animate .steve-chab-abstract .c { animation-delay: -.4s; }
-    .js-animate .steve-chab-abstract .h { animation-delay: -.5s; }
-    .js-animate .steve-chab-abstract .a { animation-delay: -.6s; }
-    .js-animate .steve-chab-abstract .b { animation-delay: -.7s; }
+    .is-animating .steve-chab-abstract .s { animation-delay: 0;     }
+    .is-animating .steve-chab-abstract .t { animation-delay: -.1s;  }
+    .is-animating .steve-chab-abstract .e { animation-delay: -.2s;  }
+    .is-animating .steve-chab-abstract .v { animation-delay: -.3s;  }
+    .is-animating .steve-chab-abstract .c { animation-delay: -.4s;  }
+    .is-animating .steve-chab-abstract .h { animation-delay: -.5s;  }
+    .is-animating .steve-chab-abstract .a { animation-delay: -.6s;  }
+    .is-animating .steve-chab-abstract .b { animation-delay: -.7s;  }
 
-    .js-animate {
-      animation-name: blink;
-      animation-duration: var(--beat-whole);
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-    }
-
-    .js-animate .steve-chab-abstract,
-    .js-animate .steve-chab-grunge {
-      opacity: 1;
-    }
-
-    .js-animate .s,
-    .js-animate .t,
-    .js-animate .e,
-    .js-animate .v,
-    .js-animate .c,
-    .js-animate .h,
-    .js-animate .a,
-    .js-animate .b {
+    .is-animating .s, .is-animating .t, .is-animating .e, .is-animating .v,
+    .is-animating .c, .is-animating .h, .is-animating .a, .is-animating .b {
       animation-name: pulse;
       animation-duration: var(--beat-half);
-      animation-timing-function: linear; 
+      animation-timing-function: linear;
       animation-delay: 0s;
-      animation-direction: normal;
       animation-iteration-count: infinite;
-      animation-fill-mode: none;
-      animation-play-state: running;
       transform-origin: 168px 168px;
     }
 
-    .js-animate .s1,
-    .js-animate .t2,
-    .js-animate .e3-1,
-    .js-animate .v1,
-    .js-animate .e2-1,
-    .js-animate .c3,
-    .js-animate .h1,
-    .js-animate .a2,
-    .js-animate .b3 {
-      animation-delay: .05s;
-    }
+    .is-animating .s1, .is-animating .t2, .is-animating .e3-1, .is-animating .v1,
+    .is-animating .e2-1, .is-animating .c3, .is-animating .h1, .is-animating .a2,
+    .is-animating .b3 { animation-delay: .05s; }
 
-    .js-animate .s2,
-    .js-animate .t3,
-    .js-animate .e1-1,
-    .js-animate .v2,
-    .js-animate .e3-2,
-    .js-animate .c1,
-    .js-animate .h2,
-    .js-animate .a3,
-    .js-animate .b1 {
-      animation-delay: -.50s;
-    }
+    .is-animating .s2, .is-animating .t3, .is-animating .e1-1, .is-animating .v2,
+    .is-animating .e3-2, .is-animating .c1, .is-animating .h2, .is-animating .a3,
+    .is-animating .b1 { animation-delay: -.5s; }
 
   </style>
 </head>
 
-<body>
-    <a class="header__link-home" href="/">
-      <span class="sr-only">Steve Chab Homepage</span>
-      <svg aria-hidden="true" class="header__link-home__wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
-        <g class="steve-chab">
-          <g class="steve steve1" data-name="steve">
-            <polyline class="no-fill s1 s" points="26.5 7.1 9.5 24.1 43.5 24.1 26.5 41.1"/>
-            <g class="t1 t">
-              <line class="no-fill" x1="60.6" y1="7.1" x2="60.6" y2="41.1"/>
-              <line class="no-fill" x1="77.6" y1="24.1" x2="43.5" y2="24.1"/>
-            </g>
-            <polyline class="no-fill e1-1 e" points="111.6 24.1 77.6 24.1 94.6 41.1"/>
-            <polyline class="no-fill v1 v" points="111.6 24.1 128.6 41.1 145.6 24.1"/>
-            <polyline class="no-fill e1-2 e" points="179.6 24.1 145.6 24.1 162.6 41.1"/>
-          </g>
-          <g class="chab chab1" data-name="chab">
-            <polyline class="no-fill c1 c" points="230.2 41.5 196.1 41.5 230.2 7.5 230.2 24.5"/>
-            <g class="h1 h">
-              <line class="no-fill" x1="264.2" y1="7.5" x2="230.2" y2="41.5"/>
-              <line class="no-fill" x1="264.2" y1="41.5" x2="247.2" y2="24.5"/>
-            </g>
-            <polyline class="no-fill a1 a" points="298.2 41.5 281.2 24.5 264.2 41.5"/>
-            <polyline class="no-fill b1 b" points="332.2 7.5 298.2 41.5 332.2 41.5 315.2 24.5"/>
-          </g>
-        </g>
-      </svg>
-    </a>
+<body class="piece">
 
-  <main class="main">
-    <div class="wordmark-container">
-      <svg aria-label="Steve Chab logo/wordmark" class="wordmark-container__wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
+  <a class="skip-link" href="#controls">Skip to the controls</a>
+
+  <header class="shell masthead piece__head">
+    <nav class="nav" aria-label="Main">
+      <a class="nav__link" href="../">stevechab.com</a>
+      <a class="nav__link" href="../work/">Work</a>
+      <a class="nav__link" href="../fun/">Fun</a>
+      <a class="nav__link" href="../resume/">Resume</a>
+    </nav>
+
+    <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
+  </header>
+
+  <main class="piece__stage piece__stage--logo" id="stage">
+    <div class="signature">
+      <svg aria-label="messy, angular Steve Chab logo drawn on a 45 degree grid on graphpaper, transcribed to illustrator" role="img" class="signature__mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
         <g class="steve-chab-abstract">
           <g class="steve steve3">
             <g class="s3 s">
@@ -377,7 +289,7 @@
           </g>
         </g>
         <g class="steve-chab-grunge">
-          <g class="steve steve2" data-name="steve">
+          <g class="steve steve2">
             <g class="s2 s">
               <path class="fill" d="M38,46.2c-.1.2-.4.2-.4.1s-.2.2,0,.5-.4.3-.3,0l-.4.7.4-.3c.1.3-.6.4-.4.8l.5-.6h0a.9.9,0,0,1,.5-.4.1.1,0,0,1,0,.2c.6-.7-.2-.6.2-1.2A.1.1,0,0,1,38,46.2Z" transform="translate(-9.1 -5.7)"/>
               <path class="fill" d="M39.1,46.2v-.5l.5-.3c-.1-.1.1-.5-.2-.3v.2c-.2-.3.4-.7.1-.7s-.4.3-.4.7-.5.4-.7.4,0,.3-.1.4h.1l.3.3c0-.1.2-.2.2-.3v.8c.4.1.7-.5.9-.5S39.7,46,39.1,46.2Z" transform="translate(-9.1 -5.7)"/>
@@ -1131,7 +1043,7 @@
               <path class="fill" d="M187.5,28.8c.1-.1.4.1.4-.1h-.4Z" transform="translate(-9.1 -5.7)"/>
             </g>
           </g>
-          <g class="chab chab2" data-name="chab">
+          <g class="chab chab2">
             <g class="c2 c">
               <path class="fill" d="M240.5,27.8c.1.2-.1.4-.2.3s0,.5.4.6-.1.6-.2.2l.2.9v-.5c.3.1,0,.8.3.9v-.9h.1a1.1,1.1,0,0,1,0-.8s.1,0,.1.2-.5-.3-.6-1.2Z" transform="translate(-9.1 -5.7)"/>
               <path class="fill" d="M241.3,26.9l-.4-.4v-.7c-.1,0-.2-.5-.4-.1s.1.2.1.3-.1-.9-.4-.7,0,.6.2.9a2.2,2.2,0,0,1-.2,1l.3.4v-.2h.4a.6.6,0,0,1-.1-.4l.5.7c.4-.2.2-1,.4-1.3S241.6,26.1,241.3,26.9Z" transform="translate(-9.1 -5.7)"/>
@@ -1762,7 +1674,7 @@
           </g>
         </g>
         <g class="steve-chab">
-          <g class="steve steve1" data-name="steve">
+          <g class="steve steve1">
             <polyline class="no-fill s1 s" points="26.5 7.1 9.5 24.1 43.5 24.1 26.5 41.1"/>
             <g class="t1 t">
               <line class="no-fill" x1="60.6" y1="7.1" x2="60.6" y2="41.1"/>
@@ -1772,7 +1684,7 @@
             <polyline class="no-fill v1 v" points="111.6 24.1 128.6 41.1 145.6 24.1"/>
             <polyline class="no-fill e1-2 e" points="179.6 24.1 145.6 24.1 162.6 41.1"/>
           </g>
-          <g class="chab chab1" data-name="chab">
+          <g class="chab chab1">
             <polyline class="no-fill c1 c" points="230.2 41.5 196.1 41.5 230.2 7.5 230.2 24.5"/>
             <g class="h1 h">
               <line class="no-fill" x1="264.2" y1="7.5" x2="230.2" y2="41.5"/>
@@ -1784,76 +1696,157 @@
         </g>
       </svg>
     </div>
-    
-    <div class="audio-player">
-      <h2 class="sr-only">Audio Player</h2>
 
-      <marquee class="audio-player__track-title">
-        <h3 role="marquee" aria-live="polite" class="audio-player__track-title__heading">Song Title</h3>
-      </marquee>
-      
-      <button class="icon play-button audio-player__button" aria-pressed="false">
-        <span class="sr-only">Play Music</span>
-      </button>
-      <button class="icon audio-player__button audio-player__button--next">
-        <span class="sr-only">Next Song</span>
-      </button>
+    <!-- The art is the button: clicking it drops the head and the bar,
+         and the hint in the corner is the way back. The overlay sits
+         after .signature and carries the same z-index, so it takes the
+         clicks. -->
 
-      <audio class="audio-player__song audio-player__song--1" title="Betty Boom Bap Boop by Steve Chab" controls loop>
-        <source src="Betty-Boom-Bap-Boop-Steve-Chab.mp3" type="audio/mpeg">
-      </audio>
-      <audio class="audio-player__song audio-player__song--2" title="Lamby by Steve Chab" controls loop>
-        <source src="Lamby-Steve-Chab.mp3" type="audio/mpeg">
-      </audio>
-      <audio class="audio-player__song audio-player__song--3" title="The Answer by Steve Chab" controls loop>
-        <source src="The-Answer-Steve-Chab.mp3" type="audio/mpeg">
-      </audio>
-    </div>
+    <button class="overlay" type="button" id="overlay">
+      <span class="sr-only">Hide the navigation and the controls</span>
+    </button>
+
+    <p class="hint" id="hint" hidden>Click art or press Esc to restore controls</p>
   </main>
-  <script>document.querySelector(".no-js").classList.remove("no-js");</script>
+
+  <div class="shell bar" id="controls" tabindex="-1">
+    <div class="bar__id">
+      <h1 class="bar__title">Make the Logo Bigger</h1>
+      <p class="bar__readout" aria-live="polite"><span class="sr-only">Track: </span><b id="track-name">Betty Boom Bap Boop</b></p>
+    </div>
+
+    <div class="bar__controls">
+      <div class="control">
+        <button class="control__btn" type="button" id="play-btn" aria-labelledby="cap-play">
+          <span class="control__mark" aria-hidden="true">
+            <svg width="18" height="20" viewBox="0 0 18 20" id="play-mark"><path d="M0 0 18 10 0 20Z"/></svg>
+          </span>
+        </button>
+        <span class="control__caption" id="cap-play">Play</span>
+      </div>
+
+      <div class="control">
+        <button class="control__btn" type="button" id="track-btn" aria-labelledby="cap-track">
+          <span class="control__mark" aria-hidden="true">&amp;</span>
+        </button>
+        <span class="control__caption" id="cap-track"><span class="sr-only">Next </span>Track<span class="sr-only">, starts playing</span></span>
+      </div>
+    </div>
+  </div>
+
+  <audio class="sr-only" id="track-1" preload="none" loop title="Betty Boom Bap Boop by Steve Chab">
+    <source src="Betty-Boom-Bap-Boop-Steve-Chab.mp3" type="audio/mpeg">
+  </audio>
+  <audio class="sr-only" id="track-2" preload="none" loop title="Lamby by Steve Chab">
+    <source src="Lamby-Steve-Chab.mp3" type="audio/mpeg">
+  </audio>
+  <audio class="sr-only" id="track-3" preload="none" loop title="The Answer by Steve Chab">
+    <source src="The-Answer-Steve-Chab.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
-    var tracks = document.querySelectorAll(".audio-player__song");
-    tracks.forEach((track) => {
-      track.setAttribute("aria-hidden", "true");
-      track.setAttribute("tabindex", "-1");
-    });
+    (function () {
+      var tracks = [
+        { el: document.getElementById('track-1'), name: 'Betty Boom Bap Boop', cls: 'piece__stage--song-1' },
+        { el: document.getElementById('track-2'), name: 'Lamby',               cls: 'piece__stage--song-2' },
+        { el: document.getElementById('track-3'), name: 'The Answer',          cls: 'piece__stage--song-3' }
+      ];
 
-    var playButton = document.querySelector(".play-button");
-    var nextButton = document.querySelector(".audio-player__button--next");
-    var currentTrack = 1;
-    var totalTracks = document.getElementsByTagName("audio").length;
+      var stage    = document.getElementById('stage');
+      var nameEl   = document.getElementById('track-name');
+      var playBtn  = document.getElementById('play-btn');
+      var playCap  = document.getElementById('cap-play');
+      var playMark = document.getElementById('play-mark');
+      var trackBtn = document.getElementById('track-btn');
+      var trackMk  = trackBtn.querySelector('.control__mark');
+      var overlay  = document.getElementById('overlay');
+      var hint     = document.getElementById('hint');
+      var body     = document.body;
 
-    function toggleAudio() {
-      var main = document.querySelector(".main");
-      var song = document.querySelector(".audio-player__song--" + currentTrack);
-      var animating = document.querySelector(".js-animate");
-      var songTitle = song.getAttribute("title");
+      var current = 0;
+      var playing = false;
 
-      document.querySelector(".audio-player__track-title__heading").innerHTML = songTitle;
+      var PLAY  = 'M0 0 18 10 0 20Z';
+      var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
 
-      if(animating) {
-        main.classList.remove("js-animate", "song" + currentTrack);
-        playButton.classList.remove("play-button--pause");
-        playButton.setAttribute("aria-pressed","false");
-        song.pause();
-      } else {
-        main.classList.add("js-animate", "song" + currentTrack);
-        playButton.classList.add("play-button--pause");
-        playButton.setAttribute("aria-pressed","true");
-        song.play();
+      function paintState() {
+        playBtn.classList.toggle('is-on', playing);
+        playCap.textContent = playing ? 'Pause' : 'Play';
+        playMark.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
+        nameEl.textContent = tracks[current].name;
+
+        tracks.forEach(function (t) { stage.classList.remove(t.cls); });
+        stage.classList.toggle('is-animating', playing);
+        if (playing) stage.classList.add(tracks[current].cls);
       }
-    }
 
-    playButton.onclick = function() {
-      toggleAudio();
-    };
+      function stopAll() {
+        tracks.forEach(function (t) { t.el.pause(); });
+      }
 
-    nextButton.onclick = function() {
-      toggleAudio();
-      currentTrack = currentTrack + 1;
-      if (currentTrack > totalTracks) { currentTrack = 1; }
-      toggleAudio();
-    };
+      function setPlaying(on) {
+        playing = on;
+        if (on) {
+          stopAll();
+          // play() rejects when a browser wants a gesture first, and the
+          // press is that gesture, so a rejection here means the fetch
+          // failed. The picture keeps its beat either way.
+          var p = tracks[current].el.play();
+          if (p && p.catch) { p.catch(function () {}); }
+        } else {
+          stopAll();
+        }
+        paintState();
+      }
+
+      playBtn.addEventListener('click', function () { setPlaying(!playing); });
+
+      trackMk.addEventListener('animationend', function () {
+        trackMk.classList.remove('control__mark--turning');
+      });
+
+      trackBtn.addEventListener('click', function () {
+        current = (current + 1) % tracks.length;
+
+        trackMk.classList.remove('control__mark--turning');
+        void trackMk.offsetWidth;
+        trackMk.classList.add('control__mark--turning');
+
+        // A track change with nothing playing would be silent.
+        setPlaying(true);
+      });
+
+      // ── Chrome away ────────────────────────────────────────────────────
+
+      function setBare(on) {
+        body.classList.toggle('is-bare', on);
+        overlay.querySelector('.sr-only').textContent = on
+          ? 'Bring the navigation and the controls back'
+          : 'Hide the navigation and the controls';
+        hint.hidden = !on;
+
+        // Going bare hides whatever held the keyboard, so the overlay
+        // takes the focus rather than leaving it on a display: none
+        // control.
+        if (on && !overlay.contains(document.activeElement)) overlay.focus();
+      }
+
+      overlay.addEventListener('click', function () {
+        setBare(!body.classList.contains('is-bare'));
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          setBare(!body.classList.contains('is-bare'));
+        }
+      });
+
+      paintState();
+    }());
   </script>
+
+  <script src="../js/jump.js" defer></script>
+
 </body>
+
 </html>

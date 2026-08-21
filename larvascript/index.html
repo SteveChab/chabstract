@@ -3,75 +3,110 @@
 
 <head>
   <meta charset="utf-8">
-  <title>LarvaScript: trippy, glitchy, nauseating, abstract art animations - Steve Chab</title>
-  <meta name="description" content="Trippy, glitchy, nauseating, computer art animations">
+  <title>Larvascript, Trippy Glitch Animations by Steve Chab</title>
+  <meta name="description" content="Steve Chab's glitched pictures, torn apart and relit scene by scene, in raw CSS and JavaScript. Point it at any image you like.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://stevechab.com/larvascript/">
 
   <meta name="author" content="Steve Chab">
-  <meta name="msapplication-TileImage" content="../tile.png">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="icon" href="../favicon.svg">
+  <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steve Chab">
+  <meta property="og:url" content="https://stevechab.com/larvascript/">
+  <meta property="og:title" content="Larvascript, Trippy Glitch Animations by Steve Chab">
+  <meta property="og:description" content="Steve Chab's glitched pictures, torn apart and relit scene by scene, in raw CSS and JavaScript.">
+  <meta property="og:image" content="https://stevechab.com/share-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Steve Chab's signature mark over his name and the line: I make the internet pretty.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="Steve Chab's signature mark over his name and the line: I make the internet pretty.">
+
+  <link rel="icon" href="../favicon.ico" sizes="32x32">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../icon.png">
 
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/main.css?v=20250915">
+  <link rel="preload" href="../fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/roboto-slab-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/piece.css">
 
   <style>
-    html, .page-container {
-      overflow: hidden;
-      height: 100%;
-      width: 100%;
-      position: relative;
-      background-color: var(--color-dark);
+    /* ==================================================================
+       Larvascript
+       ==================================================================
+       A set of pictures, a set of scenes that ruin them, a set of
+       overlays on top. Every scene is CSS; JavaScript only builds the
+       elements, swaps the class, and starts or stops the clock.
+
+       Three square buttons step through the three sets in order, and
+       the field takes any picture a visitor would rather see torn
+       apart.
+       ================================================================== */
+
+    /* The stage is a size container so a scene can measure itself
+       against the stage rather than the window. Tunnel Vision needs it:
+       its rings are squares sized off the stage's short side. */
+
+    .piece__stage--larva {
+      background: var(--black);
+      container-type: size;
     }
 
-    /* ── Existing: Spiral ───────────────────────────────────────────────────── */
+    /* ── The scenes ───────────────────────────────────────────────────── */
 
-    .art-container {
-      height: 100vh;
-      width: 100vw;
-      transform: rotate(45deg) scale(2);
+    .scene {
+      display: none;
       position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .scene.is-active { display: block; }
+
+    /* ── Wormhole ─────────────────────────────────────────────────── */
+
+    .art {
+      position: absolute;
+      inset: 0;
+      transform: rotate(45deg) scale(2);
       z-index: 0;
     }
 
-    .art {
-      background: url(https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg);
+    .art__pane {
       background-repeat: repeat;
       background-position-x: 0;
       background-position-y: center;
       display: block;
       position: absolute;
-      left: -50vw;
-      top: -50vh;
-      height: 100vh;
-      width: 100vw;
+      left: -50%;
+      top: -50%;
+      height: 100%;
+      width: 100%;
     }
 
-    .art--2 { transform: rotate(90deg);  transform-origin: bottom right; }
-    .art--3 { transform: rotate(180deg); transform-origin: bottom right; }
-    .art--4 { transform: rotate(270deg); transform-origin: bottom right; }
+    .art__pane--quarter       { transform: rotate(90deg);  transform-origin: bottom right; }
+    .art__pane--half          { transform: rotate(180deg); transform-origin: bottom right; }
+    .art__pane--three-quarter { transform: rotate(270deg); transform-origin: bottom right; }
 
-    /* ── Mode system ────────────────────────────────────────────────────────── */
+    /* ── Rush Hour ────────────────────────────────────────────────────────
+       Bands of the picture, each running at its own speed and heading.
 
-    .mode-container {
-      display: none;
-      position: absolute;
-      inset: 0;
-    }
-    .mode-container.active { display: block; }
-    #mode-circles { overflow: hidden; }
+       The scroll is a length, not a percentage. A percentage in
+       background-position means a fraction of the room the tile has to
+       move in, so a tile exactly as wide as its box has a range of
+       zero. `100% auto` makes the tile one strip wide, and -100vw walks
+       it one whole tile and loops without a seam. */
 
-    /* ── Stripes: Rush Hour ─────────────────────────────────────────────────── */
-
-    .stripe {
+    .rush__stripe {
       position: absolute;
       left: 0;
       width: 100%;
       background-repeat: repeat-x;
-      background-size: cover;
+      background-size: 100% auto;
       animation-name: stripe-scroll;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
@@ -79,19 +114,19 @@
     }
 
     @keyframes stripe-scroll {
-      from { background-position-x: 0      }
-      to   { background-position-x: -100vw }
+      from { background-position-x: 0;      }
+      to   { background-position-x: -100vw; }
     }
 
-    /* ── Squares: Rubik's Fever ─────────────────────────────────────────────── */
+    /* ── Rubik's Fever ────────────────────────────────────────────────── */
 
-    .squares-grid {
+    .squares {
       display: grid;
       width: 100%;
       height: 100%;
     }
 
-    .square-cell {
+    .squares__cell {
       overflow: hidden;
       animation-name: square-skew;
       animation-timing-function: ease-in-out;
@@ -100,20 +135,33 @@
     }
 
     @keyframes square-skew {
-      0%,  100% { transform: skew(  0deg,  0deg) }
-      25%        { transform: skew(  8deg, -4deg) }
-      50%        { transform: skew( -6deg,  6deg) }
-      75%        { transform: skew(  4deg, -8deg) }
+      0%, 100% { transform: skew(  0deg,  0deg); }
+      25%      { transform: skew(  8deg, -4deg); }
+      50%      { transform: skew( -6deg,  6deg); }
+      75%      { transform: skew(  4deg, -8deg); }
     }
 
-    /* ── Circles: Carnival Eyes ─────────────────────────────────────────────── */
+    /* ── Carnival Eyes ────────────────────────────────────────────────── */
 
-    .circle-orb {
+    .orb {
       position: absolute;
       border-radius: 50%;
-      overflow: hidden;
-      background-repeat: no-repeat;
-      background-size: cover;         /* always fills the circle */
+      animation-name: orb-spin;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes orb-spin {
+      from { transform: rotate(0deg);   }
+      to   { transform: rotate(360deg); }
+    }
+
+    .orb__circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-size: cover;
       animation-name: circle-wobble;
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
@@ -121,261 +169,503 @@
     }
 
     @keyframes circle-wobble {
-      0%,  100% { transform: rotate(var(--orb-rot, 0deg)) translate(   0,    0) scale(1)     }
-      25%        { transform: rotate(var(--orb-rot, 0deg)) translate( 4px,  -5px) scale(1.02)  }
-      50%        { transform: rotate(var(--orb-rot, 0deg)) translate(-5px,   3px) scale(0.98)  }
-      75%        { transform: rotate(var(--orb-rot, 0deg)) translate( 3px,   5px) scale(1.015) }
+      0%, 100% { transform: translate(   0,    0) scale(1);     }
+      25%      { transform: translate( 4px,  -5px) scale(1.02);  }
+      50%      { transform: translate(-5px,   3px) scale(0.98);  }
+      75%      { transform: translate( 3px,   5px) scale(1.015); }
     }
 
-    /* ── Mode switcher ──────────────────────────────────────────────────────── */
+    /* ── Colour Bleed ─────────────────────────────────────────────────────
+       Three full-stage layers, each filtered onto its own end of the
+       hue wheel and blended back together. At rest they line up; in
+       motion the edges grow halos. */
 
-    .mode-nav {
+    .chroma {
       position: absolute;
-      top: 1rem;
+      inset: -30px;
+      background-size: cover;
+      background-position: center;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-play-state: paused;
+    }
+
+    .chroma--r { filter: hue-rotate(-35deg); animation-name: chroma-r-drift; animation-duration: 5s; }
+    .chroma--g { filter: hue-rotate(0deg);   animation-name: chroma-g-drift; animation-duration: 6s; mix-blend-mode: overlay; }
+    .chroma--b { filter: hue-rotate(35deg);  animation-name: chroma-b-drift; animation-duration: 7s; mix-blend-mode: screen; opacity: .65; }
+
+    @keyframes chroma-r-drift {
+      0%, 100% { transform: translate(   0,    0); }
+      30%      { transform: translate(10px,  -7px); }
+      70%      { transform: translate(-8px,  10px); }
+    }
+    @keyframes chroma-g-drift {
+      0%, 100% { transform: translate(   0,    0); }
+      40%      { transform: translate(-9px,   5px); }
+      80%      { transform: translate(12px,  -4px); }
+    }
+    @keyframes chroma-b-drift {
+      0%, 100% { transform: translate(   0,    0); }
+      20%      { transform: translate( 5px,  12px); }
+      60%      { transform: translate(-11px, -8px); }
+    }
+
+    /* ── Glitch Slices ────────────────────────────────────────────────────
+       JavaScript drives this one: an interval snaps a handful of strips
+       sideways and lets them go. CSS only lays them out and keeps the
+       snap-back instant.
+
+       Every strip runs one pixel taller than its share of the stage. A
+       percentage height lands on a fraction of a pixel, each strip
+       rounds on its own, and the rounding opens a black hairline at
+       some window sizes. The extra pixel covers the seam above the next
+       strip; the last one hangs past the bottom and the scene clips it.
+       Rush Hour is built the same way. */
+
+    .glitch__strip {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      transition: transform .04s steps(1), background-position-x .04s steps(1);
+    }
+
+    /* ── Tunnel Vision ────────────────────────────────────────────────────
+       Rings on one keyframe, staggered by a negative delay so the zoom
+       never shows a seam.
+
+       A ring is always a square, sized off the stage's short side: a
+       ring stretched to the stage would make the 50% radius an ellipse
+       the shape of the window. Centring is part of the transform, so
+       every keyframe carries it. */
+
+    .tunnel__ring {
+      position: absolute;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
-      gap: 0.25rem;
-      white-space: nowrap;
+      width: 100cqmin;
+      aspect-ratio: 1;
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      opacity: 0;
+      animation-name: tunnel-zoom;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-play-state: paused;
     }
 
-    /*
-     * Glyph buttons: square-ish, sized so the unicode character reads clearly.
-     * No override of the inherited [aria-pressed="true"] rotate — that comes
-     * from main.css and stays as-is per the project's existing pattern.
-     */
-    .mode-btn {
-      font-size: 1.1rem;
-      line-height: 1;
-      padding: 0.35rem 0.55rem;
-      min-width: 2.2rem;
-      text-align: center;
+    @keyframes tunnel-zoom {
+      0%   { transform: translate(-50%, -50%) scale(0.01); opacity: 0; }
+      50%  {                                               opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(5);                }
     }
 
-    /* ── Existing: other UI ─────────────────────────────────────────────────── */
-
-    .action-button { z-index: 100; }
-
-    .url-input {
-      position: absolute;
-      background: white;
-      padding: 1rem;
-      bottom: 1rem;
-      left: calc(var(--icon-height) + var(--container-padding));
-      border: none;
-      height: var(--icon-height);
-      width: 50vw;
-      z-index: 5;
-      font-family: var(--font-stack);
-      font-size: 1rem;
-    }
-
-    .control-container {
-      position: absolute;
-      bottom: 1rem;
-      right: 1rem;
-      line-height: 0;
-      z-index: 5;
-    }
-
-    .control {
-      background: white 0 0 scroll repeat;
-      text-indent: -9999px;
-      line-height: 0;
-    }
-
-    @media (max-width: 767px) {
-      .control { display: block; margin: .5em 0 0 0; }
-    }
-
-    [aria-pressed="true"] { transform: rotate(45deg); }
+    /* ── The overlay ──────────────────────────────────────────────────────
+       One tiled animated GIF over everything, blended, and also the hit
+       target that hides the chrome. piece.css lays it over the stage;
+       only the three lines that make it this page's overlay are here. */
 
     .overlay {
       background: url(images/bg.gif) center center scroll repeat transparent;
-      position: absolute;
-      z-index: 1;
-      top: 0; right: 0; bottom: 0; left: 0;
       mix-blend-mode: overlay;
       opacity: .65;
     }
   </style>
 </head>
 
-<body class="page-container">
-  <a class="header__link-home" href="/">
-    <span class="sr-only">Steve Chab Homepage</span>
-    <svg aria-hidden="true" class="header__link-home__wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9">
-      <g class="steve-chab">
-        <g class="steve steve1" data-name="steve">
-          <polyline class="no-fill s1 s" points="26.5 7.1 9.5 24.1 43.5 24.1 26.5 41.1"/>
-          <g class="t1 t">
-            <line class="no-fill" x1="60.6" y1="7.1" x2="60.6" y2="41.1"/>
-            <line class="no-fill" x1="77.6" y1="24.1" x2="43.5" y2="24.1"/>
-          </g>
-          <polyline class="no-fill e1-1 e" points="111.6 24.1 77.6 24.1 94.6 41.1"/>
-          <polyline class="no-fill v1 v"   points="111.6 24.1 128.6 41.1 145.6 24.1"/>
-          <polyline class="no-fill e1-2 e" points="179.6 24.1 145.6 24.1 162.6 41.1"/>
-        </g>
-        <g class="chab chab1" data-name="chab">
-          <polyline class="no-fill c1 c" points="230.2 41.5 196.1 41.5 230.2 7.5 230.2 24.5"/>
-          <g class="h1 h">
-            <line class="no-fill" x1="264.2" y1="7.5" x2="230.2" y2="41.5"/>
-            <line class="no-fill" x1="264.2" y1="41.5" x2="247.2" y2="24.5"/>
-          </g>
-          <polyline class="no-fill a1 a" points="298.2 41.5 281.2 24.5 264.2 41.5"/>
-          <polyline class="no-fill b1 b" points="332.2 7.5 298.2 41.5 332.2 41.5 315.2 24.5"/>
-        </g>
-      </g>
-    </svg>
-  </a>
+<body class="piece">
 
-  <h1 class="sr-only">LarvaScript: your retinas asked for this</h1>
+  <a class="skip-link" href="#controls">Skip to the controls</a>
 
-  <!-- ── Mode containers ────────────────────────────────────────────────────── -->
+  <header class="shell masthead piece__head">
+    <nav class="nav" aria-label="Main">
+      <a class="nav__link" href="../">stevechab.com</a>
+      <a class="nav__link" href="../work/">Work</a>
+      <a class="nav__link" href="../fun/">Fun</a>
+      <a class="nav__link" href="../resume/">Resume</a>
+    </nav>
 
-  <div id="mode-spiral" class="mode-container active" aria-hidden="true">
-    <main class="art-container">
-      <div class="art art--1"></div>
-      <div class="art art--2"></div>
-      <div class="art art--3"></div>
-      <div class="art art--4"></div>
-    </main>
+    <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
+  </header>
+
+  <main class="piece__stage piece__stage--larva" id="stage">
+
+    <div class="scene is-active" id="scene-spiral" aria-hidden="true">
+      <div class="art">
+        <div class="art__pane"></div>
+        <div class="art__pane art__pane--quarter"></div>
+        <div class="art__pane art__pane--half"></div>
+        <div class="art__pane art__pane--three-quarter"></div>
+      </div>
+    </div>
+
+    <div class="scene" id="scene-stripes" aria-hidden="true"></div>
+    <div class="scene" id="scene-squares" aria-hidden="true"></div>
+    <div class="scene" id="scene-circles" aria-hidden="true"></div>
+    <div class="scene" id="scene-chroma"  aria-hidden="true"></div>
+    <div class="scene" id="scene-glitch"  aria-hidden="true"></div>
+    <div class="scene" id="scene-tunnel"  aria-hidden="true"></div>
+
+    <button class="overlay" type="button" id="overlay">
+      <span class="sr-only">Hide the navigation and the controls</span>
+    </button>
+
+    <p class="hint" id="hint" hidden>Click art or press Esc to restore controls</p>
+
+    <!-- ── The motion gate ────────────────────────────────────────────────
+         The page opens on the first picture, held still. The gate
+         arrives the first time a visitor asks for motion, and either
+         answer closes it for the rest of the visit.
+
+         A <dialog> opened with showModal(): it holds the keyboard
+         inside itself, makes the page behind it inert, and answers
+         Escape, none of which is written here or faked with ARIA. -->
+
+    <dialog class="gate" id="gate" aria-labelledby="gate-title">
+      <div class="gate__panel">
+        <p class="gate__label">Motion Warning</p>
+        <!-- A <p>, not an <h2>: the gate sits above the h1 in the
+             source, so a heading here would run an h2 before it. The
+             dialog takes its name from this line either way. -->
+        <p class="gate__title" id="gate-title">This animation flashes and spins.</p>
+        <p class="gate__body" id="gate-body">Larvascript blinks, rotates, strobes, and pulsates.</p>
+        <div class="gate__actions">
+          <button class="btn btn--solid" type="button" id="gate-go">Start animation</button>
+          <button class="btn" type="button" id="gate-still">Keep it still</button>
+        </div>
+      </div>
+    </dialog>
+
+  </main>
+
+  <div class="shell bar" id="controls" tabindex="-1">
+    <div class="bar__id">
+      <h1 class="bar__title">Larvascript</h1>
+      <p class="bar__readout" aria-live="polite">
+        <span class="bar__line"><span class="sr-only">Image: </span><b id="image-name">Today I Learned</b>, <span id="image-desc">ten thousand sequins on a black floor</span></span>
+        <span class="bar__line"><span class="sr-only">Scene: </span><b id="scene-name">The Wormhole</b> &nbsp;/&nbsp; <span class="sr-only">Effect: </span><b id="effect-name">Crosshatch</b></span>
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="source">Your own image</label>
+      <input class="field__input" type="url" id="source" name="source"
+             placeholder="https://example.com/picture.jpg"
+             autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="bar__controls">
+      <div class="control">
+        <button class="control__btn" type="button" id="play-btn" aria-labelledby="cap-play">
+          <span class="control__mark" aria-hidden="true">
+            <svg width="18" height="20" viewBox="0 0 18 20" id="play-mark"><path d="M0 0 18 10 0 20Z"/></svg>
+          </span>
+        </button>
+        <span class="control__caption" id="cap-play">Play</span>
+      </div>
+
+      <div class="control">
+        <button class="control__btn" type="button" id="image-btn" aria-labelledby="cap-image">
+          <span class="control__mark control__mark--align" aria-hidden="true">&#167;</span>
+        </button>
+        <span class="control__caption" id="cap-image"><span class="sr-only">Next </span>Image</span>
+      </div>
+
+      <div class="control">
+        <button class="control__btn" type="button" id="scene-btn" aria-labelledby="cap-scene">
+          <span class="control__mark" aria-hidden="true">&amp;</span>
+        </button>
+        <span class="control__caption" id="cap-scene"><span class="sr-only">Next </span>Scene</span>
+      </div>
+
+      <div class="control">
+        <button class="control__btn" type="button" id="effect-btn" aria-labelledby="cap-effect">
+          <span class="control__mark" aria-hidden="true">&#182;</span>
+        </button>
+        <span class="control__caption" id="cap-effect"><span class="sr-only">Next </span>Effect</span>
+      </div>
+    </div>
   </div>
-
-  <div id="mode-stripes" class="mode-container" aria-hidden="true"></div>
-  <div id="mode-squares" class="mode-container" aria-hidden="true"></div>
-  <div id="mode-circles" class="mode-container" aria-hidden="true"></div>
-
-  <!-- ── Existing controls ──────────────────────────────────────────────────── -->
-
-  <button class="icon action-button" aria-pressed="false">
-    <span class="sr-only">Play Animation</span>
-  </button>
-
-  <input
-    class="url-input"
-    type="url"
-    value=""
-    placeholder="Paste an image URL to use as the art source"
-    aria-label="Paste an image URL to use as the art source"
-  >
-
-  <div class="control-container">
-    <button class="icon control" aria-pressed="true"  data-art="images/bg.gif">Crosshatch Filter</button>
-    <button class="icon control" aria-pressed="false" data-art="images/bg-moving-black.gif">Crawling Diagonals</button>
-    <button class="icon control" aria-pressed="false" data-art="images/bg-noise.gif">Animated Noise</button>
-    <button class="icon control" aria-pressed="false" data-art="images/bg-t.gif">RGB Strobe</button>
-    <button class="icon control" aria-pressed="false" data-art="images/bg-strobe.gif">Black and White Strobe</button>
-  </div>
-
-  <div class="overlay"></div>
-
-  <!-- ── Mode switcher ──────────────────────────────────────────────────────── -->
-  <!--
-    Glyphs chosen from the Unicode geometric / symbol blocks:
-      ꩜  U+AA5C  Cham Punctuation Spiral     → The Wormhole
-      ☰  U+2630  Trigram for Heaven           → Rush Hour   (3 horizontal bars)
-      ▦  U+25A6  Sq. with Orthogonal Xhatch  → Rubik's Fever (grid-in-square)
-      ◎  U+25CE  Bullseye                     → Carnival Eyes (concentric rings)
-  -->
-  <nav class="mode-nav" aria-label="Choose your affliction">
-    <button class="mode-btn" data-mode="spiral"  aria-pressed="true"  aria-label="The Wormhole">꩜</button>
-    <button class="mode-btn" data-mode="stripes" aria-pressed="false" aria-label="Rush Hour">☰</button>
-    <button class="mode-btn" data-mode="squares" aria-pressed="false" aria-label="Rubik's Fever">▦</button>
-    <button class="mode-btn" data-mode="circles" aria-pressed="false" aria-label="Carnival Eyes">◎</button>
-  </nav>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-      var DEFAULT_IMAGE   = 'https://live.staticflickr.com/65535/54138947577_1384540199_b.jpg';
-      var currentImageUrl = DEFAULT_IMAGE;
-      var currentMode     = 'spiral';
-      var isPlaying       = false;
-      var spiralInterval  = null;
-      var spiralDegrees   = 45.0;
-      var spiralBgOffset  = 0;
+      // ── The material ───────────────────────────────────────────────────
+      
+      var images = [
+        { name: 'Today I Learned',
+          desc: 'ten thousand sequins on a black floor',
+          url: 'images/51074206801_34ef690dbc_b.jpg' },
+        { name: 'Photoshop Glitch',
+          desc: 'grainy digital rainbow',
+          url: 'images/54138947577_37268979da_h.jpg' },
+        { name: 'What Will You Feel?',
+          desc: 'galaxies torn to scraps, a question',
+          url: 'images/25238288753_2a457293fe_h.jpg' },
+        { name: '2016-03-04 08.29.27',
+          desc: 'sea of blue stripes, red blobs swim to a pink blob',
+          url: 'images/25743863992_cfde38f278_h.jpg' },
+        { name: 'Mistle',
+          desc: 'pink blast of blue rosettes over denim',
+          url: 'images/25238225393_3eda887fed_h.jpg' },
+        { name: 'Photoshop Glitch 2',
+          desc: 'grainy nebula of colorful pixels',
+          url: 'images/25864802815_ed305dff5f_h.jpg' },
+        { name: 'Glitchre',
+          desc: 'spreadsheet of confetti after power failure',
+          url: 'images/25768309102_39f897ae1f_b.jpg' },
+        { name: 'Dot Rocks 2',
+          desc: 'boulder trapped behind a broken television',
+          url: 'images/25838773396_f3ca230040_c.jpg' },
+        { name: 'Dot Rocks 4',
+          desc: 'grainy squares and diamonds in cyan and red',
+          url: 'images/25238238183_6d6180d063_h.jpg' },
+        { name: 'Cross',
+          desc: 'white cross burnt through the dark',
+          url: 'images/25864809505_556c9561ba_b.jpg' },
+        { name: 'Chromatic Croutons',
+          desc: 'quilt cut from rival digital fabrics',
+          url: 'images/47369606041_81803a4c1c_b.jpg' },
+        { name: 'Pulpit.ai',
+          desc: 'sanctuary through a glitching television',
+          url: 'images/51099297688_937173e12e_h.jpg' },
+        { name: 'Jesus.ai',
+          desc: 'face under a red net, eyes still on you',
+          url: 'images/54140128994_2d3ffcf9ce_b.jpg' },
+        { name: 'Medallion',
+          desc: 'red planet in green static',
+          url: 'images/54140129009_0c3a4e1153_b.jpg' },
+        { name: 'Ubiquitous Computing',
+          desc: 'bleeding and pixelated rainbow',
+          url: 'images/54140081453_a65d7a2a92_h.jpg' },
+        { name: 'Towers Dark',
+          desc: 'inverted and repeated GitLab branches',
+          url: 'images/54138947542_e759ef9beb_b.jpg' },
+        { name: 'Untitled',
+          desc: 'inescapable neon maze',
+          url: 'images/49778166126_46d5144a8d_h.jpg' },
+        { name: 'Dismantled Batteries',
+          desc: 'vivid, acidic digital weave',
+          url: 'images/41955366974_8fff648e41_h.jpg' },
+        { name: 'Ultra Lava',
+          desc: 'heat and cold on the same loom',
+          url: 'images/40814633850_bd4e461e2d_b.jpg' },
+        { name: 'Fuzzy Matching',
+          desc: 'kaleidoscope sans resolution',
+          url: 'images/40192094080_79003ebab8_b.jpg' }
+      ];
 
-      var overlay      = document.querySelector('.overlay');
-      var artContainer = document.querySelector('.art-container');
-      var artPanels    = document.querySelectorAll('.art');
-      var actionButton = document.querySelector('.action-button');
-      var urlInput     = document.querySelector('.url-input');
-      var controls     = document.querySelectorAll('.control');
-      var modeButtons  = document.querySelectorAll('.mode-btn');
+      var scenes = [
+        { key: 'spiral',  name: 'Wormhole'    },
+        { key: 'stripes', name: 'Rush Hour'       },
+        { key: 'squares', name: "Rubik's Fever"   },
+        { key: 'circles', name: 'Crazy Eyes'   },
+        { key: 'chroma',  name: 'Color Bleed'    },
+        { key: 'glitch',  name: 'Glitch Slices'   },
+        { key: 'tunnel',  name: 'Tunnel Vision'   }
+      ];
 
-      var modes = {
-        spiral:  document.getElementById('mode-spiral'),
-        stripes: document.getElementById('mode-stripes'),
-        squares: document.getElementById('mode-squares'),
-        circles: document.getElementById('mode-circles'),
-      };
+      var effects = [
+        { name: 'Crosshatch',        art: 'images/bg.gif'              },
+        { name: 'Crawling Diagonals', art: 'images/bg-moving-black.gif' },
+        { name: 'Animated Noise',     art: 'images/bg-noise.gif'        },
+        { name: 'Color Strobe',      art: 'images/bg-t.gif'            },
+        { name: 'B&W Strobe',         art: 'images/bg-strobe.gif'       }
+      ];
 
-      // ── Image management ─────────────────────────────────────────────────────
+      // ── State ──────────────────────────────────────────────────────────
 
-      function setImageUrl(url) {
-        currentImageUrl = url || DEFAULT_IMAGE;
-        var imgVal = url ? 'url(' + url + ')' : '';
-        artPanels.forEach(function (p) { p.style.backgroundImage = imgVal; });
-        document.querySelectorAll('.stripe, .square-cell, .circle-orb').forEach(function (el) {
-          el.style.backgroundImage = 'url(' + currentImageUrl + ')';
+      var imageIndex = 0;
+      var imageUrl   = images[0].url;
+      var sceneIndex = 0;
+      var fxIndex    = 0;
+      var playing    = false;
+      var gatePassed = false;
+      var spiralTimer = null;
+      var glitchTimer = null;
+      var glitchStrips = [];
+      var spiralDegrees = 45;
+      var spiralOffset  = 0;
+
+      // ── DOM ────────────────────────────────────────────────────────────
+
+      var body      = document.body;
+      var stage     = document.getElementById('stage');
+      var overlay   = document.getElementById('overlay');
+      var hint      = document.getElementById('hint');
+      var gate      = document.getElementById('gate');
+      var gateBody  = document.getElementById('gate-body');
+      var gateGo    = document.getElementById('gate-go');
+      var gateStill = document.getElementById('gate-still');
+      var imgName   = document.getElementById('image-name');
+      var imgDesc   = document.getElementById('image-desc');
+      var imageBtn  = document.getElementById('image-btn');
+      var sceneName = document.getElementById('scene-name');
+      var fxName    = document.getElementById('effect-name');
+      var playBtn   = document.getElementById('play-btn');
+      var playCap   = document.getElementById('cap-play');
+      var playMark  = document.getElementById('play-mark');
+      var sceneBtn  = document.getElementById('scene-btn');
+      var fxBtn     = document.getElementById('effect-btn');
+      var sourceIn  = document.getElementById('source');
+
+      var artContainer = document.querySelector('.art');
+      var artPanels    = document.querySelectorAll('.art__pane');
+
+      var sceneEls = {};
+      scenes.forEach(function (s) {
+        sceneEls[s.key] = document.getElementById('scene-' + s.key);
+      });
+
+      var PLAY  = 'M0 0 18 10 0 20Z';
+      var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
+
+      // ── The source image ───────────────────────────────────────────────
+
+      function paint(url) {
+        imageUrl = url;
+
+        artPanels.forEach(function (p) {
+          p.style.backgroundImage = url ? 'url(' + url + ')' : '';
+        });
+
+        stage.querySelectorAll(
+          '.rush__stripe, .squares__cell, .orb__circle, .chroma, .glitch__strip, .tunnel__ring'
+        ).forEach(function (el) {
+          el.style.backgroundImage = 'url(' + url + ')';
         });
       }
 
-      urlInput.addEventListener('input', function () { setImageUrl(urlInput.value); });
+      function nameImage(name, desc) {
+        imgName.textContent = name;
+        imgDesc.textContent = desc;
+      }
 
-      // ── Overlay filter buttons ───────────────────────────────────────────────
+      // ── Stepping the pictures ──────────────────────────────────────────
+      // Stepping clears a custom address, so the picture on screen and
+      // the address in the field agree.
 
-      controls.forEach(function (btn) {
-        btn.style.backgroundImage = 'url(' + btn.dataset.art + ')';
-        btn.addEventListener('click', function () {
-          controls.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-          btn.setAttribute('aria-pressed', 'true');
-          overlay.style.backgroundImage = 'url(' + btn.dataset.art + ')';
-        });
+      function applyImage(i) {
+        imageIndex = i;
+        sourceIn.value = '';
+        paint(images[i].url);
+        nameImage(images[i].name, images[i].desc);
+      }
+
+      sourceIn.addEventListener('input', function () {
+        var mine = safeSrc(sourceIn.value);
+        if (!mine) return;
+        paint(mine);
+        nameImage('Your own image', 'the address you pasted');
+        saveParams();
       });
 
-      // ── Play / pause ─────────────────────────────────────────────────────────
+      // ── The overlay effect ─────────────────────────────────────────────
+
+      function applyEffect(i) {
+        fxIndex = i;
+        overlay.style.backgroundImage = 'url(' + effects[i].art + ')';
+        fxName.textContent = effects[i].name;
+      }
+
+      // ── Play and pause ─────────────────────────────────────────────────
+
+      function stopTimers() {
+        clearInterval(spiralTimer); spiralTimer = null;
+        clearInterval(glitchTimer); glitchTimer = null;
+      }
 
       function applyPlayState() {
-        actionButton.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+        playBtn.classList.toggle('is-on', playing);
+        playCap.textContent = playing ? 'Pause' : 'Play';
+        playMark.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
 
-        if (currentMode === 'spiral') {
-          if (isPlaying) {
-            if (!spiralInterval) spiralInterval = setInterval(spiralTick, 40);
+        var key = scenes[sceneIndex].key;
+
+        if (key === 'spiral') {
+          if (playing) {
+            if (!spiralTimer) spiralTimer = setInterval(spiralTick, 65);
           } else {
-            clearInterval(spiralInterval);
-            spiralInterval = null;
+            clearInterval(spiralTimer); spiralTimer = null;
           }
-        } else {
-          var state = isPlaying ? 'running' : 'paused';
-          modes[currentMode].querySelectorAll('.stripe, .square-cell, .circle-orb').forEach(function (el) {
-            el.style.animationPlayState = state;
-          });
+          return;
         }
+
+        if (key === 'glitch') {
+          if (playing) {
+            if (!glitchTimer) glitchTimer = setInterval(glitchTick, 180);
+          } else {
+            clearInterval(glitchTimer); glitchTimer = null;
+            glitchStrips.forEach(function (s) {
+              s.style.transform = 'translateX(0)';
+              s.style.backgroundPositionX = '0%';
+            });
+          }
+          return;
+        }
+
+        var state = playing ? 'running' : 'paused';
+        sceneEls[key]
+          .querySelectorAll('.rush__stripe, .squares__cell, .orb, .orb__circle, .chroma, .tunnel__ring')
+          .forEach(function (el) { el.style.animationPlayState = state; });
       }
 
-      actionButton.addEventListener('click', function () {
-        isPlaying = !isPlaying;
+      function setPlaying(on) {
+        playing = on;
         applyPlayState();
+      }
+
+      // Every request for motion runs through here, so the gate cannot
+      // be walked around by the keyboard.
+
+      function askToPlay() {
+        if (!playing && !gatePassed) { openGate(); return; }
+        setPlaying(!playing);
+      }
+
+      playBtn.addEventListener('click', askToPlay);
+
+      // Space plays, except where the focus is already on something
+      // that answers Space itself. Taking the key from a focused button
+      // would cancel that button's own activation.
+      function ownsTheKey(el) {
+        return !!(el && el.closest && el.closest('button, a[href], input, textarea, select'));
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.code === 'Space' && !ownsTheKey(document.activeElement) && !gate.open) {
+          e.preventDefault();
+          askToPlay();
+        }
+
+        if (e.key === 'Escape') {
+          // A modal <dialog> answers Escape itself; the close handler
+          // reads that the same way it reads the second button.
+          if (gate.open) return;
+          // In a text field Escape belongs to the field. Hiding the bar
+          // would leave the keyboard on a display: none input.
+          if (document.activeElement === sourceIn) return;
+          setBare(!body.classList.contains('is-bare'));
+        }
       });
 
-      // ── Mode: Spiral ─────────────────────────────────────────────────────────
+      // ── Wormhole ───────────────────────────────────────────────────
 
       function spiralTick() {
         spiralDegrees++;
-        spiralBgOffset++;
+        spiralOffset++;
         artContainer.style.transform = 'rotate(' + spiralDegrees + 'deg) scale(2)';
         artPanels.forEach(function (p) {
-          p.style.backgroundPosition = spiralBgOffset + 'px center';
+          p.style.backgroundPosition = spiralOffset + 'px center';
         });
       }
 
-      // ── Mode: Stripes (Rush Hour) ─────────────────────────────────────────────
+      // ── Rush Hour ──────────────────────────────────────────────────────
 
       function buildStripes() {
-        var container = modes.stripes;
+        var container = sceneEls.stripes;
         if (container.children.length) return;
 
         var N = 16;
@@ -383,40 +673,35 @@
 
         for (var i = 0; i < N; i++) {
           var strip = document.createElement('div');
-          strip.className                  = 'stripe';
-          strip.style.top                  = (i / N * 100) + '%';
-          strip.style.height               = (100 / N) + '%';
-          strip.style.backgroundImage      = 'url(' + currentImageUrl + ')';
-          strip.style.backgroundPositionY  = (i / (N - 1) * 100) + '%';
-          strip.style.animationDuration    = speeds[i] + 's';
-          strip.style.animationDirection   = i % 2 === 0 ? 'normal' : 'reverse';
-          strip.style.animationPlayState   = 'paused';
+          strip.className                 = 'rush__stripe';
+          strip.style.top                 = (i / N * 100) + '%';
+          strip.style.height              = 'calc(' + (100 / N) + '% + 1px)';
+          strip.style.backgroundImage     = 'url(' + imageUrl + ')';
+          strip.style.backgroundPositionY = (i / (N - 1) * 100) + '%';
+          strip.style.animationDuration   = speeds[i] + 's';
+          strip.style.animationDirection  = i % 2 === 0 ? 'normal' : 'reverse';
+          strip.style.animationPlayState  = 'paused';
           container.appendChild(strip);
         }
       }
 
-      // ── Mode: Squares (Rubik's Fever) ─────────────────────────────────────────
-      //
-      // 7×7 grid of square cells. Each cell gets its own random zoom (150–350%)
-      // and random crop, so the mosaic reads as remixed fragments rather than
-      // one image. Durations 3–8s for a frantic, skittering feel.
+      // ── Rubik's Fever ──────────────────────────────────────────────────
 
       function buildSquares() {
-        var container = modes.squares;
+        var container = sceneEls.squares;
         if (container.children.length) return;
 
-        var N = 7; // 7 cols × 7 rows = 49 cells
+        var N = 7;
         var grid = document.createElement('div');
-        grid.className                 = 'squares-grid';
+        grid.className                 = 'squares';
         grid.style.gridTemplateColumns = 'repeat(' + N + ', 1fr)';
         grid.style.gridTemplateRows    = 'repeat(' + N + ', 1fr)';
 
         for (var i = 0; i < N * N; i++) {
           var cell = document.createElement('div');
-          cell.className                = 'square-cell';
-          cell.style.backgroundImage    = 'url(' + currentImageUrl + ')';
-          var zoom = (150 + Math.random() * 200).toFixed(0);
-          cell.style.backgroundSize     = zoom + '%';
+          cell.className                = 'squares__cell';
+          cell.style.backgroundImage    = 'url(' + imageUrl + ')';
+          cell.style.backgroundSize     = (150 + Math.random() * 200).toFixed(0) + '%';
           cell.style.backgroundPosition = (Math.random() * 100).toFixed(1) + '% ' +
                                           (Math.random() * 100).toFixed(1) + '%';
           cell.style.animationDuration  = (3 + Math.random() * 5).toFixed(1) + 's';
@@ -428,73 +713,300 @@
         container.appendChild(grid);
       }
 
-      // ── Mode: Circles (Carnival Eyes) ─────────────────────────────────────────
-      //
-      // 40 orbs, fully randomly placed each page load. background-size: cover
-      // (set in CSS) ensures the image always fills the circle. Each orb gets
-      // a random --orb-rot baked into every keyframe step, plus a random
-      // background-position so each circle shows a different crop.
+      // ── Carnival Eyes ──────────────────────────────────────────────────
 
       function buildCircles() {
-        var container = modes.circles;
+        var container = sceneEls.circles;
         if (container.children.length) return;
 
-        var COUNT = 40;
+        for (var i = 0; i < 70; i++) {
+          var size = Math.round(15 + Math.random() * 365);
+          var x    = -10 + Math.random() * 120;
+          var y    = -10 + Math.random() * 120;
 
-        for (var i = 0; i < COUNT; i++) {
-          // Random size: mix of large statement orbs and small filler orbs
-          var size = Math.round(50 + Math.random() * 350);
-          // Random centre position — allow orbs to hang off edges intentionally
-          var x = -10 + Math.random() * 120;  // -10% to 110%
-          var y = -10 + Math.random() * 120;
-          var rot = Math.round(Math.random() * 360);
+          var wrapper = document.createElement('div');
+          wrapper.className                = 'orb';
+          wrapper.style.width              = size + 'px';
+          wrapper.style.height             = size + 'px';
+          wrapper.style.left               = 'calc(' + x + '% - ' + (size / 2) + 'px)';
+          wrapper.style.top                = 'calc(' + y + '% - ' + (size / 2) + 'px)';
+          wrapper.style.animationDuration  = (20 + Math.random() * 60).toFixed(1) + 's';
+          wrapper.style.animationDirection = Math.random() > 0.5 ? 'normal' : 'reverse';
+          wrapper.style.animationPlayState = 'paused';
 
           var orb = document.createElement('div');
-          orb.className = 'circle-orb';
-          orb.style.setProperty('--orb-rot', rot + 'deg');
-          orb.style.width               = size + 'px';
-          orb.style.height              = size + 'px';
-          orb.style.left                = 'calc(' + x + '% - ' + (size / 2) + 'px)';
-          orb.style.top                 = 'calc(' + y + '% - ' + (size / 2) + 'px)';
-          orb.style.backgroundImage     = 'url(' + currentImageUrl + ')';
-          orb.style.backgroundPosition  = (Math.random() * 100).toFixed(1) + '% ' +
-                                          (Math.random() * 100).toFixed(1) + '%';
-          orb.style.animationDuration   = (2 + Math.random() * 4).toFixed(2) + 's';
-          orb.style.animationDelay      = (-1 * Math.random() * 6).toFixed(2) + 's';
-          orb.style.animationPlayState  = 'paused';
-          container.appendChild(orb);
+          orb.className                = 'orb__circle';
+          orb.style.backgroundImage    = 'url(' + imageUrl + ')';
+          orb.style.backgroundPosition = (Math.random() * 100).toFixed(1) + '% ' +
+                                         (Math.random() * 100).toFixed(1) + '%';
+          orb.style.animationDuration  = (2 + Math.random() * 4).toFixed(2) + 's';
+          orb.style.animationDelay     = (-1 * Math.random() * 6).toFixed(2) + 's';
+          orb.style.animationPlayState = 'paused';
+
+          wrapper.appendChild(orb);
+          container.appendChild(wrapper);
         }
       }
 
-      // ── Mode switching ───────────────────────────────────────────────────────
+      // ── Colour Bleed ───────────────────────────────────────────────────
 
-      var modeBuilders = { stripes: buildStripes, squares: buildSquares, circles: buildCircles };
+      function buildChroma() {
+        var container = sceneEls.chroma;
+        if (container.children.length) return;
 
-      function switchMode(name) {
-        clearInterval(spiralInterval);
-        spiralInterval = null;
+        ['chroma--r', 'chroma--g', 'chroma--b'].forEach(function (cls) {
+          var layer = document.createElement('div');
+          layer.className                = 'chroma ' + cls;
+          layer.style.backgroundImage    = 'url(' + imageUrl + ')';
+          layer.style.animationPlayState = 'paused';
+          container.appendChild(layer);
+        });
+      }
 
-        Object.keys(modes).forEach(function (key) {
-          modes[key].classList.toggle('active', key === name);
-          modes[key].setAttribute('aria-hidden', key !== name ? 'true' : 'false');
+      // ── Glitch Slices ──────────────────────────────────────────────────
+
+      function buildGlitch() {
+        var container = sceneEls.glitch;
+        if (container.children.length) return;
+
+        var N = 28;
+        glitchStrips = [];
+
+        for (var i = 0; i < N; i++) {
+          var strip = document.createElement('div');
+          strip.className                 = 'glitch__strip';
+          strip.style.top                 = (i / N * 100) + '%';
+          strip.style.height              = 'calc(' + (100 / N) + '% + 1px)';
+          strip.style.backgroundImage     = 'url(' + imageUrl + ')';
+          strip.style.backgroundPositionY = (i / (N - 1) * 100) + '%';
+          strip.style.backgroundPositionX = '0%';
+          strip.style.transform           = 'translateX(0)';
+          container.appendChild(strip);
+          glitchStrips.push(strip);
+        }
+      }
+
+      function glitchTick() {
+        var count = 1 + Math.floor(Math.random() * 6);
+        for (var i = 0; i < count; i++) {
+          var strip   = glitchStrips[Math.floor(Math.random() * glitchStrips.length)];
+          var offset  = (Math.random() > 0.5 ? 1 : -1) * (4 + Math.random() * 60);
+          var bgShift = (Math.random() * 30).toFixed(1);
+          strip.style.transform           = 'translateX(' + offset + 'px)';
+          strip.style.backgroundPositionX = bgShift + '%';
+
+          (function (s) {
+            setTimeout(function () {
+              s.style.transform           = 'translateX(0)';
+              s.style.backgroundPositionX = '0%';
+            }, 80);
+          }(strip));
+        }
+      }
+
+      // ── Tunnel Vision ──────────────────────────────────────────────────
+
+      function buildTunnel() {
+        var container = sceneEls.tunnel;
+        if (container.children.length) return;
+
+        var COUNT = 8;
+        var DURATION = 5;
+
+        for (var i = 0; i < COUNT; i++) {
+          var ring = document.createElement('div');
+          ring.className                = 'tunnel__ring';
+          ring.style.backgroundImage    = 'url(' + imageUrl + ')';
+          ring.style.animationDuration  = DURATION + 's';
+          ring.style.animationDelay     = (-1 * (i / COUNT) * DURATION).toFixed(2) + 's';
+          ring.style.animationPlayState = 'paused';
+          container.appendChild(ring);
+        }
+      }
+
+      var builders = {
+        stripes: buildStripes,
+        squares: buildSquares,
+        circles: buildCircles,
+        chroma:  buildChroma,
+        glitch:  buildGlitch,
+        tunnel:  buildTunnel
+      };
+
+      // ── Switching scenes ───────────────────────────────────────────────
+
+      function applyScene(i) {
+        stopTimers();
+        sceneIndex = i;
+
+        scenes.forEach(function (s, n) {
+          sceneEls[s.key].classList.toggle('is-active', n === i);
+          sceneEls[s.key].setAttribute('aria-hidden', n === i ? 'false' : 'true');
         });
 
-        modeButtons.forEach(function (btn) {
-          btn.setAttribute('aria-pressed', btn.dataset.mode === name ? 'true' : 'false');
-        });
+        sceneName.textContent = scenes[i].name;
 
-        currentMode = name;
-
-        if (modeBuilders[name]) modeBuilders[name]();
+        if (builders[scenes[i].key]) builders[scenes[i].key]();
+        paint(imageUrl);
         applyPlayState();
       }
 
-      modeButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () { switchMode(btn.dataset.mode); });
+      // ── Stepping ───────────────────────────────────────────────────────
+      // Every set steps forward one at a time and wraps.
+
+      function step(count, current) {
+        return (current + 1) % count;
+      }
+
+      function turnMark(btn) {
+        var mark = btn.querySelector('.control__mark');
+        mark.classList.remove('control__mark--turning');
+        void mark.offsetWidth;
+        mark.classList.add('control__mark--turning');
+      }
+
+      [imageBtn, sceneBtn, fxBtn].forEach(function (btn) {
+        btn.querySelector('.control__mark').addEventListener('animationend', function () {
+          this.classList.remove('control__mark--turning');
+        });
       });
 
+      imageBtn.addEventListener('click', function () {
+        applyImage(step(images.length, imageIndex));
+        turnMark(imageBtn);
+        saveParams();
+      });
+
+      sceneBtn.addEventListener('click', function () {
+        applyScene(step(scenes.length, sceneIndex));
+        turnMark(sceneBtn);
+        saveParams();
+      });
+
+      fxBtn.addEventListener('click', function () {
+        applyEffect(step(effects.length, fxIndex));
+        turnMark(fxBtn);
+        saveParams();
+      });
+
+      // ── Chrome away ────────────────────────────────────────────────────
+
+      function setBare(on) {
+        body.classList.toggle('is-bare', on);
+        overlay.querySelector('.sr-only').textContent = on
+          ? 'Bring the navigation and the controls back'
+          : 'Hide the navigation and the controls';
+        hint.hidden = !on;
+
+        // Going bare hides whatever held the keyboard, so the overlay
+        // takes the focus rather than leaving it on a display: none
+        // control.
+        if (on && !overlay.contains(document.activeElement)) overlay.focus();
+      }
+
+      overlay.addEventListener('click', function () {
+        setBare(!body.classList.contains('is-bare'));
+      });
+
+      // ── A shareable address ────────────────────────────────────────────
+      // Picture, scene, effect, and a custom source ride in the query
+      // string.
+
+      // The field is type="url" and the browser checks what is typed,
+      // but a query string skips that check, so an address from either
+      // door has to parse and has to be https. Anything else comes back
+      // empty and the picture falls to the first one.
+      function safeSrc(value) {
+        if (!value) { return ''; }
+        try {
+          return new URL(value, window.location.href).protocol === 'https:' ? value : '';
+        } catch (e) {
+          return '';
+        }
+      }
+
+      function saveParams() {
+        var params = new URLSearchParams();
+        var mine   = safeSrc(sourceIn.value);
+        params.set('scene', scenes[sceneIndex].key);
+        params.set('effect', String(fxIndex));
+        if (mine) { params.set('src', mine); }
+        else      { params.set('image', String(imageIndex)); }
+        history.replaceState(null, '', window.location.pathname + '?' + params.toString());
+      }
+
+      function loadParams() {
+        var params = new URLSearchParams(window.location.search);
+
+        var src = safeSrc(params.get('src'));
+        var img = parseInt(params.get('image'), 10);
+
+        if (src) {
+          sourceIn.value = src;
+          imageUrl = src;
+          nameImage('Your own image', 'the address you pasted');
+        } else {
+          imageIndex = !isNaN(img) && images[img] ? img : 0;
+          imageUrl   = images[imageIndex].url;
+          nameImage(images[imageIndex].name, images[imageIndex].desc);
+        }
+
+        var fx = parseInt(params.get('effect'), 10);
+        applyEffect(!isNaN(fx) && effects[fx] ? fx : 0);
+
+        var key = params.get('scene');
+        var i = 0;
+        scenes.forEach(function (s, n) { if (s.key === key) i = n; });
+        applyScene(i);
+      }
+
+      // ── The gate ───────────────────────────────────────────────────────
+
+      var wantsCalm = window.matchMedia &&
+                      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (wantsCalm) {
+        gateBody.textContent = 'Your system asks for reduced motion, so Larvascript is holding still. ' +
+          'Held still, it is the same picture torn the same way, without the clock. ' +
+          'Starting the animation from here means blinking and strobing.';
+        gateStill.classList.add('btn--solid');
+        gateGo.classList.remove('btn--solid');
+      }
+
+      // Opens on the first press of play; either answer closes it for
+      // the rest of the visit.
+
+      function openGate() {
+        gate.showModal();
+        (wantsCalm ? gateStill : gateGo).focus();
+      }
+
+      function passGate(withMotion) {
+        if (gatePassed) return;
+        gatePassed = true;
+        if (gate.open) gate.close();
+        setPlaying(withMotion);
+        playBtn.focus();
+      }
+
+      gateGo.addEventListener('click', function () { passGate(true); });
+      gateStill.addEventListener('click', function () { passGate(false); });
+
+      // Escape and the browser's own dismissal land here, and mean the
+      // same as the second button. A button press has already set
+      // gatePassed, so this only covers the ways out no button handled.
+      gate.addEventListener('close', function () { passGate(false); });
+
+      // ── Go ─────────────────────────────────────────────────────────────
+      // The first picture, held still.
+
+      loadParams();
+      setPlaying(false);
     });
   </script>
+
+  <script src="../js/jump.js" defer></script>
+
 </body>
 
 </html>

@@ -1,0 +1,425 @@
+/* ==================================================================
+   The piece shell — every full-bleed art page
+   ==================================================================
+   /logo, /atextual, /tartan, and /larvascript are single-screen
+   pieces sharing one frame: the site masthead on top, the art filling
+   everything between, a control bar underneath. No site footer; these
+   pages are one screen with no scroll.
+
+   Tokens, masthead, nav, focus ring, and the motion guard come from
+   css/site.css.
+   ================================================================== */
+
+/* --- the frame ------------------------------------------------------ */
+
+.piece {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding-bottom: 0;
+}
+
+/* .shell centers itself with auto inline margins, which on a grid item
+   shrinks to fit instead of stretching, so the head and the bar claim
+   the full track back. */
+
+.piece > .shell { width: 100%; }
+
+.piece__head {
+  padding-top: .8rem;
+  padding-bottom: .9rem;
+  background: var(--surface);
+  position: relative;
+  z-index: var(--z-header);
+}
+
+/* The stage clips, never scrolls, and owns its background so a piece
+   can go black under a light page. */
+
+.piece__stage {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+/* No blanket "inset: 0" on stage children: a rule on the child would
+   lose to it on specificity, and several pieces need a child that sits
+   somewhere other than the four corners. */
+
+/* --- the control bar ------------------------------------------------ */
+
+/* justify-content, not a second auto margin. A long readout can push
+   the squares onto a row of their own, where no .bar__id holds the
+   free space; two auto margins would split the shared row and leave a
+   hole in the middle. flex-end only speaks on rows where nothing else
+   claims the space. */
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem var(--shell-pad);
+  padding-top: .9rem;
+  padding-bottom: 1.1rem;
+  background: var(--surface);
+  position: relative;
+  z-index: var(--z-header);
+}
+
+.bar__id {
+  display: grid;
+  gap: .2rem;
+  align-content: center;
+  margin-inline-end: auto;
+}
+
+.bar__title {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: var(--leading-tight);
+  letter-spacing: -.01em;
+}
+
+/* Each control matches the width of its square, so the captions
+   underneath cannot push the squares apart. The push to the right edge
+   comes from .bar__id claiming the free space, not from an auto margin
+   here. */
+
+.bar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem 1.1rem;
+}
+
+/* The readout names what is showing. A polite live region, so a screen
+   reader hears the change without losing its place. */
+
+.bar__readout {
+  margin: 0;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.bar__readout b { font-weight: 400; }
+
+.bar__line { display: block; }
+
+/* --- the square control --------------------------------------------
+   A 56px square with a 2px rule, a geometric mark, and a caption that
+   never hides. The caption is the accessible name, so nothing rides on
+   decoding a glyph.
+
+   Toggles fill solid while on, and the caption says the same in words,
+   so state is never fill alone. The fill hangs off .is-on rather than
+   aria-pressed: these toggles rename themselves (Play becomes Pause),
+   and adding the state to ARIA has it announced twice. */
+
+.control {
+  flex: 0 0 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .45rem;
+}
+
+.control__btn {
+  width: 100%;
+  height: 56px;
+  padding: 0;
+  border: var(--border-width-thick) solid var(--text);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.control__btn:hover { background: var(--text); color: var(--surface); }
+
+.control__btn.is-on {
+  background: var(--text);
+  color: var(--surface);
+}
+
+.control__mark {
+  display: block;
+  font-family: var(--font-slab);
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.control__mark--align {
+  text-box: trim-start cap alphabetic;
+}
+
+.control__mark svg { display: block; fill: currentColor; }
+
+/* One word. Anything longer is screen reader text inside the caption,
+   so the accessible name says "Next scene" while the page shows
+   "Scene". */
+
+.control__caption {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* One full turn on press. The class is added on click and removed when
+   the turn ends, so a fast press turns every time. */
+
+@keyframes control-turn {
+  from { transform: rotate(0turn); }
+  to   { transform: rotate(1turn); }
+}
+
+.control__mark--turning {
+  animation: control-turn .5s var(--ease-out) 1;
+}
+
+/* --- chrome away ----------------------------------------------------
+   Clicking the art hides the head and the bar, and Escape does the same
+   from the keyboard.
+
+   The frame gives up its other two rows at the same time. .piece is a
+   three-row grid, and hiding the head and the bar leaves the stage
+   auto-placed into the first row, which is auto-sized: the art would
+   collapse to nothing instead of going full screen. */
+
+.piece.is-bare {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.is-bare .piece__head,
+.is-bare .bar {
+  display: none;
+}
+
+/* The hit target covers the stage and shows nothing, so the art is the
+   button. */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The focus ring on the hit target, drawn by the stage rather than the
+   button. Two reasons: .overlay fills the stage exactly and
+   .piece__stage clips, so the shared +3px offset paints outside the
+   clip; and /larvascript gives the overlay mix-blend-mode and opacity,
+   which apply to the element whole, outline included, and blend the
+   ring into the art. A pseudo element on the button blends with it.
+   The inward outline stays behind @supports for browsers with no
+   :has(), where a faint ring beats none. */
+
+.overlay:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: -6px;
+}
+
+@supports not selector(:focus-visible) {
+  .overlay:focus { outline: 3px solid var(--focus-ring); outline-offset: -6px; }
+}
+
+@supports selector(:has(*)) {
+  .overlay:focus-visible { outline: none; }
+
+  .piece__stage:has(.overlay:focus-visible)::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    z-index: 3;
+    border: 3px solid var(--focus-ring);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+  }
+}
+
+/* The hint sits over the hit target, so it stays see-through to the
+   pointer; otherwise the corner that says how to restore the controls
+   is the one corner that cannot. */
+
+.hint {
+  pointer-events: none;
+  position: absolute;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 2;
+  margin: 0;
+  padding: .5rem .7rem;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.hint[hidden] { display: none; }
+
+/* --- the motion gate ------------------------------------------------
+   A <dialog> opened with showModal(), so the keyboard stays inside it,
+   the page behind goes inert, and Escape closes it. The rules below
+   only undo what the browser draws around a dialog by default: the
+   border, the shrink-to-fit box, and the centering margins. A modal
+   dialog rides the top layer, so it needs no z-index.
+
+   The layout hangs off [open]. A closed dialog is display: none by the
+   browser's own rules, and a bare .gate { display: grid } would beat
+   that and leave the warning on the screen. */
+
+.gate {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: var(--space-4);
+  background: var(--surface);
+  color: var(--text);
+  overflow-y: auto;
+}
+
+.gate[open] {
+  display: grid;
+  place-items: center;
+}
+
+.gate::backdrop { background: rgb(0 0 0 / .7); }
+
+.gate__panel {
+  border: var(--border-width-thick) solid var(--text);
+  padding: 1.6rem;
+  max-width: 52ch;
+  background: var(--surface);
+}
+
+.gate__label {
+  margin: 0 0 .4rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--link);
+}
+
+.gate__title {
+  margin: 0 0 .7rem;
+  font-family: var(--font-slab);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+}
+
+.gate__body { margin: 0 0 1.2rem; font-size: .95rem; line-height: 1.6; }
+
+.gate__actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+
+.btn {
+  border: var(--border-width-thick) solid var(--text);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: .85rem 1.2rem;
+  cursor: pointer;
+}
+
+.btn--solid { background: var(--text); color: var(--surface); }
+.btn:hover { background: var(--text); color: var(--surface); }
+.btn--solid:hover { background: transparent; color: var(--text); }
+
+/* --- the source field ----------------------------------------------
+   The label sits under the box, set like the caption under a square.
+   It still comes first in the source; column-reverse moves it, so a
+   screen reader hears the name before the box. */
+
+.field {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: .45rem;
+  flex: 0 1 22rem;
+}
+
+.field__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: left;
+}
+
+.field__input {
+  height: 40px;
+  padding: 0 .7rem;
+  border: var(--border-width-thick) solid var(--text);
+  border-radius: 0;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: .95rem;
+}
+
+.field__input::placeholder { color: var(--text); opacity: .62; }
+
+/* --- narrow screens -------------------------------------------------
+   The bar wraps before the stage gives up its height. Below 600px the
+   captions stack under smaller squares, still over the 44px floor. */
+
+@media (max-width: 599px) {
+  .bar {
+    gap: .55rem .9rem;
+    padding-top: .7rem;
+    padding-bottom: .7rem;
+  }
+
+  .bar__title { font-size: 1rem; }
+  .bar__readout { font-size: .72rem; line-height: 1.45; }
+
+  /* The id sits on its own line down here, so the auto margin above has
+     nothing to push against and the controls take the right edge. */
+  .bar__controls { margin-inline-start: auto; }
+
+  .control { flex-basis: 48px; gap: .3rem; }
+  .control__btn { height: 48px; }
+  .control__caption { font-size: 9px; letter-spacing: .1em; }
+
+  .field { flex: 1 1 100%; gap: .3rem; }
+  .field__input { height: 36px; }
+
+  .gate__panel { padding: 1.1rem; }
+  .gate__actions .btn { flex: 1 1 100%; }
+}
+
+/* --- print ----------------------------------------------------------
+   A screen of animation prints as nothing useful, so the page prints
+   its title alone. */
+
+@media print {
+  .piece { height: auto; display: block; }
+  .piece__stage, .bar__controls, .field, .gate, .gate[open] { display: none; }
+}
