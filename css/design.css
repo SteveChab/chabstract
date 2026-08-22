@@ -1,0 +1,536 @@
+/* ==================================================================
+   /design — the system, read back from the site
+   ==================================================================
+   The same spine as /work and /resume: an 11rem gutter on the left
+   carrying the section name, the specimens and the prose beside it.
+
+   Nothing here restyles a component. The swatches, the squares, the
+   gate, and the field are the shipped ones out of css/site.css, and
+   this file only builds the room they stand in.
+   ================================================================== */
+
+/* --- token names in running prose -----------------------------------
+   Every stylesheet name, class, and attribute on this page is code, so
+   it is set in <code>. The browser default runs large next to Roboto. */
+
+code {
+  font-family: var(--font-mono);
+  font-size: .88em;
+}
+
+/* --- the index ----------------------------------------------------- */
+
+.contents {
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.4rem;
+  font-size: .8rem;
+  font-weight: 400;
+}
+
+/* --- the sections -------------------------------------------------- */
+
+.spec {
+  padding: var(--space-12) 0;
+  border-top: var(--border-width) solid var(--rule);
+}
+
+.spec__label {
+  margin: 0 0 1.2rem;
+  font-size: .72rem;
+}
+
+.spec__body > p {
+  margin: 0 0 1.1rem;
+  max-width: var(--measure);
+  font-size: 1.06rem;
+  line-height: 1.78;
+}
+
+.spec__body > p:last-child { margin-bottom: 0; }
+
+.spec__sub {
+  margin: var(--space-8) 0 .9rem;
+  font-size: 1rem;
+  line-height: var(--leading-snug);
+}
+
+.spec__note {
+  max-width: var(--measure);
+  font-size: .92rem;
+  line-height: 1.7;
+}
+
+/* --- the two surfaces -----------------------------------------------
+   Both palettes at once, whichever one the visitor is reading in. The
+   panels set the primitives by hand, so the light panel stays light
+   inside a dark page and the accent under it follows.
+   ------------------------------------------------------------------ */
+
+.surfaces {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-8);
+}
+
+@media (min-width: 700px) {
+  .surfaces { grid-template-columns: 1fr 1fr; }
+}
+
+.surfaces__panel {
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--rule);
+}
+
+.surfaces__panel--light {
+  background: var(--paper-50);
+  color: var(--ink-900);
+  --link: var(--accent-600);
+  --link-hover: var(--accent-800);
+  --focus-ring: var(--accent-600);
+}
+
+.surfaces__panel--dark {
+  background: var(--paper-950);
+  color: var(--ink-050);
+  --link: var(--accent-400);
+  --link-hover: var(--accent-300);
+  --focus-ring: var(--accent-400);
+}
+
+.surfaces__title {
+  margin: 0 0 .8rem;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.surfaces__body { margin: 0 0 .8rem; font-size: .95rem; line-height: 1.7; }
+
+.surfaces__ratios {
+  margin: 0;
+  display: grid;
+  gap: .3rem;
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+/* --- swatches ------------------------------------------------------- */
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-4);
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+.swatch__chip {
+  height: 78px;
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.swatch__name,
+.swatch__value {
+  margin: .5rem 0 0;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.swatch__value { margin-top: .15rem; }
+
+/* --- type specimens -------------------------------------------------
+   The measurement sits in the gutter of the gutter: mono, small, and
+   left of the sample once there is room for it.
+   ------------------------------------------------------------------ */
+
+.specimens {
+  margin: 0 0 var(--space-8);
+  display: grid;
+  gap: var(--space-6);
+}
+
+.specimen__meta {
+  display: block;
+  margin: 0 0 .35rem;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.specimen__sample { display: block; max-width: var(--measure); }
+
+@media (min-width: 900px) {
+  .specimen {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: 1.6rem;
+    align-items: baseline;
+  }
+
+  .specimen__meta { margin: 0; }
+}
+
+.specimen__sample--4xl {
+  font-family: var(--font-slab);
+  font-weight: 700;
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  letter-spacing: -.015em;
+}
+
+.specimen__sample--2xl {
+  font-family: var(--font-slab);
+  font-weight: 700;
+  font-size: var(--text-2xl);
+  line-height: 1.2;
+}
+
+.specimen__sample--lg {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+}
+
+.specimen__sample--base { font-size: var(--text-base); }
+
+.specimen__sample--mono {
+  font-family: var(--font-mono);
+  font-size: .8rem;
+}
+
+/* --- the token table ------------------------------------------------ */
+
+.tokens {
+  width: 100%;
+  margin: 0 0 var(--space-8);
+  border-collapse: collapse;
+  font-size: .9rem;
+  text-align: left;
+}
+
+.tokens th,
+.tokens td {
+  padding: .5rem .9rem .5rem 0;
+  border-bottom: var(--border-width) solid var(--rule);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.tokens th {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.tokens td:first-child,
+.tokens td:nth-child(2) {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  white-space: nowrap;
+}
+
+/* A table is the one thing on this page allowed to be wider than the
+   column. It scrolls inside its own box rather than pushing the page. */
+
+.scroller { overflow-x: auto; }
+
+/* --- the marks ------------------------------------------------------ */
+
+.marks {
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 700px) {
+  .marks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.marks__item {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.marks__glyph {
+  font-family: var(--font-slab);
+  font-size: 1.6rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.marks__glyph svg { display: block; margin: .45rem auto 0; fill: currentColor; }
+
+.marks__text { font-size: .92rem; line-height: 1.6; }
+
+.marks__where {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+}
+
+/* --- the working demo -----------------------------------------------
+   A stage with a bar under it, at a quarter of the size a piece runs.
+   The frame itself lives in css/piece.css, where the pieces need it;
+   what stands in the bar here is the shipped .control.
+   ------------------------------------------------------------------ */
+
+.demo {
+  max-width: 44rem;
+  margin: 0 0 var(--space-6);
+  border: var(--border-width) solid var(--rule);
+}
+
+.demo__stage {
+  position: relative;
+  overflow: hidden;
+  height: 15rem;
+  background: #0d1524;
+}
+
+/* The hue turns the ground with the threads, so it sits on the frame
+   above the weave rather than on the weave. The angle only ever adds,
+   the way /tartan does it: a whole turn is the same picture as none. */
+
+.demo__tint {
+  position: absolute;
+  inset: 0;
+  filter: var(--demo-tint, none);
+  transition: filter 1s var(--ease-in-out);
+}
+
+/* One plaid, built from four repeating gradients: two bands each way.
+   The scenes move it; the effects filter it. */
+
+.demo__weave {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(210, 34, 68, .85) 0 6px, transparent 6px 46px),
+    repeating-linear-gradient(90deg, rgba(236, 233, 228, .5) 0 2px, transparent 2px 24px),
+    repeating-linear-gradient(0deg, rgba(38, 122, 96, .8) 0 8px, transparent 8px 48px),
+    repeating-linear-gradient(0deg, rgba(236, 233, 228, .42) 0 2px, transparent 2px 26px);
+  animation-duration: 9s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+
+.demo.is-playing .demo__weave { animation-play-state: running; }
+
+.demo__weave--drift { animation-name: demo-drift; }
+.demo__weave--march { animation-name: demo-march; animation-duration: 6s; }
+.demo__weave--swell { animation-name: demo-swell; animation-duration: 12s;
+                      animation-timing-function: ease-in-out; }
+
+@keyframes demo-drift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: 46px 0, 24px 0, 0 48px, 0 26px; }
+}
+
+@keyframes demo-march {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: -46px 0, 24px 0, 0 -48px, 0 26px; }
+}
+
+@keyframes demo-swell {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.14) rotate(2deg); }
+}
+
+.demo__weave--plain { filter: none; }
+.demo__weave--bloom { filter: blur(1px) brightness(1.18) contrast(1.08); }
+.demo__weave--ink   { filter: contrast(1.7) saturate(.55); }
+
+.demo__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem 1.6rem;
+  padding: .9rem 1rem 1.1rem;
+  background: var(--surface);
+}
+
+.demo__readout {
+  margin: 0;
+  margin-inline-end: auto;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  line-height: 1.7;
+}
+
+.demo__readout b { font-weight: 400; }
+
+.demo__line { display: block; }
+
+.demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem 1.1rem;
+}
+
+/* --- the gate demo -------------------------------------------------- */
+
+.gate-demo { margin: 0 0 var(--space-6); }
+
+/* --- the field demo ------------------------------------------------- */
+
+.field-demo {
+  max-width: 30rem;
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border: var(--border-width) solid var(--rule);
+}
+
+/* --- the wordmark specimen -----------------------------------------
+   Two panels treat the wordmark, one full, one cropped and abstract.
+   ------------------------------------------------------------------ */
+
+.mark-demo {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-6);
+}
+
+@media (min-width: 700px) {
+  .mark-demo { grid-template-columns: 1fr 1fr; }
+}
+
+/* The rows let the two frames match height, so the bottom edges line
+   up when one panel carries more padding than the other. */
+
+.mark-demo__panel {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.mark-demo__title {
+  margin: 0 0 .8rem;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.mark-demo__frame {
+  padding: var(--space-8) var(--space-6);
+  border: var(--border-width) solid var(--rule);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.mark-demo__mark { display: block; width: 100%; max-width: 26rem; }
+
+/* --- markup samples --------------------------------------------------
+   The one place the page shows its own source. Everything else here is
+   the running thing.
+   ------------------------------------------------------------------ */
+
+.code {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--rule);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  line-height: 1.75;
+  tab-size: 2;
+}
+
+/* --- rules, as term and definition ---------------------------------- */
+
+.rules {
+  margin: 0;
+  display: grid;
+  gap: .9rem;
+}
+
+.rules dt {
+  font-family: var(--font-slab);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: var(--leading-snug);
+}
+
+.rules dd {
+  margin: .1rem 0 0;
+  max-width: var(--measure);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+@media (min-width: 700px) {
+  .rules {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: 1.6rem;
+    row-gap: 1.1rem;
+  }
+
+  .rules dt { grid-column: 1; }
+  .rules dd { grid-column: 2; margin-top: 0; }
+}
+
+/* --- stacked, below the breakpoint ---------------------------------- */
+
+@media (max-width: 1139px) {
+  .sheet-head,
+  .system {
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+}
+
+/* --- the gutter, once there is room --------------------------------- */
+
+@media (min-width: 1140px) {
+  .spec {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 58rem);
+    column-gap: 2.8rem;
+    align-items: start;
+  }
+
+  .spec__label {
+    margin: .45rem 0 0;
+    grid-column: 1;
+  }
+
+  .spec__body { grid-column: 2; }
+}
+
+/* --- print -----------------------------------------------------------
+   The specimens print. The working demos are a screen of animation and
+   a dialog, so they print as nothing. */
+
+@media print {
+  .spec {
+    display: block;
+    padding: .9rem 0;
+    border-top: 1px solid #999;
+    break-inside: avoid;
+  }
+
+  .demo,
+  .field-demo,
+  .contents { display: none; }
+
+  .surfaces__panel--dark { background: #fff; color: #000; }
+}

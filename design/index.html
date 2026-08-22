@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>The Design System for stevechab.com</title>
+  <meta name="description" content="Design system here. Color, type, controls, and rules for stevechab.com.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://stevechab.com/design/">
+
+  <!-- Unlisted, the way the case-study videos are unlisted: no nav entry,
+       no sitemap entry, and no index. Anyone with the address reads it. -->
+  <meta name="robots" content="noindex, follow">
+
+  <meta name="author" content="Steve Chab">
+  <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steve Chab">
+  <meta property="og:url" content="https://stevechab.com/design/">
+  <meta property="og:title" content="The Design System for stevechab.com">
+  <meta property="og:description" content="Design system here. Color, type, controls, and rules for stevechab.com.">
+  <meta property="og:image" content="https://stevechab.com/share-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Steve Chab's signature mark over his name and the line: I make the internet pretty.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="Steve Chab's signature mark over his name and the line: I make the internet pretty.">
+
+  <link rel="icon" href="../favicon.ico" sizes="32x32">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icon.png">
+
+  <link rel="preload" href="../fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/roboto-slab-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/design.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to the main text</a>
+
+  <header class="shell masthead">
+    <nav class="nav" aria-label="Main">
+      <a class="nav__link" href="../">stevechab.com</a>
+      <a class="nav__link" href="../work/">Work</a>
+      <a class="nav__link" href="../fun/">Fun</a>
+      <a class="nav__link" href="../resume/">Resume</a>
+    </nav>
+
+    <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
+  </header>
+
+  <main class="shell" id="main" tabindex="-1">
+
+    <div class="sheet-head">
+      <h1 class="sheet-head__title">Design system here.</h1>
+      <p class="sheet-head__lede">Color, type, controls, and rules for stevechab.com.</p>
+
+      <nav aria-label="On this page">
+        <ul class="contents">
+          <li><a href="#color">Color</a></li>
+          <li><a href="#type">Type</a></li>
+          <li><a href="#space">Space and Motion</a></li>
+          <li><a href="#shell">The Shell</a></li>
+          <li><a href="#layouts">The Layouts</a></li>
+          <li><a href="#control">The Square Control</a></li>
+          <li><a href="#bar">The Bar</a></li>
+          <li><a href="#chrome">Chrome Away</a></li>
+          <li><a href="#gate">The Motion Gate</a></li>
+          <li><a href="#field">The Source Field</a></li>
+          <li><a href="#floor">Focus and the Floor</a></li>
+          <li><a href="#words">Words</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="system">
+
+      <!-- ── Color ──────────────────────────────────────────────────────── -->
+
+      <section class="spec" id="color" tabindex="-1" aria-labelledby="color-head">
+        <h2 class="label spec__label" id="color-head">Color</h2>
+        <div class="spec__body">
+          <p>Near monochrome. The artwork carries the color; the chrome stays out of its way. One accent hue in four steps, because no three-digit red clears 4.5:1 on both an off-white and an off-black.</p>
+
+          <ul class="swatches">
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #fcfbfa;"></div>
+              <p class="swatch__name">--paper-50</p>
+              <p class="swatch__value">#fcfbfa</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #111;"></div>
+              <p class="swatch__name">--ink-900</p>
+              <p class="swatch__value">#111</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #0a0a0a;"></div>
+              <p class="swatch__name">--paper-950</p>
+              <p class="swatch__value">#0a0a0a</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #f2f0ee;"></div>
+              <p class="swatch__name">--ink-050</p>
+              <p class="swatch__value">#f2f0ee</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #d24;"></div>
+              <p class="swatch__name">--accent-600</p>
+              <p class="swatch__value">#d24</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #b23;"></div>
+              <p class="swatch__name">--accent-800</p>
+              <p class="swatch__value">#b23</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #f67;"></div>
+              <p class="swatch__name">--accent-400</p>
+              <p class="swatch__value">#f67</p>
+            </li>
+            <li class="swatch">
+              <div class="swatch__chip" style="background: #f89;"></div>
+              <p class="swatch__name">--accent-300</p>
+              <p class="swatch__value">#f89</p>
+            </li>
+          </ul>
+
+          <h3 class="spec__sub">The Two Surfaces</h3>
+
+          <div class="surfaces">
+            <div class="surfaces__panel surfaces__panel--light">
+              <p class="surfaces__title">Light</p>
+              <p class="surfaces__body">Body in <code>--ink-900</code>, links in <code>--accent-600</code>. <a href="#floor">Read the accessibility floor</a>.</p>
+              <div class="surfaces__ratios">
+                <span>text on surface &nbsp;18.27:1</span>
+                <span>link on surface &nbsp;4.63:1</span>
+                <span>hover on surface &nbsp;5.99:1</span>
+              </div>
+            </div>
+            <div class="surfaces__panel surfaces__panel--dark">
+              <p class="surfaces__title">Dark</p>
+              <p class="surfaces__body">Body in <code>--ink-050</code>, links in <code>--accent-400</code>. <a href="#floor">Read the accessibility floor</a>.</p>
+              <div class="surfaces__ratios">
+                <span>text on surface &nbsp;17.42:1</span>
+                <span>link on surface &nbsp;6.99:1</span>
+                <span>hover on surface &nbsp;8.71:1</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="spec__note">Every pair is measured before it ships, with the ratio in a comment beside the token. AA asks 4.5:1 for body text, 3:1 for the rest. Links are underlined as well as colored.</p>
+
+          <p class="spec__note"><strong>Retired.</strong> <code>indianred</code> at 3.98:1, <code>steelblue</code> at 4.11:1, <code>olive</code> at 4.20:1, all under the body-text minimum. No page overrides them now.</p>
+        </div>
+      </section>
+
+      <!-- ── Type ───────────────────────────────────────────────────────── -->
+
+      <section class="spec" id="type" tabindex="-1" aria-labelledby="type-head">
+        <h2 class="label spec__label" id="type-head">Type</h2>
+        <div class="spec__body">
+          <p>Roboto Slab for headings, Roboto for the rest, a 1.25 major third off a 17px base. Both are self-hosted variable files with <code>font-display: swap</code>, so nothing loads from another origin.</p>
+
+          <div class="specimens">
+            <p class="specimen">
+              <span class="specimen__meta">--text-4xl / slab 700</span>
+              <span class="specimen__sample specimen__sample--4xl">Steve here.</span>
+            </p>
+            <p class="specimen">
+              <span class="specimen__meta">--text-2xl / slab 700</span>
+              <span class="specimen__sample specimen__sample--2xl">Weird, pretty things</span>
+            </p>
+            <p class="specimen">
+              <span class="specimen__meta">--text-lg / sans 300</span>
+              <span class="specimen__sample specimen__sample--lg">The lede under a page title, one size up from the body.</span>
+            </p>
+            <p class="specimen">
+              <span class="specimen__meta">label / sans 700, .18em</span>
+              <span class="specimen__sample label">Selected Work</span>
+            </p>
+            <p class="specimen">
+              <span class="specimen__meta">--text-base / sans 300</span>
+              <span class="specimen__sample specimen__sample--base">Body runs 300 at a 65ch measure. Every column sets ragged. Justification opens rivers without hyphenation, and it reads worse for dyslexia.</span>
+            </p>
+            <p class="specimen">
+              <span class="specimen__meta">--font-mono</span>
+              <span class="specimen__sample specimen__sample--mono">measured values, ratios, readouts, filenames</span>
+            </p>
+          </div>
+
+          <p class="spec__note">Labels and mono captions sit at full ink. Nothing in the chrome drops under 10px or under the body-text minimum.</p>
+        </div>
+      </section>
+
+      <!-- ── Space and motion ───────────────────────────────────────────── -->
+
+      <section class="spec" id="space" tabindex="-1" aria-labelledby="space-head">
+        <h2 class="label spec__label" id="space-head">Space and Motion</h2>
+        <div class="spec__body">
+          <p>A 4px base, one shell width, one measure. A value that repeats becomes a token.</p>
+
+          <div class="scroller">
+            <table class="tokens">
+              <thead>
+                <tr>
+                  <th scope="col">Token</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Where it goes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>--space-1 to --space-24</td><td>.25rem to 6rem</td><td>Every gap, pad, and margin, off a 4px base</td></tr>
+                <tr><td>--measure</td><td>65ch</td><td>The reading column. The tractate margins run narrower on purpose</td></tr>
+                <tr><td>--shell-max</td><td>1560px</td><td>The page width, centered</td></tr>
+                <tr><td>--shell-pad</td><td>2.5rem</td><td>The left and right margin, 1.25rem under 768px</td></tr>
+                <tr><td>--border-width</td><td>1px</td><td>Rules and hairlines</td></tr>
+                <tr><td>--border-width-thick</td><td>2px</td><td>The square control, the gate panel, the source field</td></tr>
+                <tr><td>--radius-sm</td><td>2px</td><td>The focus ring. The components themselves stay square</td></tr>
+                <tr><td>--z-base to --z-overlay</td><td>0, 10, 100, 1000, 10000</td><td>Stacking, named. The modal gate needs none of them</td></tr>
+                <tr><td>--duration-fast</td><td>.18s</td><td>Hover, focus, the fill on a toggle</td></tr>
+                <tr><td>--duration-slow</td><td>1s</td><td>A change a visitor should watch happen, such as the hue</td></tr>
+                <tr><td>--ease-out</td><td>cubic-bezier(.22, 1, .36, 1)</td><td>Anything that arrives</td></tr>
+                <tr><td>--ease-in-out</td><td>cubic-bezier(.65, 0, .35, 1)</td><td>Anything that travels and settles</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="spec__sub">The Motion Rules</h3>
+          <dl class="rules">
+            <dt>Reduced motion wins</dt>
+            <dd><code>prefers-reduced-motion: reduce</code> halts every animation, including the ones declared inside a page's own style block. The guard lives in <code>css/site.css</code>.</dd>
+
+            <dt>Three flashes a second</dt>
+            <dd>Nothing flashes more than three times a second. The strobing work is built to that line.</dd>
+
+            <dt>A way to stop it</dt>
+            <dd>Motion running longer than five seconds carries a pause control.</dd>
+
+            <dt>Decorative motion serves reading</dt>
+            <dd>Hover, focus, and state changes take <code>--duration-fast</code> and <code>--ease-out</code>.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ── The shell ──────────────────────────────────────────────────── -->
+
+      <section class="spec" id="shell" tabindex="-1" aria-labelledby="shell-head">
+        <h2 class="label spec__label" id="shell-head">The Shell</h2>
+        <div class="spec__body">
+          <p>A skip link first in the tab order, then the masthead: nav flush left, ב״ה alone in the right corner. Then one <code>&lt;main&gt;</code>, one h1, and the outbound links at the foot. No boxes and no rules: margin and gutter carry the structure.</p>
+
+          <dl class="rules">
+            <dt>One main, one h1</dt>
+            <dd>Content pages wrap the body in <code>&lt;main class="shell" id="main"&gt;</code>. The art pages make the stage the main, so the art is the content.</dd>
+
+            <dt>Jump links land</dt>
+            <dd>Every jump target carries an id and <code>tabindex="-1"</code>, and <code>js/jump.js</code> moves the focus to match the scroll. A new in-page link needs no code beyond the href.</dd>
+
+            <dt>Relative links</dt>
+            <dd>Links read <code>work/</code> and <code>../</code>, never <code>/work/</code>. A root-relative href dies over <code>file://</code>, so the folder browses with no server.</dd>
+
+            <dt>One head block</dt>
+            <dd>Per-page title, description, and canonical; the same author, theme-color pair, Open Graph set, card, and icons everywhere. One share card for the site.</dd>
+          </dl>
+
+          <h3 class="spec__sub">The Wordmark</h3>
+
+          <div class="mark-demo">
+            <div class="mark-demo__panel">
+              <p class="mark-demo__title">Whole</p>
+              <div class="mark-demo__frame">
+                <img class="mark-demo__mark" src="../images/wordmark.svg" alt="Steve Chab" width="3373" height="499">
+              </div>
+            </div>
+
+            <div class="mark-demo__panel">
+              <p class="mark-demo__title">Cropped, under 768px</p>
+              <!-- The shipped classes, so this panel is the homepage
+                   treatment rather than a picture of it. -->
+              <div class="wordmark wordmark--crop mark-demo__frame">
+                <img class="wordmark__mark" src="../images/wordmark.svg" alt="" width="3373" height="499">
+              </div>
+            </div>
+          </div>
+
+          <p class="spec__note">The signature is the only mark, and it inherits <code>currentColor</code>. It sits in the homepage body rather than the masthead. Shown whole, it wants room: about 180px or wider, with clear space near the height of its capitals. No photograph under it, and no shadow.</p>
+          <p class="spec__note">Cropping allowed. On mobile, the homepage scales the mark far past its frame and rotates it for abstract texture, just like <code>/logo</code>. Stroke scales with the mark.</p>
+        </div>
+      </section>
+
+      <!-- ── The layouts ────────────────────────────────────────────────── -->
+
+      <section class="spec" id="layouts" tabindex="-1" aria-labelledby="layouts-head">
+        <h2 class="label spec__label" id="layouts-head">The Layouts</h2>
+        <div class="spec__body">
+          <p>One shell under every layout. Each page loads <code>css/site.css</code> plus one partial, and a pattern two partials want moves into the shared file.</p>
+
+          <dl class="rules">
+            <dt>The tractate</dt>
+            <dd>A Talmud-like layout for the homepage. The professional case runs down the center to a numbered work list, Fun in the left margin, Personal in the right. Center comes first in the source. <a href="../">Read the homepage</a>.</dd>
+
+            <dt>The case sheet</dt>
+            <dd>One section a case: org and role in an 11rem gutter, prose at measure, the visual on the right. The head runs flush left and the cases step in from it. <a href="../work/">Read the work cases</a>.</dd>
+
+            <dt>The plate index</dt>
+            <dd>A museum wall in two columns. Every entry is a plate: picture, medium, title, caption. The medium is not a title, so it sets sentence case with no period. <a href="../fun/">Read the fun index</a>.</dd>
+
+            <dt>The record</dt>
+            <dd>The same 11rem gutter, section name in it, prose at measure. The one page built to be printed, so its print rules carry as much weight as the screen. <a href="../resume/">Read the resume</a>.</dd>
+
+            <dt>The piece frame</dt>
+            <dd>Head, stage, bar. One screen, no scroll and no footer. Paper to work is the only edge the page gets, so the frame draws no rules. <a href="../tartan/">Open Plaid to the Bone</a>.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ── The square control ─────────────────────────────────────────── -->
+
+      <section class="spec" id="control" tabindex="-1" aria-labelledby="control-head">
+        <h2 class="label spec__label" id="control-head">The Square Control</h2>
+        <div class="spec__body">
+          <p>A 56px square, a 2px rule, a mark, and a caption that never hides. The caption is the accessible name. A toggle fills solid and renames itself, so state never rides on the fill. Under 600px the square drops to 48px, over the 44px floor.</p>
+
+          <pre class="code"><code>&lt;div class="control"&gt;
+  &lt;button class="control__btn" type="button" id="scene-btn" aria-labelledby="cap-scene"&gt;
+    &lt;span class="control__mark" aria-hidden="true"&gt;&amp;amp;&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;span class="control__caption" id="cap-scene"&gt;&lt;span class="sr-only"&gt;Next &lt;/span&gt;Scene&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+
+          <h3 class="spec__sub">The Marks</h3>
+
+          <ul class="marks">
+            <li class="marks__item">
+              <span class="marks__glyph" aria-hidden="true"><svg width="18" height="20" viewBox="0 0 18 20"><path d="M0 0 18 10 0 20Z"/></svg></span>
+              <span class="marks__text">Play, and two bars while it runs. The only mark that changes shape, because it is the only one holding a state.
+                <span class="marks__where">/logo, /tartan, /larvascript</span></span>
+            </li>
+            <li class="marks__item">
+              <span class="marks__glyph" aria-hidden="true">&amp;</span>
+              <span class="marks__text">Steps the work itself. The track on the logo page, the weave on the tartan, the scene in Larvascript.
+                <span class="marks__where">/logo, /tartan, /larvascript</span></span>
+            </li>
+            <li class="marks__item">
+              <span class="marks__glyph" aria-hidden="true">&#182;</span>
+              <span class="marks__text">The entry in Atextual, the effect over the art in Larvascript.
+                <span class="marks__where">/atextual, /larvascript</span></span>
+            </li>
+            <li class="marks__item">
+              <span class="marks__glyph" aria-hidden="true">&#167;</span>
+              <span class="marks__text">The hue on the tartan, the source picture in Larvascript.
+                <span class="marks__where">/tartan, /larvascript</span></span>
+            </li>
+          </ul>
+
+          <p class="spec__note">A mark means what its page needs. The one rule: never two of the same on a page. A mark with no state to show answers a press by turning once.</p>
+        </div>
+      </section>
+
+      <!-- ── The bar ────────────────────────────────────────────────────── -->
+
+      <section class="spec" id="bar" tabindex="-1" aria-labelledby="bar-head">
+        <h2 class="label spec__label" id="bar-head">The Bar</h2>
+        <div class="spec__body">
+          <p>The bar carries the h1, a readout naming what is showing, and the controls. Controls hug the right edge, one gap between them, each matching the width of its square.</p>
+
+          <p>The readout is a polite live region in mono. The eye reads <code>Drift / Plain</code>; a screen reader hears "Scene: Drift, Effect: Plain."</p>
+
+          <h3 class="spec__sub">Step, never shuffle.</h3>
+
+          <p>Every set steps forward and wraps, so a visitor who overshoots keeps pressing and gets back. Nobody arrives wanting the hunting tartan by name, so no piece gets a row of switches. Random survives in one place: Atextual opens on a random page and reads forward.</p>
+
+          <div class="demo" id="demo">
+            <div class="demo__stage">
+              <div class="demo__tint" id="demo-tint">
+                <div class="demo__weave demo__weave--drift demo__weave--plain" id="demo-weave"></div>
+              </div>
+            </div>
+
+            <div class="demo__bar">
+              <p class="demo__readout" aria-live="polite">
+                <span class="demo__line"><span class="sr-only">Scene: </span><b id="demo-scene-name">Drift</b> &nbsp;/&nbsp; <span class="sr-only">Effect: </span><b id="demo-effect-name">Plain</b></span>
+                <span class="demo__line"><span class="sr-only">Hue </span><b id="demo-hue-readout">0%</b></span>
+              </p>
+
+              <div class="demo__controls">
+                <div class="control">
+                  <button class="control__btn" type="button" id="demo-play" aria-labelledby="cap-demo-play">
+                    <span class="control__mark" aria-hidden="true">
+                      <svg width="18" height="20" viewBox="0 0 18 20" id="demo-play-mark"><path d="M0 0 18 10 0 20Z"/></svg>
+                    </span>
+                  </button>
+                  <span class="control__caption" id="cap-demo-play">Play</span>
+                </div>
+
+                <div class="control">
+                  <button class="control__btn" type="button" id="demo-scene-btn" aria-labelledby="cap-demo-scene">
+                    <span class="control__mark" aria-hidden="true">&amp;</span>
+                  </button>
+                  <span class="control__caption" id="cap-demo-scene"><span class="sr-only">Next </span>Scene<span class="sr-only">, starts the motion</span></span>
+                </div>
+
+                <div class="control">
+                  <button class="control__btn" type="button" id="demo-effect-btn" aria-labelledby="cap-demo-effect">
+                    <span class="control__mark" aria-hidden="true">&#182;</span>
+                  </button>
+                  <span class="control__caption" id="cap-demo-effect"><span class="sr-only">Next </span>Effect</span>
+                </div>
+
+                <div class="control">
+                  <button class="control__btn" type="button" id="demo-hue-btn" aria-labelledby="cap-demo-hue">
+                    <span class="control__mark control__mark--align" aria-hidden="true">&#167;</span>
+                  </button>
+                  <span class="control__caption" id="cap-demo-hue"><span class="sr-only">Next </span>Hue</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="spec__note">The shipped squares, at a quarter of the size a piece runs. The hue adds a fifth of the wheel a press and never subtracts, so the fifth press lands back where it started. <a href="../tartan/">Open Plaid to the Bone</a>.</p>
+        </div>
+      </section>
+
+      <!-- ── Chrome away ────────────────────────────────────────────────── -->
+
+      <section class="spec" id="chrome" tabindex="-1" aria-labelledby="chrome-head">
+        <h2 class="label spec__label" id="chrome-head">Chrome Away</h2>
+        <div class="spec__body">
+          <p>Clicking the art hides the head and the bar, and Escape does the same. A corner hint reads "Click art or press Esc to restore controls". The art is the button: a transparent hit target over the stage, named for screen readers.</p>
+
+          <p class="spec__note">Going bare moves the focus to that target, and the stage draws its ring. Every piece but Atextual, which has no picture to clear.</p>
+        </div>
+      </section>
+
+      <!-- ── The motion gate ────────────────────────────────────────────── -->
+
+      <section class="spec" id="gate" tabindex="-1" aria-labelledby="gate-head">
+        <h2 class="label spec__label" id="gate-head">The Motion Gate</h2>
+        <div class="spec__body">
+          <p>Larvascript strobes on purpose, so nobody lands in it. The page opens on a still picture, and the warning arrives the first time a visitor asks for motion. Either answer closes it for the visit.</p>
+
+          <p>A <code>&lt;dialog&gt;</code> on <code>showModal()</code>: the browser traps the keyboard, makes the page inert, answers Escape, and reports a modal. None of it rebuilt out of ARIA.</p>
+
+          <p class="gate-demo">
+            <button class="btn" type="button" id="gate-demo-open">Show the motion gate</button>
+          </p>
+
+          <p class="spec__note">Ask for reduced motion and the warning gets longer, with the still answer taking the fill and the focus.</p>
+
+          <p class="spec__note">Where a piece cannot be made safe without destroying it, say so, offer the still version, and let the visitor choose.</p>
+        </div>
+      </section>
+
+      <!-- ── The source field ───────────────────────────────────────────── -->
+
+      <section class="spec" id="field" tabindex="-1" aria-labelledby="field-head">
+        <h2 class="label spec__label" id="field-head">The Source Field</h2>
+        <div class="spec__body">
+          <p>The one text input on the site. The label sits under the box and comes first in the source, so a screen reader hears the name first. Same 2px rule and square corners as the bar.</p>
+
+          <div class="field-demo">
+            <div class="field">
+              <label class="field__label" for="demo-source">Your own image</label>
+              <input class="field__input" type="url" id="demo-source" name="demo-source"
+                     placeholder="https://example.com/picture.jpg"
+                     autocomplete="off" spellcheck="false">
+            </div>
+          </div>
+
+          <p class="spec__note">A specimen. The working one sits in the Larvascript bar, where an address swaps the art. <a href="../larvascript/">Open Larvascript</a>.</p>
+        </div>
+      </section>
+
+      <!-- ── Focus and the floor ────────────────────────────────────────── -->
+
+      <section class="spec" id="floor" tabindex="-1" aria-labelledby="floor-head">
+        <h2 class="label spec__label" id="floor-head">Focus and the Floor</h2>
+        <div class="spec__body">
+
+          <dl class="rules">
+            <dt>One ring</dt>
+            <dd>A 3px accent outline at a 3px offset, over 3:1 on both surfaces. The only page that redraws it is a piece with a clipping stage.</dd>
+
+            <dt>Semantic first</dt>
+            <dd>If an element does the job, use the element. ARIA second, with the reason in a comment. A name that flips, Play to Pause, carries its own state and skips <code>aria-pressed</code>.</dd>
+
+            <dt>Names, never labels on prose</dt>
+            <dd><code>aria-label</code> never goes on a paragraph, a div, or a span, where ARIA prohibits naming. The words go in a <code>.sr-only</code> span. An SVG acting as a picture takes <code>role="img"</code>.</dd>
+
+            <dt>Headings and links</dt>
+            <dd>One h1 a page, no skipped levels, and link text that names its destination. Never here, click here, or read more.</dd>
+
+            <dt>Everything else</dt>
+            <dd>Alt text on every image, or decorative on purpose. Captions or a text alternative wherever there is narration. A name on every control. Color never alone. <code>lang</code> on the html element and on the Hebrew. The keyboard reaching everything the mouse reaches.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ── Words ──────────────────────────────────────────────────────── -->
+
+      <section class="spec" id="words" tabindex="-1" aria-labelledby="words-head">
+        <h2 class="label spec__label" id="words-head">Words</h2>
+        <div class="spec__body">
+          <p>Short sentences, specific images, eighth grade words, and no sentence ending on a preposition.</p>
+
+          <dl class="rules">
+            <dt>Titles</dt>
+            <dd>Title case, unless the title is a sentence. Then sentence case, and it keeps its period. "Plaid to the Bone" and "Weird, pretty things."</dd>
+
+            <dt>Captions</dt>
+            <dd>One word on the screen. The verb is screen reader text inside it.</dd>
+
+            <dt>Alt text</dt>
+            <dd>Describes the content, never the filename: "navy plaid tipped onto the diagonal, its red and green bands broken into running dashes."</dd>
+
+            <dt>Counts</dt>
+            <dd>Name the set, never its size. A figure goes stale the day the set changes, so the site says "my art."</dd>
+
+            <dt>Dashes</dt>
+            <dd>No em dash, no en dash, and no pair of hyphens dressed as one. Rewrite the sentence. An ellipsis takes a leading space …</dd>
+          </dl>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── The gate, as it ships ──────────────────────────────────────────
+         A <dialog> opened with showModal(). The copy is Larvascript's,
+         because a specimen of a warning that says something else is a
+         different warning. Either button closes it. -->
+
+    <dialog class="gate" id="gate-demo" aria-labelledby="gate-demo-title">
+      <div class="gate__panel">
+        <p class="gate__label">Motion Warning</p>
+        <p class="gate__title" id="gate-demo-title">This animation flashes and spins.</p>
+        <p class="gate__body" id="gate-demo-body">Larvascript blinks, rotates, strobes, and pulsates.</p>
+        <div class="gate__actions">
+          <button class="btn btn--solid" type="button" id="gate-demo-go">Start animation</button>
+          <button class="btn" type="button" id="gate-demo-still">Keep it still</button>
+        </div>
+      </div>
+    </dialog>
+
+  </main>
+
+  <footer class="shell site-footer">
+    <nav class="site-footer__nav" aria-label="Elsewhere">
+      <a href="mailto:resume@stevechab.com">Send me an email</a>
+      <a href="https://www.linkedin.com/in/stevechab/">Connect on LinkedIn</a>
+    </nav>
+    <p class="site-footer__place">Pittsburgh, PA, USA</p>
+  </footer>
+
+  <script>
+    // ── The working bar ────────────────────────────────────────────────
+    // The same shape as the script under a piece: a set, an index that
+    // steps and wraps, a readout, and a mark that turns on press.
+
+    (function () {
+      var scenes = [
+        { name: 'Drift', cls: 'demo__weave--drift' },
+        { name: 'March', cls: 'demo__weave--march' },
+        { name: 'Swell', cls: 'demo__weave--swell' }
+      ];
+
+      var effects = [
+        { name: 'Plain', cls: 'demo__weave--plain' },
+        { name: 'Bloom', cls: 'demo__weave--bloom' },
+        { name: 'Ink',   cls: 'demo__weave--ink' }
+      ];
+
+      var demo      = document.getElementById('demo');
+      var weave     = document.getElementById('demo-weave');
+      var tint      = document.getElementById('demo-tint');
+      var sceneName = document.getElementById('demo-scene-name');
+      var effectNm  = document.getElementById('demo-effect-name');
+      var hueOut    = document.getElementById('demo-hue-readout');
+      var playBtn   = document.getElementById('demo-play');
+      var playCap   = document.getElementById('cap-demo-play');
+      var playMark  = document.getElementById('demo-play-mark');
+      var sceneBtn  = document.getElementById('demo-scene-btn');
+      var effectBtn = document.getElementById('demo-effect-btn');
+      var hueBtn    = document.getElementById('demo-hue-btn');
+
+      var sceneMk  = sceneBtn.querySelector('.control__mark');
+      var effectMk = effectBtn.querySelector('.control__mark');
+      var hueMk    = hueBtn.querySelector('.control__mark');
+
+      var scene   = 0;
+      var effect  = 0;
+      var playing = false;
+
+      var PLAY  = 'M0 0 18 10 0 20Z';
+      var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
+
+      function applyScene(i) {
+        scenes.forEach(function (s) { weave.classList.remove(s.cls); });
+        weave.classList.add(scenes[i].cls);
+        sceneName.textContent = scenes[i].name;
+        scene = i;
+      }
+
+      function applyEffect(i) {
+        effects.forEach(function (e) { weave.classList.remove(e.cls); });
+        weave.classList.add(effects[i].cls);
+        effectNm.textContent = effects[i].name;
+        effect = i;
+      }
+
+      // A fifth of the wheel a press. The readout wraps; the angle only
+      // ever adds, so the fifth press lands on 360 with nothing to undo.
+      var HUE_STEP = 20;
+      var hue      = 0;
+      var hueDeg   = 0;
+
+      function nextHue() {
+        hue     = (hue + HUE_STEP) % 100;
+        hueDeg += HUE_STEP * 3.6;
+        tint.style.setProperty('--demo-tint', 'hue-rotate(' + hueDeg + 'deg)');
+        hueOut.textContent = hue + '%';
+      }
+
+      function setPlaying(on) {
+        playing = on;
+        demo.classList.toggle('is-playing', on);
+        playBtn.classList.toggle('is-on', on);
+        playCap.textContent = on ? 'Pause' : 'Play';
+        playMark.querySelector('path').setAttribute('d', on ? PAUSE : PLAY);
+      }
+
+      function turnMark(mark) {
+        mark.classList.remove('control__mark--turning');
+        void mark.offsetWidth;
+        mark.classList.add('control__mark--turning');
+      }
+
+      function clearTurn() {
+        this.classList.remove('control__mark--turning');
+      }
+
+      sceneMk.addEventListener('animationend', clearTurn);
+      effectMk.addEventListener('animationend', clearTurn);
+      hueMk.addEventListener('animationend', clearTurn);
+
+      playBtn.addEventListener('click', function () { setPlaying(!playing); });
+
+      sceneBtn.addEventListener('click', function () {
+        applyScene((scene + 1) % scenes.length);
+        turnMark(sceneMk);
+        // A scene change with the clock stopped would look broken.
+        if (!playing) setPlaying(true);
+      });
+
+      effectBtn.addEventListener('click', function () {
+        applyEffect((effect + 1) % effects.length);
+        turnMark(effectMk);
+      });
+
+      hueBtn.addEventListener('click', function () {
+        nextHue();
+        turnMark(hueMk);
+      });
+
+      // The stage opens still, the way every piece opens still.
+      setPlaying(false);
+
+      // ── The gate demo ────────────────────────────────────────────────
+      // showModal(), so the dialog holds the keyboard and answers Escape
+      // with nothing written here.
+
+      var gate      = document.getElementById('gate-demo');
+      var gateOpen  = document.getElementById('gate-demo-open');
+      var gateGo    = document.getElementById('gate-demo-go');
+      var gateStill = document.getElementById('gate-demo-still');
+      var gateBody  = document.getElementById('gate-demo-body');
+
+      // A visitor who has asked for reduced motion gets the still answer
+      // as the default: the fill moves to it and it takes the focus.
+      var wantsCalm = window.matchMedia &&
+                      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (wantsCalm) {
+        gateBody.textContent = 'Your system asks for reduced motion, so Larvascript is holding still. ' +
+          'Held still, it is the same picture torn the same way, without the clock. ' +
+          'Starting the animation from here means blinking and strobing.';
+        gateStill.classList.add('btn--solid');
+        gateGo.classList.remove('btn--solid');
+      }
+
+      gateOpen.addEventListener('click', function () {
+        gate.showModal();
+        (wantsCalm ? gateStill : gateGo).focus();
+      });
+
+      function closeGate() {
+        if (gate.open) gate.close();
+        gateOpen.focus();
+      }
+
+      gateGo.addEventListener('click', closeGate);
+      gateStill.addEventListener('click', closeGate);
+
+      // Escape and the browser's own dismissal land here and mean the
+      // same thing as a button. The piece hands the focus to its play
+      // button; the specimen hands it back to what opened it.
+      gate.addEventListener('close', function () { gateOpen.focus(); });
+    }());
+  </script>
+
+  <script src="../js/jump.js" defer></script>
+
+</body>
+
+</html>

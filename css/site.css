@@ -79,7 +79,7 @@
   /* --- primitives: the accent ramp, one hue family --- */
   --accent-300: #f89;       /* 9.23:1 on #000, hover on dark */
   --accent-400: #f67;       /* 7.42:1 on #000, 6.99:1 on #0a0a0a */
-  --accent-600: #d24;       /* 4.79:1 on #fff, 4.55:1 on #fcfbfa */
+  --accent-600: #d24;       /* 4.79:1 on #fff, 4.63:1 on #fcfbfa */
   --accent-800: #b23;       /* 6.20:1 on #fff, hover on light */
 
   /* --- semantic: light surface (default) --- */
@@ -347,6 +347,38 @@ textarea:focus-visible,
   margin: 0 auto calc(var(--space-6));
 }
 
+/* --- chabstract -----------------------------------------------------
+   The wordmark competes with the h1 on mobile, so make it "chabstract."
+   Show partial wordmark as hero instead: zoom-in, crop, and add bg color. */
+
+.wordmark--crop {
+  background-color: var(--accent-400);
+  margin-bottom: var(--space-8);
+  overflow: hidden;
+}
+
+.wordmark--crop .wordmark__mark {
+  transform: scale(9) translateX(-27%) rotate(-5deg);
+}
+
+@media (min-width: 768px) {
+  main.shell > .wordmark--crop {
+    background-color: transparent;
+    margin-bottom: 0;
+    overflow: visible;
+  }
+
+  main.shell > .wordmark--crop .wordmark__mark { transform: none; }
+}
+
+/* --- narrow screens -------------------------------------------------
+   Try to keep nav and the blessing on one line. */
+
+@media (max-width: 767px) {
+  .masthead { column-gap: .75rem; }
+  .nav { gap: .9rem .75rem; }
+}
+
 .site-footer {
   margin-top: var(--space-8);
   padding-top: var(--space-8);
@@ -397,6 +429,7 @@ textarea:focus-visible,
   margin: 0 0 1.2rem;
   font-size: 1.32rem;
   line-height: 1.62;
+  max-width: var(--measure);
 }
 
 /* ==================================================================
@@ -455,6 +488,223 @@ textarea:focus-visible,
 }
 
 /* ==================================================================
+   Components
+   ==================================================================
+   The square control, the button, the motion gate, and the source
+   field. Shared by the pieces and /design, so they live here rather
+   than in css/piece.css. The frame around them, head and stage and
+   bar, is still the pieces' own and stays in piece.css.
+   ================================================================== */
+
+/* --- the square control --------------------------------------------
+   A 56px square with a 2px rule, a geometric mark, and a caption that
+   never hides. The caption is the accessible name, so nothing rides on
+   decoding a glyph.
+
+   Toggles fill solid while on, and the caption says the same in words,
+   so state is never fill alone. The fill hangs off .is-on rather than
+   aria-pressed: these toggles rename themselves (Play becomes Pause),
+   and adding the state to ARIA has it announced twice. */
+
+.control {
+  flex: 0 0 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .45rem;
+}
+
+.control__btn {
+  width: 100%;
+  height: 56px;
+  padding: 0;
+  border: var(--border-width-thick) solid var(--text);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.control__btn:hover { background: var(--text); color: var(--surface); }
+
+.control__btn.is-on {
+  background: var(--text);
+  color: var(--surface);
+}
+
+.control__mark {
+  display: block;
+  font-family: var(--font-slab);
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.control__mark--align {
+  text-box: trim-start cap alphabetic;
+}
+
+.control__mark svg { display: block; fill: currentColor; }
+
+/* One word. Anything longer is screen reader text inside the caption,
+   so the accessible name says "Next scene" while the page shows
+   "Scene". */
+
+.control__caption {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* One full turn on press. The class is added on click and removed when
+   the turn ends, so a fast press turns every time. */
+
+@keyframes control-turn {
+  from { transform: rotate(0turn); }
+  to   { transform: rotate(1turn); }
+}
+
+.control__mark--turning {
+  animation: control-turn .5s var(--ease-out) 1;
+}
+
+/* --- the motion gate ------------------------------------------------
+   A <dialog> opened with showModal(), so the keyboard stays inside it,
+   the page behind goes inert, and Escape closes it. The rules below
+   only undo what the browser draws around a dialog by default: the
+   border, the shrink-to-fit box, and the centering margins. A modal
+   dialog rides the top layer, so it needs no z-index.
+
+   The layout hangs off [open]. A closed dialog is display: none by the
+   browser's own rules, and a bare .gate { display: grid } would beat
+   that and leave the warning on the screen. */
+
+.gate {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: var(--space-4);
+  background: var(--surface);
+  color: var(--text);
+  overflow-y: auto;
+}
+
+.gate[open] {
+  display: grid;
+  place-items: center;
+}
+
+.gate::backdrop { background: rgb(0 0 0 / .7); }
+
+.gate__panel {
+  border: var(--border-width-thick) solid var(--text);
+  padding: 1.6rem;
+  max-width: 52ch;
+  background: var(--surface);
+}
+
+.gate__label {
+  margin: 0 0 .4rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--link);
+}
+
+.gate__title {
+  margin: 0 0 .7rem;
+  font-family: var(--font-slab);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+}
+
+.gate__body { margin: 0 0 1.2rem; font-size: .95rem; line-height: 1.6; }
+
+.gate__actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+
+.btn {
+  border: var(--border-width-thick) solid var(--text);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: .85rem 1.2rem;
+  cursor: pointer;
+}
+
+.btn--solid { background: var(--text); color: var(--surface); }
+.btn:hover { background: var(--text); color: var(--surface); }
+.btn--solid:hover { background: transparent; color: var(--text); }
+
+/* --- the source field ----------------------------------------------
+   The label sits under the box, set like the caption under a square.
+   It still comes first in the source; column-reverse moves it, so a
+   screen reader hears the name before the box. */
+
+.field {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: .45rem;
+  flex: 0 1 22rem;
+}
+
+.field__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: left;
+}
+
+.field__input {
+  height: 40px;
+  padding: 0 .7rem;
+  border: var(--border-width-thick) solid var(--text);
+  border-radius: 0;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: .95rem;
+}
+
+.field__input::placeholder { color: var(--text); opacity: .62; }
+
+/* --- narrow screens -------------------------------------------------
+   Below 600px the captions stack under smaller squares, still over the
+   44px target floor. */
+
+@media (max-width: 599px) {
+  .control { flex-basis: 48px; gap: .3rem; }
+  .control__btn { height: 48px; }
+  .control__caption { font-size: 9px; letter-spacing: .1em; }
+
+  .field { flex: 1 1 100%; gap: .3rem; }
+  .field__input { height: 36px; }
+
+  .gate__panel { padding: 1.1rem; }
+  .gate__actions .btn { flex: 1 1 100%; }
+}
+
+/* ==================================================================
    Motion guard
    ==================================================================
    This site ships strobing and flashing work on purpose. A reduced
@@ -492,8 +742,12 @@ textarea:focus-visible,
 
   a { color: #000; }
 
-  /* The running head is chrome; the page's own h1 carries the identity. */
+  /* The running head is chrome; the page's own h1 carries the identity.
+     A form field and a dialog print as nothing at all. */
   .skip-link,
   .masthead,
-  .slot { display: none; }
+  .slot,
+  .field,
+  .gate,
+  .gate[open] { display: none; }
 }
