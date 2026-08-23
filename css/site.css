@@ -497,17 +497,16 @@ textarea:focus-visible,
    ================================================================== */
 
 /* --- the square control --------------------------------------------
-   A 56px square with a 2px rule, a geometric mark, and a caption that
-   never hides. The caption is the accessible name, so nothing rides on
-   decoding a glyph.
+   A square with a rule and a geometric mark. The caption is the
+   accessible name since the glyph can be abstract.
 
-   Toggles fill solid while on, and the caption says the same in words,
-   so state is never fill alone. The fill hangs off .is-on rather than
-   aria-pressed: these toggles rename themselves (Play becomes Pause),
-   and adding the state to ARIA has it announced twice. */
+   The fill uses .is-on rather than aria-pressed since the language
+   sometimes toggles (Play becomes Pause), and adding aria can cause
+   the state to be announced twice. */
 
 .control {
-  flex: 0 0 56px;
+  flex: none;
+  width: 56px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -693,7 +692,7 @@ textarea:focus-visible,
    44px target floor. */
 
 @media (max-width: 599px) {
-  .control { flex-basis: 48px; gap: .3rem; }
+  .control { width: 48px; gap: .3rem; }
   .control__btn { height: 48px; }
   .control__caption { font-size: 9px; letter-spacing: .1em; }
 
