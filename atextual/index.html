@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://stevechab.com/atextual/">
 
-  <meta name="robots" content="noindex, noimageindex">
+  <meta name="robots" content="max-image-preview:large">
 
   <meta name="author" content="Steve Chab">
   <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
@@ -144,12 +144,7 @@
   <a class="skip-link" href="#controls">Skip to the controls</a>
 
   <header class="shell masthead piece__head">
-    <nav class="nav" aria-label="Main">
-      <a class="nav__link" href="../">stevechab.com</a>
-      <a class="nav__link" href="../work/">Work</a>
-      <a class="nav__link" href="../fun/">Fun</a>
-      <a class="nav__link" href="../resume/">Resume</a>
-    </nav>
+    <a class="masthead__home" href="../"><img src="../favicon.svg" alt="stevechab.com home" width="32" height="32"></a>
 
     <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
   </header>
@@ -160,7 +155,7 @@
 
   <main class="piece__stage">
     <noscript>
-      <p class="no-js-note shell">This one runs on JavaScript. Turn it on and reload for the dictionary, or <a href="atextual.json">read the raw entries as JSON</a>.</p>
+      <p class="no-js-note shell">This one runs on JavaScript. Turn it on and reload for the dictionary.</p>
     </noscript>
 
     <dl class="entry" id="entry" aria-live="polite">
@@ -172,7 +167,7 @@
   <div class="shell bar" id="controls" tabindex="-1">
     <div class="bar__id">
       <h1 class="bar__title">Atextual</h1>
-      <p class="bar__readout" aria-live="polite"><span class="sr-only">Entry </span><b id="entry-count">1 of 274</b></p>
+      <p class="bar__readout" aria-live="polite"><span class="sr-only">Entry </span><b id="entry-count"></b></p>
     </div>
 
     <div class="bar__controls">
@@ -184,6 +179,8 @@
       </div>
     </div>
   </div>
+
+  <script src="../js/piece.js"></script>
 
   <script>
     (function () {
@@ -235,7 +232,7 @@
       { "term": "experimental orchard", "definition": "polyrhythmic cocktail" },
       { "term": "farmy", "definition": "agricultural manner" },
       { "term": "hogs & kisses", "definition": "bacon addiction" },
-      { "term": "holy curds", "definition": "pure" },
+      { "term": "holy curds", "definition": "pure, actualized cheese" },
       { "term": "honeycreeper", "definition": "horrible molasses surplus" },
       { "term": "Institute for Maple Syrup", "definition": "6 degrees of Canadian bacon" },
       { "term": "lean hogs", "definition": "jumbo shrimp" },
@@ -251,9 +248,9 @@
       { "term": "tunnel cake", "definition": "birthday rat" },
       { "term": "bony laugh", "definition": "skeletal snicker" },
       { "term": "boxed parrot", "definition": "mail-order taxidermy" },
-      { "term": "brief fright", "definition": "from zero to fearful" },
+      { "term": "brief fright", "definition": "from zero to fearful, quickly" },
       { "term": "carbonated blood", "definition": "sparkling morbidity" },
-      { "term": "cartoon rainbow of blood", "definition": "anything fake" },
+      { "term": "cartoon rainbow of blood", "definition": "anything fake, morbid" },
       { "term": "cartoon roboticist", "definition": "mad imaginary villain" },
       { "term": "choice test subjects", "definition": "delicious specimens" },
       { "term": "deathinition", "definition": "morbid dictionary entry" },
@@ -282,7 +279,7 @@
       { "term": "heckno", "definition": "evangelical EDM compilation" },
       { "term": "hefty leek", "definition": "Heavy Vegetable cover band" },
       { "term": "meth grips", "definition": "secular hip-hop addiction" },
-      { "term": "music of the gaps", "definition": "personalized" },
+      { "term": "music of the gaps", "definition": "personalized, algorithmic curation" },
       { "term": "smooth gabber", "definition": "jumbo shrimp juking it out" },
       { "term": "tonal annihilation", "definition": "chords of death" },
       { "term": "Africadabra", "definition": "black magic" },
@@ -301,7 +298,7 @@
       { "term": "dismantling batteries", "definition": "wear gloves" },
       { "term": "fluxtravagant", "definition": "extreme flux" },
       { "term": "future clips", "definition": "feminist haircut critique" },
-      { "term": "glass lightning rod", "definition": "anything fragile" },
+      { "term": "glass lightning rod", "definition": "anything fragile, fast" },
       { "term": "goat dents", "definition": "don't park in a petting zoo" },
       { "term": "golden marches", "definition": "fast food identity politics" },
       { "term": "homotextual", "definition": "transgender trendsetter" },
@@ -312,7 +309,7 @@
       { "term": "merry chrispness", "definition": "tis the season for focus" },
       { "term": "midnightish", "definition": "about midnight" },
       { "term": "mobile composting", "definition": "throwing apple cores from a vehicle" },
-      { "term": "mooty blues", "definition": "big" },
+      { "term": "mooty blues", "definition": "big, sad" },
       { "term": "newborn vipers", "definition": "bitin' worms" },
       { "term": "paradoxical oxymoron", "definition": "illogically unacceptable" },
       { "term": "party residue", "definition": "wear shoes" },
@@ -360,7 +357,7 @@
       { "term": "impastor", "definition": "not real clergy" },
       { "term": "improverbs", "definition": "liberal theology" },
       { "term": "kingdomize", "definition": "Jesus as King" },
-      { "term": "logical jesus", "definition": "full" },
+      { "term": "logical jesus", "definition": "full, working conversion" },
       { "term": "Lukewarmness", "definition": "fuzzy Gospel feeling" },
       { "term": "Mennonite mosh pit", "definition": "strange fire" },
       { "term": "moderately immortal", "definition": "kinda living forever" },
@@ -400,7 +397,7 @@
       { "term": "sirs vaccine", "definition": "formality guard" },
       { "term": "solve this puzzle to prove your humanity", "definition": "science" },
       { "term": "subliminal neo-nazism", "definition": "scielence" },
-      { "term": "teeth to gum ratio", "definition": "smile" },
+      { "term": "teeth to gum ratio", "definition": "smile, and forget about the surgery" },
       { "term": "umptillionth", "definition": "billions and billions" },
       { "term": "!!''", "definition": "Pronounced False" },
       { "term": "1000 categories", "definition": "field of checkboxes" },
@@ -433,7 +430,7 @@
       { "term": "information scent", "definition": "resolving secrets" },
       { "term": "internet hate crimes", "definition": "straw men talking ship" },
       { "term": "lurker", "definition": "persuasive digital experiences" },
-      { "term": "machine olfaction", "definition": "“Alexa" },
+      { "term": "machine olfaction", "definition": "“Alexa, do I need a bath?”" },
       { "term": "mixed reality", "definition": "digital certainty index" },
       { "term": "murky privacy waters", "definition": "piece of the puddle" },
       { "term": "new orphan report", "definition": "starving African baby calendar" },
@@ -450,7 +447,7 @@
       { "term": "robosexual", "definition": "hard-on technology" },
       { "term": "scrubbing routine", "definition": "clean data are happy data" },
       { "term": "sealed sub-community boat", "definition": "private internet cruise" },
-      { "term": "search engine physics", "definition": "gravity" },
+      { "term": "search engine physics", "definition": "gravity, public relations" },
       { "term": "sin is just malware", "definition": "trojan cockroach celebrated" },
       { "term": "strange characters", "definition": "text sanitization" },
       { "term": "three column collapse", "definition": "colonnaded accordionists" },
@@ -470,7 +467,6 @@
       var count      = document.getElementById('entry-count');
       var frame      = document.body;
       var button     = document.getElementById('next-btn');
-      var mark       = button.querySelector('.control__mark');
 
       // Opens at a random entry, then reads forward in order and wraps.
       var current = Math.floor(Math.random() * json.length);
@@ -493,19 +489,9 @@
         frame.classList.add('is-fresh');
       }
 
-      function turnMark() {
-        mark.classList.remove('control__mark--turning');
-        void mark.offsetWidth;
-        mark.classList.add('control__mark--turning');
-      }
-
-      mark.addEventListener('animationend', function () {
-        mark.classList.remove('control__mark--turning');
-      });
-
       button.addEventListener('click', function () {
         nextEntry();
-        turnMark();
+        Piece.turn(button);
       });
 
       nextEntry();

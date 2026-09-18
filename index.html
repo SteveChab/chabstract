@@ -3,12 +3,12 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Steve Chab: I make the internet pretty.</title>
-  <meta name="description" content="Steve Chab designs and builds accessible, beautiful interfaces in Pittsburgh. He also fronts a rock band, stamps paint on book covers, makes trippy art, and writes poems.">
+  <title>Steve Chab, Pittsburgh: I make the internet pretty.</title>
+  <meta name="description" content="Steve Chab fronts a rock band in Pittsburgh and codes weird, pretty things: abstract art that eats itself, a dancing wordmark, a dictionary of fake band names, and an animated tartan.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://stevechab.com/">
 
-  <meta name="robots" content="noindex, noimageindex">
+  <meta name="robots" content="max-image-preview:large">
 
   <meta name="author" content="Steve Chab">
   <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
@@ -17,8 +17,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Steve Chab">
   <meta property="og:url" content="https://stevechab.com/">
-  <meta property="og:title" content="Steve Chab: I make the internet pretty.">
-  <meta property="og:description" content="Steve Chab designs and builds accessible, beautiful interfaces in Pittsburgh. He also fronts a rock band, stamps paint on book covers, makes trippy art, and writes poems.">
+  <meta property="og:title" content="Steve Chab, Pittsburgh: I make the internet pretty.">
+  <meta property="og:description" content="Steve Chab fronts a rock band in Pittsburgh and codes weird, pretty things: abstract art that eats itself, a dancing wordmark, a dictionary of fake band names, and an animated tartan.">
   <meta property="og:image" content="https://stevechab.com/share-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -34,119 +34,61 @@
   <link rel="preload" href="fonts/roboto-slab-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="css/site.css">
-  <link rel="stylesheet" href="css/tractate.css">
+  <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to the main text</a>
 
   <header class="shell masthead">
-    <nav class="nav" aria-label="Main">
-      <a class="nav__link" href="./" aria-current="page">stevechab.com</a>
-      <a class="nav__link" href="work/">Work</a>
-      <a class="nav__link" href="fun/">Fun</a>
-      <a class="nav__link" href="resume/">Resume</a>
-    </nav>
+    <a class="masthead__home" href="./" aria-current="page"><img src="favicon.svg" alt="stevechab.com home" width="32" height="32"></a>
 
     <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
   </header>
 
   <main class="shell" id="main" tabindex="-1">
 
-    <div class="wordmark wordmark--crop">
-      <img class="wordmark__mark" src="images/wordmark.svg" alt="abstract illustration of Steve Chab, originally hand-drawn on graph paper" width="3373" height="499">
-    </div>
+    <header class="hero">
+      <div class="wordmark">
+        <h1 class="wordmark__heading"><img class="wordmark__mark" src="images/wordmark.svg" alt="Steve Chab" width="3373" height="499"></h1>
+      </div>
 
-    <div class="tractate">
+      <div class="intro">
+        <p class="intro__text">I make the internet pretty. I tell my kids I want to be a rock star when I grow up. I write weird poems and create trippy code art. A critic once said I obsess over specificity.</p>
+        <nav class="intro__social" aria-label="Elsewhere">
+          <ul class="social">
+            <li><a class="social__link" href="https://www.facebook.com/stevechabpgh"><svg class="social__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg><span class="sr-only">Steve Chab on Facebook</span></a></li>
+            <li><a class="social__link" href="https://www.youtube.com/@SteveChab"><svg class="social__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span class="sr-only">Steve Chab on YouTube</span></a></li>
+            <li><a class="social__link" href="https://stevechab.bandcamp.com"><svg class="social__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M0 18.75l7.437-13.5H24l-7.438 13.5H0z"/></svg><span class="sr-only">Steve Chab Band on Bandcamp</span></a></li>
+            <li><a class="social__link" href="https://www.instagram.com/stevechabpgh/"><svg class="social__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span class="sr-only">Steve Chab Band on Instagram</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-      <section class="tractate__main" aria-labelledby="lede">
-        <h1 class="tractate__title" id="lede">Steve here.</h1>
-        <p class="tractate__lede">I make the internet pretty. I tell my kids I want to be a rock star when I grow up. A critic once said I obsess over specificity.</p>
-        <p class="tractate__body">By day, a large tech company pays me to code interfaces. I advocate for digital accessibility and beauty. By night I rock with vigor and make trippy art.</p>
-
-        <h2 class="label" id="selected-work">Selected Work</h2>
-        <ol class="works" aria-labelledby="selected-work">
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">01</span>
-            <span>
-              <a class="works__title" href="work/#cmu">15 Years of cmu.edu</a>
-              <span class="works__caption">I designed and coded every iteration of cmu.edu and corresponding templates from 2007 to 2022. Millions of visitors. My influence lives there to this day.</span>
-            </span>
-          </li>
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">02</span>
-            <span>
-              <a class="works__title" href="work/#xps">The Dell XPS Relaunch</a>
-              <span class="works__caption">I implemented the online experience for Dell's embargoed global XPS relaunch. It sold out in two countries and made national tech news.</span>
-            </span>
-          </li>
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">03</span>
-            <span>
-              <a class="works__title" href="work/#accessibility">Accessibility Standards</a>
-              <span class="works__caption">Author at Carnegie Mellon, where they still live on the university site. Practice lead at Dell.</span>
-            </span>
-          </li>
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">04</span>
-            <span>
-              <a class="works__title" href="work/#summit">Experience Design Summit</a>
-              <span class="works__caption">I co-chaired Dell's global summit on experience design.</span>
-            </span>
-          </li>
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">05</span>
-            <span>
-              <a class="works__title" href="work/#gallery">Accessible Image Gallery</a>
-              <span class="works__caption">A CSS Grid gallery built from JSON, designed for both screen readers and eyeballs.</span>
-            </span>
-          </li>
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">06</span>
-            <span>
-              <a class="works__title" href="work/#manifest">Books for Manifest Ministries</a>
-              <span class="works__caption">I design and build books for a nonprofit teaching ministry. Cover, type, and layout.</span>
-            </span>
-          </li>
-          <li class="works__item">
-            <span class="works__number" aria-hidden="true">07</span>
-            <span>
-              <a class="works__title" href="work/#patent">Patent Pending</a>
-              <span class="works__caption">U.S. patent pending for a media file retrieval method and AI-driven UX workflow, co-invented at Dell.</span>
-            </span>
-          </li>
-        </ol>
-      </section>
-
-      <nav class="tractate__projects tractate__margin" aria-labelledby="fun-head">
-        <h2 class="label" id="fun-head">Fun <span class="label__gloss">Experiments, etc.</span></h2>
-        <ul class="tractate__margin-list">
-          <li><strong>Make the Logo Bigger.</strong> Animated <a href="logo/">wordmark synced to music</a>.</li>
-          <li><strong>Atextual.</strong> <a href="atextual/">Snarky dictionary</a> of fake song titles and band names.</li>
-          <li><strong>Larvascript.</strong> <a href="larvascript/">Nauseating art eats itself</a>. My art, spinning and blinking.</li>
-          <li><strong>Plaid to the Bone.</strong> <a href="tartan/">Animated tartan</a> drawn in SVG.</li>
-          <li><strong>Robot Cook Pot.</strong> I composed <a href="https://soundcloud.com/stevechab/potbot">beats for a robotic cooking pot</a> once.</li>
-        </ul>
-      </nav>
-
-      <section class="tractate__work tractate__margin" aria-labelledby="personal-head">
-        <h2 class="label" id="personal-head">Personal <span class="label__gloss">Music, faith, n'at.</span></h2>
-        <ul class="tractate__margin-list">
-          <li><strong>Steve Chab Band.</strong> Weird, pretty rock music. Unusual riffs and rhythms. Poetic lyrics. <a href="https://stevechab.bandcamp.com">Hear it on Bandcamp</a>.</li>
-          <li><strong><em>Broken Images</em>, the chapbook.</strong> Songs that started as poems, bound in an oversized book. Paint stamped by hand on salmon covers. No two alike. <a href="https://stevechab.band">Read the chapbook online</a>.</li>
-          <li><strong>Messianic guy from Pittsburgh.</strong> I love to celebrate the Biblical feasts, such as Passover in the spring and Sukkot in the fall. I desire to honor God in all I do.</li>
-        </ul>
-      </section>
-    </div>
-  </main>
-
-  <footer class="shell site-footer">
-    <nav class="site-footer__nav" aria-label="Elsewhere">
-      <a href="mailto:resume@stevechab.com">Send me an email</a>
-      <a href="https://www.linkedin.com/in/stevechab/">Connect on LinkedIn</a>
+    <nav class="group" aria-labelledby="group-title">
+      <h2 class="sr-only" id="group-title">Weird, pretty things.</h2>
+      <ol class="plates">
+        <li class="plate">
+          <h3 class="plate__title">Seizure warning.</h3>
+          <p class="plate__text">Larvascript code animates abstract art. Each <a href="larvascript/">nauseating visual</a> eats itself alive via spin, blink, and zoom.</p>
+        </li>
+        <li class="plate">
+          <h3 class="plate__title">Zoom way in. Nod your head.</h3>
+          <p class="plate__text">Make the logo bigger. My hand-crafted <a href="logo/">wordmark dances</a> to beats from my boom bap archive.</p>
+        </li>
+        <li class="plate">
+          <h3 class="plate__title">Eccentric and punny inside jokes.</h3>
+          <p class="plate__text">Atextual dictionary of fake, <a href="atextual/">snarky band names</a> and song titles. Entries hundreds deep.</p>
+        </li>
+        <li class="plate">
+          <h3 class="plate__title">Plaid to the bone, man.</h3>
+          <p class="plate__text">Carnegie Mellon's swatch redrawn as simple line art. Animated threads. Weaving waves, a <a href="tartan/">tartan haze</a>.</p>
+        </li>
+      </ol>
     </nav>
-    <p class="site-footer__place">Pittsburgh, PA, USA</p>
-  </footer>
+
+  </main>
 
   <script src="js/jump.js" defer></script>
 

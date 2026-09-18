@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://stevechab.com/larvascript/">
 
-  <meta name="robots" content="noindex, noimageindex">
+  <meta name="robots" content="max-image-preview:large">
 
   <meta name="author" content="Steve Chab">
   <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
@@ -18,7 +18,7 @@
   <meta property="og:site_name" content="Steve Chab">
   <meta property="og:url" content="https://stevechab.com/larvascript/">
   <meta property="og:title" content="Larvascript, Trippy Glitch Animations by Steve Chab">
-  <meta property="og:description" content="Steve Chab's glitched pictures, torn apart and relit scene by scene, in raw CSS and JavaScript.">
+  <meta property="og:description" content="Steve Chab's glitched pictures, torn apart and relit scene by scene, in raw CSS and JavaScript. Point it at any image you like.">
   <meta property="og:image" content="https://stevechab.com/share-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -162,7 +162,7 @@
       75%      { transform: skew(  4deg, -8deg); }
     }
 
-    /* ── Carnival Eyes ────────────────────────────────────────────────── */
+    /* ── Crazy Eyes ───────────────────────────────────────────────────── */
 
     .orb {
       position: absolute;
@@ -196,7 +196,7 @@
       75%      { transform: translate( 3px,   5px) scale(1.015); }
     }
 
-    /* ── Colour Bleed ─────────────────────────────────────────────────────
+    /* ── Color Bleed ──────────────────────────────────────────────────────
        Three full-stage layers, each filtered onto its own end of the
        hue wheel and blended back together. At rest they line up; in
        motion the edges grow halos. */
@@ -301,12 +301,7 @@
   <a class="skip-link" href="#controls">Skip to the controls</a>
 
   <header class="shell masthead piece__head">
-    <nav class="nav" aria-label="Main">
-      <a class="nav__link" href="../">stevechab.com</a>
-      <a class="nav__link" href="../work/">Work</a>
-      <a class="nav__link" href="../fun/">Fun</a>
-      <a class="nav__link" href="../resume/">Resume</a>
-    </nav>
+    <a class="masthead__home" href="../"><img src="../favicon.svg" alt="stevechab.com home" width="32" height="32"></a>
 
     <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
   </header>
@@ -366,7 +361,7 @@
       <h1 class="bar__title">Larvascript</h1>
       <p class="bar__readout" aria-live="polite">
         <span class="bar__line"><span class="sr-only">Image: </span><b id="image-name">Broken Images</b>, <span id="image-desc">goldenrod paint stamped on neon salmon cardstock</span></span>
-        <span class="bar__line"><span class="sr-only">Scene: </span><b id="scene-name">The Wormhole</b> &nbsp;/&nbsp; <span class="sr-only">Effect: </span><b id="effect-name">Crosshatch</b></span>
+        <span class="bar__line"><span class="sr-only">Scene: </span><b id="scene-name">Wormhole</b> &nbsp;/&nbsp; <span class="sr-only">Effect: </span><b id="effect-name">Crosshatch</b></span>
       </p>
     </div>
 
@@ -410,11 +405,13 @@
     </div>
   </div>
 
+  <script src="../js/piece.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
 
       // ── The material ───────────────────────────────────────────────────
-      
+
       var images = [
         { name: 'Broken Images',
           desc: 'goldenrod paint stamped on neon salmon cardstock',
@@ -479,20 +476,20 @@
       ];
 
       var scenes = [
-        { key: 'spiral',  name: 'Wormhole'    },
-        { key: 'stripes', name: 'Rush Hour'       },
-        { key: 'squares', name: "Rubik's Fever"   },
-        { key: 'circles', name: 'Crazy Eyes'   },
-        { key: 'chroma',  name: 'Color Bleed'    },
-        { key: 'glitch',  name: 'Glitch Slices'   },
-        { key: 'tunnel',  name: 'Tunnel Vision'   }
+        { key: 'spiral',  name: 'Wormhole'      },
+        { key: 'stripes', name: 'Rush Hour'     },
+        { key: 'squares', name: "Rubik's Fever" },
+        { key: 'circles', name: 'Crazy Eyes'    },
+        { key: 'chroma',  name: 'Color Bleed'   },
+        { key: 'glitch',  name: 'Glitch Slices' },
+        { key: 'tunnel',  name: 'Tunnel Vision' }
       ];
 
       var effects = [
-        { name: 'Crosshatch',        art: 'images/bg.gif'              },
+        { name: 'Crosshatch',         art: 'images/bg.gif'              },
         { name: 'Crawling Diagonals', art: 'images/bg-moving-black.gif' },
         { name: 'Animated Noise',     art: 'images/bg-noise.gif'        },
-        { name: 'Color Strobe',      art: 'images/bg-t.gif'            },
+        { name: 'Color Strobe',       art: 'images/bg-t.gif'            },
         { name: 'B&W Strobe',         art: 'images/bg-strobe.gif'       }
       ];
 
@@ -512,10 +509,8 @@
 
       // ── DOM ────────────────────────────────────────────────────────────
 
-      var body      = document.body;
       var stage     = document.getElementById('stage');
       var overlay   = document.getElementById('overlay');
-      var hint      = document.getElementById('hint');
       var gate      = document.getElementById('gate');
       var gateBody  = document.getElementById('gate-body');
       var gateGo    = document.getElementById('gate-go');
@@ -526,36 +521,30 @@
       var sceneName = document.getElementById('scene-name');
       var fxName    = document.getElementById('effect-name');
       var playBtn   = document.getElementById('play-btn');
-      var playCap   = document.getElementById('cap-play');
-      var playMark  = document.getElementById('play-mark');
       var sceneBtn  = document.getElementById('scene-btn');
       var fxBtn     = document.getElementById('effect-btn');
       var sourceIn  = document.getElementById('source');
 
       var artContainer = document.querySelector('.art');
-      var artPanels    = document.querySelectorAll('.art__pane');
 
       var sceneEls = {};
       scenes.forEach(function (s) {
         sceneEls[s.key] = document.getElementById('scene-' + s.key);
       });
 
-      var PLAY  = 'M0 0 18 10 0 20Z';
-      var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
-
       // ── The source image ───────────────────────────────────────────────
 
+      // Every scene takes its picture from here, including the ones
+      // built later: applyScene paints right after it builds. The address
+      // is quoted, so a pasted one with spaces or brackets still loads.
       function paint(url) {
         imageUrl = url;
-
-        artPanels.forEach(function (p) {
-          p.style.backgroundImage = url ? 'url(' + url + ')' : '';
-        });
+        var css = 'url("' + url.replace(/["\\\n]/g, encodeURIComponent) + '")';
 
         stage.querySelectorAll(
-          '.rush__stripe, .squares__cell, .orb__circle, .chroma, .glitch__strip, .tunnel__ring'
+          '.art__pane, .rush__stripe, .squares__cell, .orb__circle, .chroma, .glitch__strip, .tunnel__ring'
         ).forEach(function (el) {
-          el.style.backgroundImage = 'url(' + url + ')';
+          el.style.backgroundImage = css;
         });
       }
 
@@ -575,7 +564,9 @@
         nameImage(images[i].name, images[i].desc);
       }
 
+      // Clearing the field puts the stepped picture back.
       sourceIn.addEventListener('input', function () {
+        if (!sourceIn.value) { applyImage(imageIndex); saveParams(); return; }
         var mine = safeSrc(sourceIn.value);
         if (!mine) return;
         paint(mine);
@@ -599,9 +590,7 @@
       }
 
       function applyPlayState() {
-        playBtn.classList.toggle('is-on', playing);
-        playCap.textContent = playing ? 'Pause' : 'Play';
-        playMark.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
+        Piece.setPlay(playBtn, playing);
 
         var key = scenes[sceneIndex].key;
 
@@ -660,16 +649,6 @@
           e.preventDefault();
           askToPlay();
         }
-
-        if (e.key === 'Escape') {
-          // A modal <dialog> answers Escape itself; the close handler
-          // reads that the same way it reads the second button.
-          if (gate.open) return;
-          // In a text field Escape belongs to the field. Hiding the bar
-          // would leave the keyboard on a display: none input.
-          if (document.activeElement === sourceIn) return;
-          setBare(!body.classList.contains('is-bare'));
-        }
       });
 
       // ── Wormhole ───────────────────────────────────────────────────
@@ -695,11 +674,9 @@
           strip.className                 = 'rush__stripe';
           strip.style.top                 = (i / N * 100) + '%';
           strip.style.height              = 'calc(' + (100 / N) + '% + 1px)';
-          strip.style.backgroundImage     = 'url(' + imageUrl + ')';
           strip.style.backgroundPositionY = (i / (N - 1) * 100) + '%';
           strip.style.animationDuration   = speeds[i] + 's';
           strip.style.animationDirection  = i % 2 === 0 ? 'normal' : 'reverse';
-          strip.style.animationPlayState  = 'paused';
           container.appendChild(strip);
         }
       }
@@ -719,20 +696,18 @@
         for (var i = 0; i < N * N; i++) {
           var cell = document.createElement('div');
           cell.className                = 'squares__cell';
-          cell.style.backgroundImage    = 'url(' + imageUrl + ')';
           cell.style.backgroundSize     = (150 + Math.random() * 200).toFixed(0) + '%';
           cell.style.backgroundPosition = (Math.random() * 100).toFixed(1) + '% ' +
                                           (Math.random() * 100).toFixed(1) + '%';
           cell.style.animationDuration  = (3 + Math.random() * 5).toFixed(1) + 's';
           cell.style.animationDelay     = (-1 * Math.random() * 8).toFixed(2) + 's';
-          cell.style.animationPlayState = 'paused';
           grid.appendChild(cell);
         }
 
         container.appendChild(grid);
       }
 
-      // ── Carnival Eyes ──────────────────────────────────────────────────
+      // ── Crazy Eyes ─────────────────────────────────────────────────────
 
       function buildCircles() {
         var container = sceneEls.circles;
@@ -751,23 +726,20 @@
           wrapper.style.top                = 'calc(' + y + '% - ' + (size / 2) + 'px)';
           wrapper.style.animationDuration  = (20 + Math.random() * 60).toFixed(1) + 's';
           wrapper.style.animationDirection = Math.random() > 0.5 ? 'normal' : 'reverse';
-          wrapper.style.animationPlayState = 'paused';
 
           var orb = document.createElement('div');
           orb.className                = 'orb__circle';
-          orb.style.backgroundImage    = 'url(' + imageUrl + ')';
           orb.style.backgroundPosition = (Math.random() * 100).toFixed(1) + '% ' +
                                          (Math.random() * 100).toFixed(1) + '%';
           orb.style.animationDuration  = (2 + Math.random() * 4).toFixed(2) + 's';
           orb.style.animationDelay     = (-1 * Math.random() * 6).toFixed(2) + 's';
-          orb.style.animationPlayState = 'paused';
 
           wrapper.appendChild(orb);
           container.appendChild(wrapper);
         }
       }
 
-      // ── Colour Bleed ───────────────────────────────────────────────────
+      // ── Color Bleed ────────────────────────────────────────────────────
 
       function buildChroma() {
         var container = sceneEls.chroma;
@@ -776,8 +748,6 @@
         ['chroma--r', 'chroma--g', 'chroma--b'].forEach(function (cls) {
           var layer = document.createElement('div');
           layer.className                = 'chroma ' + cls;
-          layer.style.backgroundImage    = 'url(' + imageUrl + ')';
-          layer.style.animationPlayState = 'paused';
           container.appendChild(layer);
         });
       }
@@ -796,10 +766,7 @@
           strip.className                 = 'glitch__strip';
           strip.style.top                 = (i / N * 100) + '%';
           strip.style.height              = 'calc(' + (100 / N) + '% + 1px)';
-          strip.style.backgroundImage     = 'url(' + imageUrl + ')';
           strip.style.backgroundPositionY = (i / (N - 1) * 100) + '%';
-          strip.style.backgroundPositionX = '0%';
-          strip.style.transform           = 'translateX(0)';
           container.appendChild(strip);
           glitchStrips.push(strip);
         }
@@ -835,10 +802,8 @@
         for (var i = 0; i < COUNT; i++) {
           var ring = document.createElement('div');
           ring.className                = 'tunnel__ring';
-          ring.style.backgroundImage    = 'url(' + imageUrl + ')';
           ring.style.animationDuration  = DURATION + 's';
           ring.style.animationDelay     = (-1 * (i / COUNT) * DURATION).toFixed(2) + 's';
-          ring.style.animationPlayState = 'paused';
           container.appendChild(ring);
         }
       }
@@ -877,54 +842,22 @@
         return (current + 1) % count;
       }
 
-      function turnMark(btn) {
-        var mark = btn.querySelector('.control__mark');
-        mark.classList.remove('control__mark--turning');
-        void mark.offsetWidth;
-        mark.classList.add('control__mark--turning');
-      }
-
-      [imageBtn, sceneBtn, fxBtn].forEach(function (btn) {
-        btn.querySelector('.control__mark').addEventListener('animationend', function () {
-          this.classList.remove('control__mark--turning');
-        });
-      });
-
       imageBtn.addEventListener('click', function () {
         applyImage(step(images.length, imageIndex));
-        turnMark(imageBtn);
+        Piece.turn(imageBtn);
         saveParams();
       });
 
       sceneBtn.addEventListener('click', function () {
         applyScene(step(scenes.length, sceneIndex));
-        turnMark(sceneBtn);
+        Piece.turn(sceneBtn);
         saveParams();
       });
 
       fxBtn.addEventListener('click', function () {
         applyEffect(step(effects.length, fxIndex));
-        turnMark(fxBtn);
+        Piece.turn(fxBtn);
         saveParams();
-      });
-
-      // ── Chrome away ────────────────────────────────────────────────────
-
-      function setBare(on) {
-        body.classList.toggle('is-bare', on);
-        overlay.querySelector('.sr-only').textContent = on
-          ? 'Bring the navigation and the controls back'
-          : 'Hide the navigation and the controls';
-        hint.hidden = !on;
-
-        // Going bare hides whatever held the keyboard, so the overlay
-        // takes the focus rather than leaving it on a display: none
-        // control.
-        if (on && !overlay.contains(document.activeElement)) overlay.focus();
-      }
-
-      overlay.addEventListener('click', function () {
-        setBare(!body.classList.contains('is-bare'));
       });
 
       // ── A shareable address ────────────────────────────────────────────
@@ -932,13 +865,14 @@
       // string.
 
       // The field is type="url" and the browser checks what is typed,
-      // but a query string skips that check, so an address from either
-      // door has to parse and has to be https. Anything else comes back
-      // empty and the picture falls to the first one.
+      // but a query string skips that check, and a half-typed address
+      // fires input on every key, so an address from either door has to
+      // parse on its own and has to be https. Anything else comes back
+      // empty.
       function safeSrc(value) {
         if (!value) { return ''; }
         try {
-          return new URL(value, window.location.href).protocol === 'https:' ? value : '';
+          return new URL(value).protocol === 'https:' ? value : '';
         } catch (e) {
           return '';
         }
@@ -981,23 +915,14 @@
 
       // ── The gate ───────────────────────────────────────────────────────
 
-      var wantsCalm = window.matchMedia &&
-                      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (wantsCalm) {
-        gateBody.textContent = 'Your system asks for reduced motion, so Larvascript is holding still. ' +
-          'Held still, it is the same picture torn the same way, without the clock. ' +
-          'Starting the animation from here means blinking and strobing.';
-        gateStill.classList.add('btn--solid');
-        gateGo.classList.remove('btn--solid');
-      }
+      var gateFocus = Piece.calmGate(gateBody, gateGo, gateStill);
 
       // Opens on the first press of play; either answer closes it for
       // the rest of the visit.
 
       function openGate() {
         gate.showModal();
-        (wantsCalm ? gateStill : gateGo).focus();
+        gateFocus.focus();
       }
 
       function passGate(withMotion) {

@@ -1,5 +1,5 @@
 /* ==================================================================
-   stevechab.com — the shell
+   The shell
    ==================================================================
    Tokens, base elements, and the parts every page carries: skip link,
    running head, footer, wordmark, focus, motion guard, print. Page
@@ -90,7 +90,7 @@
   --link: var(--accent-600);
   --link-hover: var(--accent-800);
   --focus-ring: var(--accent-600);
-  --selection: #f89;
+  --selection: var(--accent-300);
 
   /* --- type --- */
   --font-slab: 'Roboto Slab', Georgia, 'Times New Roman', serif;
@@ -152,7 +152,7 @@
     --link: var(--accent-400);
     --link-hover: var(--accent-300);
     --focus-ring: var(--accent-400);
-    --selection: #d24;
+    --selection: var(--accent-600);
   }
 }
 
@@ -277,9 +277,9 @@ textarea:focus-visible,
   padding-right: var(--shell-pad);
 }
 
-/* Nav flush left, ב״ה in the right corner. The auto margin does that,
-   not space-between: narrow screens wrap the blessing onto a line of
-   its own, where space-between would drop it back to the left. */
+/* Home mark flush left, ב״ה in the right corner. The auto margin does
+   that, not space-between: narrow screens wrap the blessing onto a line
+   of its own, where space-between would drop it back to the left. */
 
 .masthead {
   display: flex;
@@ -299,40 +299,19 @@ textarea:focus-visible,
   letter-spacing: .1em;
 }
 
-.nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: .9rem 1.6rem;
-  align-items: baseline;
+/* The favicon is the home link. It centers rather than sitting on a
+   baseline, because a picture has none to share with the blessing.
+   32px clears the 24px target floor. */
+
+.masthead__home {
+  display: block;
+  align-self: center;
+  line-height: 0;
 }
 
-.nav__link {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--text);
-  text-decoration: none;
-  border-bottom: var(--border-width) solid var(--rule);
-  padding-bottom: 2px;
-  /* The box measures 22px, under WCAG 2.2's 24px target floor. The 3px
-     goes on top so the rule under the word stays put: hover and current
-     trade the same 3px between padding and border. */
-  padding-top: 3px;
-}
+.masthead__home img { width: 32px; height: 32px; }
 
-.nav__link:hover {
-  color: var(--text);
-  border-bottom-color: var(--link);
-  border-bottom-width: 3px;
-  padding-bottom: 0;
-}
-
-.nav__link[aria-current="page"] {
-  border-bottom: 3px solid var(--link);
-  padding-bottom: 0;
-}
+.masthead__home ~ .masthead__baruch { align-self: center; }
 
 .wordmark {
   text-align: center;
@@ -344,12 +323,11 @@ textarea:focus-visible,
   width: 100%;
   max-width: 900px;
   min-width: 180px;
-  margin: 0 auto calc(var(--space-6));
+  margin: 0 auto var(--space-6);
 }
 
 /* --- chabstract -----------------------------------------------------
-   The wordmark competes with the h1 on mobile, so make it "chabstract."
-   Show partial wordmark as hero instead: zoom-in, crop, and add bg color. */
+   A partial wordmark as texture: zoomed in, cropped, on the accent. */
 
 .wordmark--crop {
   background-color: var(--accent-400);
@@ -359,24 +337,6 @@ textarea:focus-visible,
 
 .wordmark--crop .wordmark__mark {
   transform: scale(9) translateX(-27%) rotate(-5deg);
-}
-
-@media (min-width: 768px) {
-  main.shell > .wordmark--crop {
-    background-color: transparent;
-    margin-bottom: 0;
-    overflow: visible;
-  }
-
-  main.shell > .wordmark--crop .wordmark__mark { transform: none; }
-}
-
-/* --- narrow screens -------------------------------------------------
-   Try to keep nav and the blessing on one line. */
-
-@media (max-width: 767px) {
-  .masthead { column-gap: .75rem; }
-  .nav { gap: .9rem .75rem; }
 }
 
 .site-footer {
@@ -391,13 +351,6 @@ textarea:focus-visible,
   font-weight: 400;
 }
 
-.site-footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.1rem;
-  font-size: .8rem;
-}
-
 .site-footer__place {
   margin: 0;
   font-size: .72rem;
@@ -405,10 +358,47 @@ textarea:focus-visible,
   text-transform: uppercase;
 }
 
+.site-footer--center {
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* --- social icons ----------------------------------------------------
+   A centered row of brand marks in place of text links. Each link is a
+   44px square around a 24px mark, over the target floor. */
+
+.social {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.social__link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--text);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.social__link:hover { color: var(--link-hover); }
+
+.social__icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
 /* ==================================================================
    Page head — every page after the homepage
    ==================================================================
-   /work, /fun, and /resume all open the same way: a slab title at the
+   Every content page opens the same way: a slab title at the
    homepage's h1 size, one lede at the homepage's lede size, both flush
    with the shell's left margin.
    ================================================================== */
@@ -435,10 +425,9 @@ textarea:focus-visible,
 /* ==================================================================
    Section label
    ==================================================================
-   The small uppercase heading that names a column, a group, or a
-   resume section. Sizes and margins belong to the page that uses it.
-   Both the label and its gloss sit at full ink; a muted gray here
-   measures near 2.5:1 and fails AA.
+   The small uppercase heading that names a section. Sizes and margins
+   belong to the page that uses it. It sits at full ink; a muted gray
+   here measures near 2.5:1 and fails AA.
    ================================================================== */
 
 .label {
@@ -448,43 +437,6 @@ textarea:focus-visible,
   text-transform: uppercase;
   color: var(--text);
   text-align: left;
-}
-
-.label__gloss { font-weight: 400; }
-
-/* ==================================================================
-   The empty slot
-   ==================================================================
-   Placeholder. Every .slot is a hole waiting for a real <img> or
-   <video>, and nothing else in the stylesheet depends on it.
-   ================================================================== */
-
-.slot {
-  display: grid;
-  align-content: center;
-  gap: var(--space-2);
-  padding: var(--space-6);
-  border: var(--border-width-thick) dashed var(--rule);
-  border-radius: var(--radius-sm);
-  aspect-ratio: 16 / 10;
-  text-align: left;
-}
-
-.slot--video { aspect-ratio: 16 / 9; }
-.slot--tall { aspect-ratio: 4 / 5; }
-
-.slot__kind {
-  margin: 0;
-  font-size: .68rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-
-.slot__note {
-  margin: 0;
-  font-size: .9rem;
-  line-height: var(--leading-snug);
 }
 
 /* ==================================================================
@@ -745,7 +697,6 @@ textarea:focus-visible,
      A form field and a dialog print as nothing at all. */
   .skip-link,
   .masthead,
-  .slot,
   .field,
   .gate,
   .gate[open] { display: none; }

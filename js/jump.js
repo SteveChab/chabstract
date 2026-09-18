@@ -39,44 +39,4 @@
   // A deep link from another page arrives as a hash on load.
   window.addEventListener('hashchange', function () { land(hashId()); });
   if (location.hash) land(hashId());
-
-  // ── The reel index ─────────────────────────────────────────────────
-  // Marks which slide is showing, so a screen reader hears "current"
-  // on it. Nothing depends on this: with JavaScript off the index
-  // still scrolls the scrollport.
-  //
-  // The mark follows the slide, not the press, because the scroller
-  // also answers a swipe and an arrow key. Reading the scrollport is
-  // the only version that stays true.
-
-  function watchIndex(index) {
-    var reel = index.closest ? index.closest('.reel') : null;
-    var scroller = reel ? reel.querySelector('.reel__scroller') : null;
-    if (!scroller || !window.IntersectionObserver) return;
-
-    var links = {};
-    var slides = [];
-
-    Array.prototype.forEach.call(index.querySelectorAll('a[href^="#"]'), function (a) {
-      var slide = document.getElementById(a.getAttribute('href').slice(1));
-      if (!slide) return;
-      links[slide.id] = a;
-      slides.push(slide);
-    });
-
-    if (!slides.length) return;
-
-    var watcher = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        var link = links[entry.target.id];
-        if (!link) return;
-        if (entry.isIntersecting) link.setAttribute('aria-current', 'true');
-        else link.removeAttribute('aria-current');
-      });
-    }, { root: scroller, threshold: 0.6 });
-
-    slides.forEach(function (slide) { watcher.observe(slide); });
-  }
-
-  Array.prototype.forEach.call(document.querySelectorAll('.reel__index'), watchIndex);
 }());

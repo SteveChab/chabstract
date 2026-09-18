@@ -1,8 +1,8 @@
 /* ==================================================================
    /design — the system, read back from the site
    ==================================================================
-   The same spine as /work and /resume: an 11rem gutter on the left
-   carrying the section name, the specimens and the prose beside it.
+   An 11rem gutter on the left carrying the section name, the specimens
+   and the prose beside it.
 
    Nothing here restyles a component. The swatches, the squares, the
    gate, and the field are the shipped ones out of css/site.css, and
@@ -534,3 +534,56 @@ code {
 
   .surfaces__panel--dark { background: #fff; color: #000; }
 }
+
+/* --- the homepage grid ---------------------------------------------
+   The stripes fill every cell, so auto-placement would find no room
+   for anything after them. Every stripe and cell sits on an explicit
+   line. */
+
+.grid-demo {
+  max-width: 44rem;
+  margin: 0;
+}
+
+.grid-demo__frame {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: 4rem 5rem 3.5rem;
+  gap: var(--space-2) .375rem;
+  margin-bottom: var(--space-4);
+}
+
+.grid-demo__col {
+  grid-row: 1 / -1;
+  background: var(--rule);
+}
+
+.grid-demo__cell {
+  display: grid;
+  place-items: center;
+  border: var(--border-width) solid var(--text);
+  background: var(--surface);
+  font-size: var(--text-xs);
+}
+
+.grid-demo__col:nth-child(1) { grid-column: 1; }
+.grid-demo__col:nth-child(2) { grid-column: 2; }
+.grid-demo__col:nth-child(3) { grid-column: 3; }
+.grid-demo__col:nth-child(4) { grid-column: 4; }
+.grid-demo__col:nth-child(5) { grid-column: 5; }
+.grid-demo__col:nth-child(6) { grid-column: 6; }
+.grid-demo__col:nth-child(7) { grid-column: 7; }
+.grid-demo__col:nth-child(8) { grid-column: 8; }
+.grid-demo__col:nth-child(9) { grid-column: 9; }
+.grid-demo__col:nth-child(10) { grid-column: 10; }
+.grid-demo__col:nth-child(11) { grid-column: 11; }
+.grid-demo__col:nth-child(12) { grid-column: 12; }
+
+.grid-demo__cell--mark  { grid-column: 1 / -1; grid-row: 1; }
+.grid-demo__cell--icons { grid-column: 1 / span 3; grid-row: 2; }
+.grid-demo__cell--intro { grid-column: 5 / -1; grid-row: 2; }
+.grid-demo__cell--plate { grid-row: 3; }
+.grid-demo__cell--plate:nth-child(16) { grid-column: 1 / span 3; }
+.grid-demo__cell--plate:nth-child(17) { grid-column: 4 / span 3; }
+.grid-demo__cell--plate:nth-child(18) { grid-column: 7 / span 3; }
+.grid-demo__cell--plate:nth-child(19) { grid-column: 10 / span 3; }

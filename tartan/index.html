@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://stevechab.com/tartan/">
 
-  <meta name="robots" content="noindex, noimageindex">
+  <meta name="robots" content="max-image-preview:large">
 
   <meta name="author" content="Steve Chab">
   <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
@@ -85,7 +85,10 @@
     /* Only the panning weave is oversized, so the travel never drags an
        edge into view. The rest fill the stage exactly. */
 
-    .weave--pan { inset: -95% -24%; }
+    .weave--pan {
+      inset: -95% -24%;
+      animation: pan 54s var(--ease-in-out) infinite;
+    }
 
     .tartan {
       width: 100%;
@@ -170,7 +173,7 @@
     }
 
     .tartan--flow .tartan__warp line { animation-name: flow-down; }
-    .tartan--flow .tartan__weft line   { animation-name: flow-up;   }
+    .tartan--flow .tartan__weft line { animation-name: flow-up;   }
 
     .tartan--flow .tartan__thread--teal  { animation-duration: 3.1s; }
     .tartan--flow .tartan__thread--red   { animation-duration: 4.7s; }
@@ -201,11 +204,11 @@
     .tartan--swell .tartan__warp .tartan__thread--blue  { animation-duration: 7.3s; animation-delay: -0.7s; }
     .tartan--swell .tartan__warp .tartan__thread--green { animation-duration: 4.9s; animation-delay: -3.4s; }
 
-    .tartan--swell .tartan__weft .tartan__thread--teal    { animation-duration: 9.7s; animation-delay: -2.6s; }
-    .tartan--swell .tartan__weft .tartan__thread--red     { animation-duration: 3.7s; animation-delay: -0.4s; }
-    .tartan--swell .tartan__weft .tartan__thread--gold    { animation-duration: 6.7s; animation-delay: -3.9s; }
-    .tartan--swell .tartan__weft .tartan__thread--blue    { animation-duration: 2.9s; animation-delay: -1.8s; }
-    .tartan--swell .tartan__weft .tartan__thread--green   { animation-duration: 8.3s; animation-delay: -5.1s; }
+    .tartan--swell .tartan__weft .tartan__thread--teal  { animation-duration: 9.7s; animation-delay: -2.6s; }
+    .tartan--swell .tartan__weft .tartan__thread--red   { animation-duration: 3.7s; animation-delay: -0.4s; }
+    .tartan--swell .tartan__weft .tartan__thread--gold  { animation-duration: 6.7s; animation-delay: -3.9s; }
+    .tartan--swell .tartan__weft .tartan__thread--blue  { animation-duration: 2.9s; animation-delay: -1.8s; }
+    .tartan--swell .tartan__weft .tartan__thread--green { animation-duration: 8.3s; animation-delay: -5.1s; }
 
     /* ── the pan ───────────────────────────────────────────────────────
        The tartan is cropped to the stage, so a still frame shows only
@@ -224,8 +227,6 @@
       75%  { transform: translate(  3%,  28%); }
       100% { transform: translate(-15%, -28%); }
     }
-
-    .weave--pan { animation: pan 54s var(--ease-in-out) infinite; }
 
     /* ── undertow ──────────────────────────────────────────────────────
        Every thread is a lane of traffic: seven lanes repeat across the
@@ -270,7 +271,7 @@
        weft, so the two streams meet head on at every crossing. */
 
     .tartan--undertow .tartan__warp line { --travel: var(--lane-travel); }
-    .tartan--undertow .tartan__weft line   { --travel: calc(-1 * var(--lane-travel)); }
+    .tartan--undertow .tartan__weft line { --travel: calc(-1 * var(--lane-travel)); }
 
     .tartan--undertow .tartan__thread--teal  { --swell-dur: 4.3s; --swell-delay: -0.0s; }
     .tartan--undertow .tartan__thread--red   { --swell-dur: 5.9s; --swell-delay: -1.1s; }
@@ -342,12 +343,7 @@
   <a class="skip-link" href="#controls">Skip to the controls</a>
 
   <header class="shell masthead piece__head">
-    <nav class="nav" aria-label="Main">
-      <a class="nav__link" href="../">stevechab.com</a>
-      <a class="nav__link" href="../work/">Work</a>
-      <a class="nav__link" href="../fun/">Fun</a>
-      <a class="nav__link" href="../resume/">Resume</a>
-    </nav>
+    <a class="masthead__home" href="../"><img src="../favicon.svg" alt="stevechab.com home" width="32" height="32"></a>
 
     <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
   </header>
@@ -607,6 +603,8 @@
     </div>
   </div>
 
+  <script src="../js/piece.js"></script>
+
   <script>
     (function () {
       // Every weave is a class on the SVG plus a flag for the wrapper
@@ -624,23 +622,12 @@
       var stage    = document.getElementById('stage');
       var nameEl   = document.getElementById('weave-name');
       var playBtn  = document.getElementById('play-btn');
-      var playCap  = document.getElementById('cap-play');
-      var playMark = document.getElementById('play-mark');
       var weaveBtn = document.getElementById('weave-btn');
-      var weaveMk  = weaveBtn.querySelector('.control__mark');
       var hueBtn   = document.getElementById('hue-btn');
-      var hueMk    = hueBtn.querySelector('.control__mark');
       var hueOut   = document.getElementById('hue-readout');
-      var overlay  = document.getElementById('overlay');
-      var hint     = document.getElementById('hint');
-      var body     = document.body;
 
       var current = 0;
       var playing = false;
-      var hue     = 0;
-
-      var PLAY  = 'M0 0 18 10 0 20Z';
-      var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
 
       function applyWeave(i) {
         var w = weaves[i];
@@ -660,6 +647,7 @@
       // 72, so the fifth press lands on 360 and a whole turn is the same
       // picture as no turn, with nothing to undo at the end.
       var HUE_STEP = 20;
+      var hue      = 0;
       var hueDeg   = 0;
 
       function nextHue() {
@@ -672,61 +660,21 @@
       function setPlaying(on) {
         playing = on;
         stage.classList.toggle('is-paused', !on);
-        playBtn.classList.toggle('is-on', on);
-        playCap.textContent = on ? 'Pause' : 'Play';
-        playMark.querySelector('path').setAttribute('d', on ? PAUSE : PLAY);
+        Piece.setPlay(playBtn, on);
       }
-
-      function turnMark(mark) {
-        mark.classList.remove('control__mark--turning');
-        void mark.offsetWidth;
-        mark.classList.add('control__mark--turning');
-      }
-
-      function clearTurn() {
-        this.classList.remove('control__mark--turning');
-      }
-
-      weaveMk.addEventListener('animationend', clearTurn);
-      hueMk.addEventListener('animationend', clearTurn);
 
       playBtn.addEventListener('click', function () { setPlaying(!playing); });
 
       weaveBtn.addEventListener('click', function () {
         nextWeave();
-        turnMark(weaveMk);
+        Piece.turn(weaveBtn);
         // A weave change with the clock stopped would look broken.
         if (!playing) setPlaying(true);
       });
 
       hueBtn.addEventListener('click', function () {
         nextHue();
-        turnMark(hueMk);
-      });
-
-      // ── Chrome away ────────────────────────────────────────────────────
-
-      function setBare(on) {
-        body.classList.toggle('is-bare', on);
-        overlay.querySelector('.sr-only').textContent = on
-          ? 'Bring the navigation and the controls back'
-          : 'Hide the navigation and the controls';
-        hint.hidden = !on;
-
-        // Going bare hides whatever held the keyboard, so the overlay
-        // takes the focus rather than leaving it on a display: none
-        // control.
-        if (on && !overlay.contains(document.activeElement)) overlay.focus();
-      }
-
-      overlay.addEventListener('click', function () {
-        setBare(!body.classList.contains('is-bare'));
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          setBare(!body.classList.contains('is-bare'));
-        }
+        Piece.turn(hueBtn);
       });
 
       setPlaying(false);

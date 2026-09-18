@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://stevechab.com/logo/">
 
-  <meta name="robots" content="noindex, noimageindex">
+  <meta name="robots" content="max-image-preview:large">
 
   <meta name="author" content="Steve Chab">
   <meta name="theme-color" content="#fcfbfa" media="(prefers-color-scheme: light)">
@@ -88,13 +88,8 @@
     /* Two classes deep on purpose: the .signature__mark rules below are
        the same weight and come later, so a single-class selector would
        lose and the strokes would stay dark ink on a dark ground. */
-    .piece__stage--logo.piece__stage--song-1 .no-fill,
-    .piece__stage--logo.piece__stage--song-2 .no-fill,
-    .piece__stage--logo.piece__stage--song-3 .no-fill { stroke: #f2f0ee; }
-
-    .piece__stage--logo.piece__stage--song-1 .fill,
-    .piece__stage--logo.piece__stage--song-2 .fill,
-    .piece__stage--logo.piece__stage--song-3 .fill { fill: #f2f0ee; }
+    .piece__stage--logo:is(.piece__stage--song-1, .piece__stage--song-2, .piece__stage--song-3) .no-fill { stroke: var(--ink-050); }
+    .piece__stage--logo:is(.piece__stage--song-1, .piece__stage--song-2, .piece__stage--song-3) .fill { fill: var(--ink-050); }
 
     /* ── The signature ────────────────────────────────────────────────── */
 
@@ -159,14 +154,7 @@
       animation-delay: var(--duration-slow);
     }
 
-    .is-animating .steve-chab-abstract .s,
-    .is-animating .steve-chab-abstract .t,
-    .is-animating .steve-chab-abstract .e,
-    .is-animating .steve-chab-abstract .v,
-    .is-animating .steve-chab-abstract .c,
-    .is-animating .steve-chab-abstract .h,
-    .is-animating .steve-chab-abstract .a,
-    .is-animating .steve-chab-abstract .b {
+    .is-animating .steve-chab-abstract :is(.s, .t, .e, .v, .c, .h, .a, .b) {
       animation-name: draw;
       animation-duration: 4s;
       animation-iteration-count: infinite;
@@ -186,8 +174,7 @@
     .is-animating .steve-chab-abstract .a { animation-delay: -.6s;  }
     .is-animating .steve-chab-abstract .b { animation-delay: -.7s;  }
 
-    .is-animating .s, .is-animating .t, .is-animating .e, .is-animating .v,
-    .is-animating .c, .is-animating .h, .is-animating .a, .is-animating .b {
+    .is-animating :is(.s, .t, .e, .v, .c, .h, .a, .b) {
       animation-name: pulse;
       animation-duration: var(--beat-half);
       animation-timing-function: linear;
@@ -196,13 +183,8 @@
       transform-origin: 168px 168px;
     }
 
-    .is-animating .s1, .is-animating .t2, .is-animating .e3-1, .is-animating .v1,
-    .is-animating .e2-1, .is-animating .c3, .is-animating .h1, .is-animating .a2,
-    .is-animating .b3 { animation-delay: .05s; }
-
-    .is-animating .s2, .is-animating .t3, .is-animating .e1-1, .is-animating .v2,
-    .is-animating .e3-2, .is-animating .c1, .is-animating .h2, .is-animating .a3,
-    .is-animating .b1 { animation-delay: -.5s; }
+    .is-animating :is(.s1, .t2, .e3-1, .v1, .e2-1, .c3, .h1, .a2, .b3) { animation-delay: .05s; }
+    .is-animating :is(.s2, .t3, .e1-1, .v2, .e3-2, .c1, .h2, .a3, .b1) { animation-delay: -.5s; }
 
   </style>
 </head>
@@ -212,12 +194,7 @@
   <a class="skip-link" href="#controls">Skip to the controls</a>
 
   <header class="shell masthead piece__head">
-    <nav class="nav" aria-label="Main">
-      <a class="nav__link" href="../">stevechab.com</a>
-      <a class="nav__link" href="../work/">Work</a>
-      <a class="nav__link" href="../fun/">Fun</a>
-      <a class="nav__link" href="../resume/">Resume</a>
-    </nav>
+    <a class="masthead__home" href="../"><img src="../favicon.svg" alt="stevechab.com home" width="32" height="32"></a>
 
     <p class="masthead__baruch" title="Baruch Hashem, blessed is the name"><span class="sr-only">Baruch Hashem, blessed is the name </span><span lang="he">ב״ה</span></p>
   </header>
@@ -1746,6 +1723,8 @@
     <source src="The-Answer-Steve-Chab.mp3" type="audio/mpeg">
   </audio>
 
+  <script src="../js/piece.js"></script>
+
   <script>
     (function () {
       var tracks = [
@@ -1757,24 +1736,13 @@
       var stage    = document.getElementById('stage');
       var nameEl   = document.getElementById('track-name');
       var playBtn  = document.getElementById('play-btn');
-      var playCap  = document.getElementById('cap-play');
-      var playMark = document.getElementById('play-mark');
       var trackBtn = document.getElementById('track-btn');
-      var trackMk  = trackBtn.querySelector('.control__mark');
-      var overlay  = document.getElementById('overlay');
-      var hint     = document.getElementById('hint');
-      var body     = document.body;
 
       var current = 0;
       var playing = false;
 
-      var PLAY  = 'M0 0 18 10 0 20Z';
-      var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
-
       function paintState() {
-        playBtn.classList.toggle('is-on', playing);
-        playCap.textContent = playing ? 'Pause' : 'Play';
-        playMark.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
+        Piece.setPlay(playBtn, playing);
         nameEl.textContent = tracks[current].name;
 
         tracks.forEach(function (t) { stage.classList.remove(t.cls); });
@@ -1803,44 +1771,12 @@
 
       playBtn.addEventListener('click', function () { setPlaying(!playing); });
 
-      trackMk.addEventListener('animationend', function () {
-        trackMk.classList.remove('control__mark--turning');
-      });
-
       trackBtn.addEventListener('click', function () {
         current = (current + 1) % tracks.length;
-
-        trackMk.classList.remove('control__mark--turning');
-        void trackMk.offsetWidth;
-        trackMk.classList.add('control__mark--turning');
+        Piece.turn(trackBtn);
 
         // A track change with nothing playing would be silent.
         setPlaying(true);
-      });
-
-      // ── Chrome away ────────────────────────────────────────────────────
-
-      function setBare(on) {
-        body.classList.toggle('is-bare', on);
-        overlay.querySelector('.sr-only').textContent = on
-          ? 'Bring the navigation and the controls back'
-          : 'Hide the navigation and the controls';
-        hint.hidden = !on;
-
-        // Going bare hides whatever held the keyboard, so the overlay
-        // takes the focus rather than leaving it on a display: none
-        // control.
-        if (on && !overlay.contains(document.activeElement)) overlay.focus();
-      }
-
-      overlay.addEventListener('click', function () {
-        setBare(!body.classList.contains('is-bare'));
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          setBare(!body.classList.contains('is-bare'));
-        }
       });
 
       paintState();
