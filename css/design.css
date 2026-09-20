@@ -1,17 +1,12 @@
 /* ==================================================================
    /design — the system, read back from the site
    ==================================================================
-   An 11rem gutter on the left carrying the section name, the specimens
-   and the prose beside it.
-
-   Nothing here restyles a component. The swatches, the squares, the
-   gate, and the field are the shipped ones out of css/site.css, and
-   this file only builds the room they stand in.
+   Nothing here restyles a component: the swatches, the squares, the
+   gate, and the field are the shipped ones out of css/site.css. This
+   file only builds the room they stand in.
    ================================================================== */
 
-/* --- token names in running prose -----------------------------------
-   Every stylesheet name, class, and attribute on this page is code, so
-   it is set in <code>. The browser default runs large next to Roboto. */
+/* The browser default for <code> runs large next to Roboto. */
 
 code {
   font-family: var(--font-mono);
@@ -23,7 +18,7 @@ code {
 .contents {
   margin: 0 0 var(--space-4);
   padding: 0;
-  list-style: none;
+  list-style-type: none;
   display: flex;
   flex-wrap: wrap;
   gap: .5rem 1.4rem;
@@ -65,10 +60,8 @@ code {
 }
 
 /* --- the two surfaces -----------------------------------------------
-   Both palettes at once, whichever one the visitor is reading in. The
-   panels set the primitives by hand, so the light panel stays light
-   inside a dark page and the accent under it follows.
-   ------------------------------------------------------------------ */
+   The panels set the primitives by hand, so the light panel stays
+   light inside a dark page and the accent under it follows. */
 
 .surfaces {
   display: grid;
@@ -129,7 +122,7 @@ code {
   gap: var(--space-4);
   margin: 0 0 var(--space-8);
   padding: 0;
-  list-style: none;
+  list-style-type: none;
 }
 
 .swatch__chip {
@@ -239,9 +232,6 @@ code {
   white-space: nowrap;
 }
 
-/* A table is the one thing on this page allowed to be wider than the
-   column. It scrolls inside its own box rather than pushing the page. */
-
 .scroller { overflow-x: auto; }
 
 /* --- the marks ------------------------------------------------------ */
@@ -249,7 +239,7 @@ code {
 .marks {
   margin: 0 0 var(--space-8);
   padding: 0;
-  list-style: none;
+  list-style-type: none;
   display: grid;
   gap: var(--space-4);
 }
@@ -282,11 +272,7 @@ code {
   font-size: .74rem;
 }
 
-/* --- the working demo -----------------------------------------------
-   A stage with a bar under it, at a quarter of the size a piece runs.
-   The frame itself lives in css/piece.css, where the pieces need it;
-   what stands in the bar here is the shipped .control.
-   ------------------------------------------------------------------ */
+/* --- the working demo ---------------------------------------------- */
 
 .demo {
   max-width: 44rem;
@@ -301,9 +287,9 @@ code {
   background: #0d1524;
 }
 
-/* The hue turns the ground with the threads, so it sits on the frame
-   above the weave rather than on the weave. The angle only ever adds,
-   the way /tartan does it: a whole turn is the same picture as none. */
+/* The hue sits on the frame above the weave rather than on the weave,
+   so the ground turns with the threads. The angle only ever adds, the
+   way /tartan does it: a whole turn is the same picture as none. */
 
 .demo__tint {
   position: absolute;
@@ -312,8 +298,7 @@ code {
   transition: filter 1s var(--ease-in-out);
 }
 
-/* One plaid, built from four repeating gradients: two bands each way.
-   The scenes move it; the effects filter it. */
+/* Four repeating gradients: two bands each way. */
 
 .demo__weave {
   position: absolute;
@@ -397,9 +382,7 @@ code {
   border: var(--border-width) solid var(--rule);
 }
 
-/* --- the wordmark specimen -----------------------------------------
-   Two panels treat the wordmark, one full, one cropped and abstract.
-   ------------------------------------------------------------------ */
+/* --- the wordmark specimen ----------------------------------------- */
 
 .mark-demo {
   display: grid;
@@ -439,10 +422,7 @@ code {
 
 .mark-demo__mark { display: block; width: 100%; max-width: 26rem; }
 
-/* --- markup samples --------------------------------------------------
-   The one place the page shows its own source. Everything else here is
-   the running thing.
-   ------------------------------------------------------------------ */
+/* --- markup samples ------------------------------------------------ */
 
 .code {
   margin: 0 0 var(--space-6);
@@ -516,9 +496,7 @@ code {
   .spec__body { grid-column: 2; }
 }
 
-/* --- print -----------------------------------------------------------
-   The specimens print. The working demos are a screen of animation and
-   a dialog, so they print as nothing. */
+/* --- print --------------------------------------------------------- */
 
 @media print {
   .spec {

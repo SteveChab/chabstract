@@ -1,17 +1,10 @@
 /* ==================================================================
-   The piece shell — every full-bleed art page
+   The piece frame — head, stage, bar
    ==================================================================
-   /logo, /atextual, /tartan, and /larvascript are single-screen
-   pieces sharing one frame: the site masthead on top, the art filling
-   everything between, a control bar underneath. No site footer; these
-   pages are one screen with no scroll.
-
-   Tokens, masthead, nav, focus ring, the square control, the button,
-   the motion gate, the source field, and the motion guard all come
-   from css/site.css. What is left here is the frame itself.
+   The components that stand in the bar come from css/site.css.
    ================================================================== */
 
-/* --- the frame ------------------------------------------------------ */
+/* --- the frame ---------------------------------------------------- */
 
 .piece {
   min-height: 100dvh;
@@ -34,8 +27,8 @@
   z-index: var(--z-header);
 }
 
-/* The stage clips, never scrolls, and owns its background so a piece
-   can go black under a light page. */
+/* The stage owns its background, so a piece can go black under a light
+   page. */
 
 .piece__stage {
   position: relative;
@@ -43,17 +36,12 @@
   background: var(--surface);
 }
 
-/* No blanket "inset: 0" on stage children: a rule on the child would
-   lose to it on specificity, and several pieces need a child that sits
-   somewhere other than the four corners. */
+/* --- the control bar ----------------------------------------------- */
 
-/* --- the control bar ------------------------------------------------ */
-
-/* justify-content, not a second auto margin. A long readout can push
-   the squares onto a row of their own, where no .bar__id holds the
-   free space; two auto margins would split the shared row and leave a
-   hole in the middle. flex-end only speaks on rows where nothing else
-   claims the space. */
+/* flex-end, not a second auto margin: a long readout can push the
+   squares onto a row of their own, where no .bar__id holds the free
+   space, and two auto margins would split that row and leave a hole in
+   the middle. */
 
 .bar {
   display: flex;
@@ -82,19 +70,11 @@
   letter-spacing: -.01em;
 }
 
-/* Each control matches the width of its square, so the captions
-   underneath cannot push the squares apart. The push to the right edge
-   comes from .bar__id claiming the free space, not from an auto margin
-   here. */
-
 .bar__controls {
   display: flex;
   flex-wrap: wrap;
   gap: .9rem 1.1rem;
 }
-
-/* The readout names what is showing. A polite live region, so a screen
-   reader hears the change without losing its place. */
 
 .bar__readout {
   margin: 0;
@@ -102,21 +82,16 @@
   font-family: var(--font-mono);
   font-size: .8rem;
   line-height: 1.7;
-  color: var(--text);
 }
 
 .bar__readout b { font-weight: 400; }
 
 .bar__line { display: block; }
 
-/* --- chrome away ----------------------------------------------------
-   Clicking the art hides the head and the bar, and Escape does the same
-   from the keyboard.
-
-   The frame gives up its other two rows at the same time. .piece is a
-   three-row grid, and hiding the head and the bar leaves the stage
-   auto-placed into the first row, which is auto-sized: the art would
-   collapse to nothing instead of going full screen. */
+/* --- chrome away ---------------------------------------------------
+   The frame drops to one row along with the head and the bar. Left at
+   three, the stage auto-places into the first, which is auto-sized,
+   and the art collapses to nothing instead of going full screen. */
 
 .piece.is-bare {
   grid-template-rows: minmax(0, 1fr);
@@ -126,9 +101,6 @@
 .is-bare .bar {
   display: none;
 }
-
-/* The hit target covers the stage and shows nothing, so the art is the
-   button. */
 
 .overlay {
   position: absolute;
@@ -141,36 +113,23 @@
   cursor: pointer;
 }
 
-/* The focus ring on the hit target, drawn by the stage rather than the
-   button. Two reasons: .overlay fills the stage exactly and
-   .piece__stage clips, so the shared +3px offset paints outside the
-   clip; and /larvascript gives the overlay mix-blend-mode and opacity,
-   which apply to the element whole, outline included, and blend the
-   ring into the art. A pseudo element on the button blends with it.
-   The inward outline stays behind @supports for browsers with no
-   :has(), where a faint ring beats none. */
+/* The stage draws the overlay's focus ring, not the overlay. The
+   overlay fills the stage exactly and the stage clips, so the shared
+   +3px offset in site.css would paint outside the clip; and
+   /larvascript gives the overlay mix-blend-mode and opacity, which
+   apply to the element whole, outline included, and blend the ring
+   into the art. */
 
-.overlay:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: -6px;
-}
+.overlay:focus-visible { outline: none; }
 
-@supports not selector(:focus-visible) {
-  .overlay:focus { outline: 3px solid var(--focus-ring); outline-offset: -6px; }
-}
-
-@supports selector(:has(*)) {
-  .overlay:focus-visible { outline: none; }
-
-  .piece__stage:has(.overlay:focus-visible)::after {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    z-index: 3;
-    border: 3px solid var(--focus-ring);
-    border-radius: var(--radius-sm);
-    pointer-events: none;
-  }
+.piece__stage:has(.overlay:focus-visible)::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  z-index: 3;
+  border: 3px solid var(--focus-ring);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
 }
 
 /* The hint sits over the hit target, so it stays see-through to the
@@ -193,11 +152,7 @@
   text-transform: uppercase;
 }
 
-.hint[hidden] { display: none; }
-
-/* --- narrow screens -------------------------------------------------
-   The bar wraps before the stage gives up its height. The squares and
-   the source field shrink in css/site.css, where they live. */
+/* --- narrow screens ----------------------------------------------- */
 
 @media (max-width: 599px) {
   .bar {
@@ -212,12 +167,9 @@
   /* The id sits on its own line down here, so the auto margin above has
      nothing to push against and the controls take the right edge. */
   .bar__controls { margin-inline-start: auto; }
-
 }
 
-/* --- print ----------------------------------------------------------
-   A screen of animation prints as nothing useful, so the page prints
-   its title alone. */
+/* --- print --------------------------------------------------------- */
 
 @media print {
   .piece { height: auto; display: block; }

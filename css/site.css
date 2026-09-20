@@ -1,24 +1,8 @@
 /* ==================================================================
    The shell
-   ==================================================================
-   Tokens, base elements, and the parts every page carries: skip link,
-   running head, footer, wordmark, focus, motion guard, print. Page
-   layout lives in each page's own partial.
-
-   Contrast ratios in comments are measured. WCAG 2.2 AA asks 4.5:1
-   for body text, 3:1 for large text and non-text UI.
    ================================================================== */
 
-/* ------------------------------------------------------------------
-   Fonts, self-hosted
-   ------------------------------------------------------------------
-   Variable builds: one file per family per subset carries the whole
-   100 to 900 axis. unicode-range keeps latin-ext unfetched until a
-   page sets a character in it, so an English page takes the two latin
-   files and stops.
-
-   Licence and provenance: web/fonts/LICENSE.txt
-   ------------------------------------------------------------------ */
+/* Font licence and provenance: web/fonts/LICENSE.txt */
 
 @font-face {
   font-family: 'Roboto';
@@ -68,19 +52,19 @@
 :root {
   color-scheme: light dark;
 
-  /* --- primitives: ink and paper --- */
+  /* --- ink and paper --- */
   --black: #000;
   --white: #fff;
-  --ink-900: #111;          /* body text on light */
-  --paper-50: #fcfbfa;      /* light surface */
-  --ink-050: #f2f0ee;       /* body text on dark */
-  --paper-950: #0a0a0a;     /* dark surface */
+  --ink-900: #111;
+  --paper-50: #fcfbfa;
+  --ink-050: #f2f0ee;
+  --paper-950: #0a0a0a;
 
-  /* --- primitives: the accent ramp, one hue family --- */
-  --accent-300: #f89;       /* 9.23:1 on #000, hover on dark */
+  /* --- the accent ramp. Measured contrast, AA wants 4.5:1 --- */
+  --accent-300: #f89;       /* 9.23:1 on #000 */
   --accent-400: #f67;       /* 7.42:1 on #000, 6.99:1 on #0a0a0a */
   --accent-600: #d24;       /* 4.79:1 on #fff, 4.63:1 on #fcfbfa */
-  --accent-800: #b23;       /* 6.20:1 on #fff, hover on light */
+  --accent-800: #b23;       /* 6.20:1 on #fff */
 
   /* --- semantic: light surface (default) --- */
   --surface: var(--paper-50);
@@ -125,7 +109,7 @@
   --border-width-thick: 2px;
   --radius-sm: 2px;
 
-  /* --- z-index, no magic numbers --- */
+  /* --- z-index --- */
   --z-base: 0;
   --z-raised: 10;
   --z-sticky: 100;
@@ -186,10 +170,8 @@ body {
 
 img, svg, video, canvas, iframe { max-width: 100%; vertical-align: middle; }
 
-/* The width and height attributes reserve the box before the file
-   lands; height: auto lets it shrink with the column and keep the
-   ratio. A <video> needs it said out loud, or the height attribute is
-   taken as a pixel height and the frame stretches. */
+/* A video needs this said out loud, or its height attribute is taken
+   as a pixel height and the frame stretches. */
 img, video { height: auto; }
 
 h1, h2, h3, h4 { font-family: var(--font-slab); font-weight: 700; }
@@ -208,7 +190,6 @@ a:hover {
   text-decoration-thickness: 3px;
 }
 
-/* One ring, measured over 3:1 on both surfaces. */
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible,
@@ -219,13 +200,6 @@ textarea:focus-visible,
   outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
-}
-
-@supports not selector(:focus-visible) {
-  a:focus, button:focus, input:focus, select:focus, textarea:focus {
-    outline: 3px solid var(--focus-ring);
-    outline-offset: 3px;
-  }
 }
 
 .sr-only {
@@ -260,9 +234,8 @@ textarea:focus-visible,
 
 .skip-link:focus { transform: translateY(0); }
 
-/* Jump targets. js/jump.js moves the keyboard to whatever a same-page
-   link points at. The target is out of the Tab order and only ever
-   focused on purpose, so it draws no ring. */
+/* Jump targets are out of the Tab order and only ever focused on
+   purpose by js/jump.js, so they draw no ring. */
 
 [tabindex="-1"]:focus { outline: none; }
 
@@ -277,19 +250,18 @@ textarea:focus-visible,
   padding-right: var(--shell-pad);
 }
 
-/* Home mark flush left, ב״ה in the right corner. The auto margin does
-   that, not space-between: narrow screens wrap the blessing onto a line
-   of its own, where space-between would drop it back to the left. */
-
 .masthead {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
   gap: var(--space-4) var(--space-8);
   flex-wrap: wrap;
   padding-top: 1.1rem;
   padding-bottom: 1.3rem;
 }
+
+/* The auto margin, not space-between: a narrow screen wraps the
+   blessing onto a line of its own, where space-between would drop it
+   back to the left. */
 
 .masthead__baruch {
   margin: 0;
@@ -299,19 +271,12 @@ textarea:focus-visible,
   letter-spacing: .1em;
 }
 
-/* The favicon is the home link. It centers rather than sitting on a
-   baseline, because a picture has none to share with the blessing.
-   32px clears the 24px target floor. */
-
 .masthead__home {
   display: block;
-  align-self: center;
   line-height: 0;
 }
 
 .masthead__home img { width: 32px; height: 32px; }
-
-.masthead__home ~ .masthead__baruch { align-self: center; }
 
 .wordmark {
   text-align: center;
@@ -363,14 +328,14 @@ textarea:focus-visible,
   justify-content: center;
 }
 
-/* --- social icons ----------------------------------------------------
-   A centered row of brand marks in place of text links. Each link is a
-   44px square around a 24px mark, over the target floor. */
+/* --- social icons --------------------------------------------------
+   Each link is a 44px square around a 24px mark, over the target
+   floor. */
 
 .social {
   margin: 0;
   padding: 0;
-  list-style: none;
+  list-style-type: none;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -397,10 +362,6 @@ textarea:focus-visible,
 
 /* ==================================================================
    Page head — every page after the homepage
-   ==================================================================
-   Every content page opens the same way: a slab title at the
-   homepage's h1 size, one lede at the homepage's lede size, both flush
-   with the shell's left margin.
    ================================================================== */
 
 .sheet-head {
@@ -425,9 +386,8 @@ textarea:focus-visible,
 /* ==================================================================
    Section label
    ==================================================================
-   The small uppercase heading that names a section. Sizes and margins
-   belong to the page that uses it. It sits at full ink; a muted gray
-   here measures near 2.5:1 and fails AA.
+   Sizes and margins belong to the page that uses it. A muted gray at
+   this size measures near 2.5:1 and fails AA, so it stays at full ink.
    ================================================================== */
 
 .label {
@@ -435,26 +395,18 @@ textarea:focus-visible,
   font-weight: 700;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--text);
   text-align: left;
 }
 
 /* ==================================================================
-   Components
-   ==================================================================
-   The square control, the button, the motion gate, and the source
-   field. Shared by the pieces and /design, so they live here rather
-   than in css/piece.css. The frame around them, head and stage and
-   bar, is still the pieces' own and stays in piece.css.
+   Components — shared by the pieces and /design
    ================================================================== */
 
 /* --- the square control --------------------------------------------
-   A square with a rule and a geometric mark. The caption is the
-   accessible name since the glyph can be abstract.
-
-   The fill uses .is-on rather than aria-pressed since the language
-   sometimes toggles (Play becomes Pause), and adding aria can cause
-   the state to be announced twice. */
+   The caption is the accessible name, since the glyph can be
+   abstract. The fill hangs off .is-on rather than aria-pressed: the
+   caption already flips (Play becomes Pause), and aria-pressed on top
+   of that announces the state twice. */
 
 .control {
   flex: none;
@@ -501,22 +453,14 @@ textarea:focus-visible,
 
 .control__mark svg { display: block; fill: currentColor; }
 
-/* One word. Anything longer is screen reader text inside the caption,
-   so the accessible name says "Next scene" while the page shows
-   "Scene". */
-
 .control__caption {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--text);
   text-align: center;
   white-space: nowrap;
 }
-
-/* One full turn on press. The class is added on click and removed when
-   the turn ends, so a fast press turns every time. */
 
 @keyframes control-turn {
   from { transform: rotate(0turn); }
@@ -528,12 +472,6 @@ textarea:focus-visible,
 }
 
 /* --- the motion gate ------------------------------------------------
-   A <dialog> opened with showModal(), so the keyboard stays inside it,
-   the page behind goes inert, and Escape closes it. The rules below
-   only undo what the browser draws around a dialog by default: the
-   border, the shrink-to-fit box, and the centering margins. A modal
-   dialog rides the top layer, so it needs no z-index.
-
    The layout hangs off [open]. A closed dialog is display: none by the
    browser's own rules, and a bare .gate { display: grid } would beat
    that and leave the warning on the screen. */
@@ -606,9 +544,8 @@ textarea:focus-visible,
 .btn--solid:hover { background: transparent; color: var(--text); }
 
 /* --- the source field ----------------------------------------------
-   The label sits under the box, set like the caption under a square.
-   It still comes first in the source; column-reverse moves it, so a
-   screen reader hears the name before the box. */
+   The label comes first in the source and column-reverse drops it
+   under the box, so a screen reader hears the name before the box. */
 
 .field {
   display: flex;
@@ -622,7 +559,6 @@ textarea:focus-visible,
   font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--text);
   text-align: left;
 }
 
@@ -639,9 +575,7 @@ textarea:focus-visible,
 
 .field__input::placeholder { color: var(--text); opacity: .62; }
 
-/* --- narrow screens -------------------------------------------------
-   Below 600px the captions stack under smaller squares, still over the
-   44px target floor. */
+/* --- narrow screens ----------------------------------------------- */
 
 @media (max-width: 599px) {
   .control { width: 48px; gap: .3rem; }
@@ -658,9 +592,8 @@ textarea:focus-visible,
 /* ==================================================================
    Motion guard
    ==================================================================
-   This site ships strobing and flashing work on purpose. A reduced
-   motion setting stops every animation, including ones declared in a
-   page's own <style> block.
+   The star carries no specificity and has to reach animations declared
+   in a page's own <style> block, hence !important.
    ================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
@@ -679,8 +612,6 @@ textarea:focus-visible,
 
 /* ==================================================================
    Print
-   ==================================================================
-   Every page prints as a document.
    ================================================================== */
 
 @media print {
@@ -693,8 +624,6 @@ textarea:focus-visible,
 
   a { color: #000; }
 
-  /* The running head is chrome; the page's own h1 carries the identity.
-     A form field and a dialog print as nothing at all. */
   .skip-link,
   .masthead,
   .field,

@@ -2,11 +2,8 @@
    Jump links
    ====================================================================
    A link to an id scrolls the page but leaves the keyboard where it
-   was, so the next Tab starts over from the top of the document.
-
-   This moves the focus to match the scroll. Every jump target carries
-   tabindex="-1" in the markup; the guard below adds it anyway, so a
-   link added later still lands.
+   was, so the next Tab starts over from the top of the document. This
+   moves the focus to match the scroll.
    ==================================================================== */
 
 (function () {
@@ -36,7 +33,6 @@
     requestAnimationFrame(function () { land(id); });
   });
 
-  // A deep link from another page arrives as a hash on load.
   window.addEventListener('hashchange', function () { land(hashId()); });
   if (location.hash) land(hashId());
 }());

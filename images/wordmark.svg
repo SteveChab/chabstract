@@ -1,5 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg role="img" aria-label="Steve Chab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9"><title>Steve Chab</title><style>.no-fill{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke:currentColor;stroke-width:.5px}.fill{fill:currentColor}:root{color:#111}@media (prefers-color-scheme:dark){:root{color:#f2f0ee}}</style>
+<svg role="img" aria-label="Steve Chab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337.3 49.9"><title>Steve Chab</title><style>.no-fill{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke:currentColor;stroke-width:.5px}.fill{fill:currentColor}:root{color:#111}@media (prefers-color-scheme:dark){:root{color:#f2f0ee}}
+
+/* This is XML, not HTML: a stray angle bracket anywhere in here,
+   comments included, and the whole drawing fails to parse. The styles
+   sit in the file because the mark ships as an img, which shuts page
+   CSS out of it.
+
+   Every duration below derives from the tempo. At 12 the mark jumps
+   every 10 seconds and blinks every 20. */
+
+:root {
+  --beats-per-minute: 12;
+  --beat-half:  calc(60s / (var(--beats-per-minute) / 2));
+  --beat-whole: calc(60s / (var(--beats-per-minute) / 4));
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1.1); }
+  .1%, 99.8%  { transform: scale(1);   }
+}
+
+/* A tenth of a 20-second bar is a blackout rather than a blink, so the
+   window closes to keep the flash near a second. */
+
+@keyframes blink {
+  0%, 100%    { filter: invert(1); }
+  .1%, 99.8% { filter: invert(0); }
+}
+
+@keyframes draw {
+  0%   { stroke-dasharray: 0 60px;  stroke-opacity: 1; }
+  10%  { stroke-dasharray: 60px 0;                     }
+  80%  { stroke-dasharray: 60px 0;  stroke-opacity: 1; }
+  83%  {                            stroke-opacity: 0; }
+  100% {                            stroke-opacity: 0; }
+}
+
+/* Half a bar ahead, so the mark is not sitting inverted when the page
+   arrives. */
+
+:root {
+  animation-name: blink;
+  animation-duration: var(--beat-whole);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: calc(var(--beat-whole) / -2);
+}
+
+/* The pivot sits off-canvas, below the foot of the word, so the
+   letters are thrown up and away from the center rather than swelling
+   in place. */
+
+:is(.s, .t, .e, .v, .c, .h, .a, .b) {
+  animation-name: pulse;
+  animation-duration: var(--beat-half);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: 0s;
+  transform-origin: 168px 168px;
+}
+
+.steve-chab-abstract :is(.s, .t, .e, .v, .c, .h, .a, .b) {
+  animation-name: pulse, draw;
+  animation-duration: var(--beat-half), var(--beat-whole);
+  stroke-opacity: 1;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 60px 0;
+  stroke-dashoffset: 60px;
+}
+
+:is(.s1, .t2, .e3-1, .v1, .e2-1, .c3, .h1, .a2, .b3) { animation-delay: .05s; }
+:is(.s2, .t3, .e1-1, .v2, .e3-2, .c1, .h2, .a3, .b1) { animation-delay: -.5s; }
+
+/* Two clocks, so the delays come in pairs: the pulse offset, then a
+   step of the draw at 2.5% of a bar. */
+
+.steve-chab-abstract .s3   { animation-delay: 0s,   0s;                              }
+.steve-chab-abstract .t3   { animation-delay: -.5s, calc(var(--beat-whole) * -.025); }
+.steve-chab-abstract .e3-1 { animation-delay: .05s, calc(var(--beat-whole) * -.05);  }
+.steve-chab-abstract .v3   { animation-delay: 0s,   calc(var(--beat-whole) * -.075); }
+.steve-chab-abstract .e3-2 { animation-delay: -.5s, calc(var(--beat-whole) * -.05);  }
+.steve-chab-abstract .c3   { animation-delay: .05s, calc(var(--beat-whole) * -.1);   }
+.steve-chab-abstract .h3   { animation-delay: 0s,   calc(var(--beat-whole) * -.125); }
+.steve-chab-abstract .a3   { animation-delay: -.5s, calc(var(--beat-whole) * -.15);  }
+.steve-chab-abstract .b3   { animation-delay: .05s, calc(var(--beat-whole) * -.175); }
+
+/* site.css cannot reach inside an img, so the guard is repeated here.
+   The star loses to the letter rules on specificity, hence !important. */
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; }
+}
+</style>
           <g class="steve-chab-abstract">
             <g class="steve steve3">
               <g class="s3 s">

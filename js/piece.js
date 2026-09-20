@@ -2,18 +2,13 @@
    The pieces
    ====================================================================
    What every bar shares: the play toggle, the mark that turns on a
-   press, chrome away, and the reduced-motion copy for the gate. /design
-   loads it too, so its specimens run the shipped code. Each page keeps
-   its own sets and its own art.
-
-   Load it as a plain script, before the page's own script.
+   press, chrome away, and the reduced-motion copy for the gate.
    ==================================================================== */
 
 var Piece = (function () {
   var PLAY  = 'M0 0 18 10 0 20Z';
   var PAUSE = 'M0 0H6V20H0ZM12 0H18V20H12Z';
 
-  // The caption is the button's name, so renaming it carries the state.
   function setPlay(btn, on) {
     btn.classList.toggle('is-on', on);
     document.getElementById(btn.getAttribute('aria-labelledby')).textContent = on ? 'Pause' : 'Play';
@@ -32,10 +27,10 @@ var Piece = (function () {
     if (e.animationName === 'control-turn') e.target.classList.remove('control__mark--turning');
   });
 
-  // Returns the button that should take the focus when the gate opens.
   var wantsCalm = window.matchMedia &&
                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Returns the button the gate should open on.
   function calmGate(body, go, still) {
     if (!wantsCalm) return go;
     body.textContent = 'Your system asks for reduced motion, so Larvascript is holding still. ' +
@@ -46,9 +41,7 @@ var Piece = (function () {
     return still;
   }
 
-  // ── Chrome away ────────────────────────────────────────────────────
-  // Runs on any page with an #overlay.
-
+  // Chrome away, on any page with an #overlay.
   (function () {
     var overlay = document.getElementById('overlay');
     if (!overlay) return;

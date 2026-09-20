@@ -330,21 +330,11 @@
 
     <p class="hint" id="hint" hidden>Click art or press Esc to restore controls</p>
 
-    <!-- ── The motion gate ────────────────────────────────────────────────
-         The page opens on the first picture, held still. The gate
-         arrives the first time a visitor asks for motion, and either
-         answer closes it for the rest of the visit.
-
-         A <dialog> opened with showModal(): it holds the keyboard
-         inside itself, makes the page behind it inert, and answers
-         Escape, none of which is written here or faked with ARIA. -->
-
     <dialog class="gate" id="gate" aria-labelledby="gate-title">
       <div class="gate__panel">
         <p class="gate__label">Motion Warning</p>
         <!-- A <p>, not an <h2>: the gate sits above the h1 in the
-             source, so a heading here would run an h2 before it. The
-             dialog takes its name from this line either way. -->
+             source, so a heading here would run an h2 before it. -->
         <p class="gate__title" id="gate-title">This animation flashes and spins.</p>
         <p class="gate__body" id="gate-body">Larvascript blinks, rotates, strobes, and pulsates.</p>
         <div class="gate__actions">

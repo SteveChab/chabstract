@@ -1,17 +1,11 @@
 /* ==================================================================
-   The homepage: the intro and the plate index
+   The homepage
    ==================================================================
-   Above 1140px the intro and the plates sit on a twelve-column grid:
-   the social icons stand in the first three columns, stretched to the
-   height of the intro beside them. Below, everything stacks at the
-   intro's measure.
-
-   Tokens, shell, social icons, and .sr-only come from css/site.css.
+   Above 1140px the intro and the plates sit on a twelve-column grid.
+   Below, everything stacks at the intro's measure.
    ================================================================== */
 
-/* --- the intro ------------------------------------------------------
-   The wordmark is the h1, so the heading drops its own margins. The
-   shared rule caps the mark at 900px; here it takes the full shell. */
+/* --- the intro ---------------------------------------------------- */
 
 .hero {
   padding-bottom: var(--space-12);
@@ -54,7 +48,7 @@
   max-width: var(--measure);
   margin: 0;
   padding: 0;
-  list-style: none;
+  list-style-type: none;
   display: grid;
   gap: var(--space-6);
 }
@@ -65,6 +59,7 @@
   font-size: 1.02rem;
   line-height: 1.5;
   text-wrap: balance;
+  display: inline;
 }
 
 .plate__text {
@@ -72,6 +67,41 @@
   font-size: 1.02rem;
   line-height: 1.7;
   text-wrap: pretty;
+  display: inline;
+}
+
+/* --- the quote footer ----------------------------------------------
+   The quotes share one grid cell, so the row takes the height of the
+   longest and holds still as they cross-fade. visibility keeps the
+   ones that are not showing out of the tab order, and transitioning it
+   alongside opacity holds them visible for the length of the fade. */
+
+body { padding-bottom: var(--space-2); }
+
+.quotebar__list {
+    max-width: var(--measure);
+    padding: var(--space-4) 0 0;
+    margin: var(--space-8) auto var(--space-4);
+    list-style-type: none;
+    display: grid;
+    width: 100%;
+    border-top: var(--border-width) solid var(--rule);
+}
+
+.quotebar__item {
+  grid-area: 1 / 1;
+  text-align: center;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .7s var(--ease-in-out), visibility .7s;
+}
+
+.quotebar__item.is-current {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* --- the grid ------------------------------------------------------ */
@@ -109,6 +139,30 @@
   }
 
   .plate { grid-column: span 3; }
+}
+
+/* --------------------------------------------------------
+The page adjusts to the viewport,
+scales with height and width,
+and is capped by the smaller dimension.
+-------------------------------------------------------- */
+@media (min-width: 1140px) and (min-height: 700px) {
+  
+  .hero {
+    --top-clamp: clamp(1.25rem, 3.4vh, 2rem);
+    --bottom-clamp: clamp(1.75rem, 5.2vh, 3rem);
+
+    padding-bottom: var(--bottom-clamp);
+  }
+
+  .hero .wordmark {
+    padding-top: var(--top-clamp);
+    padding-bottom: var(--bottom-clamp);
+  }
+  
+  .hero .wordmark__mark { max-width: min(100%, 160vh); }
+
+  .quotebar__list { margin-top: var(--top-clamp);}
 }
 
 /* --- print -------------------------------------------------------- */
