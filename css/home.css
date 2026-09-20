@@ -71,12 +71,16 @@
 }
 
 /* --- the quote footer ----------------------------------------------
-   The quotes share one grid cell, so the row takes the height of the
-   longest and holds still as they cross-fade. visibility keeps the
-   ones that are not showing out of the tab order, and transitioning it
-   alongside opacity holds them visible for the length of the fade. */
+   The quotes all share a grid cell,
+   height is determined by the tallest,
+   and they hold still as they fade in and out.
+   Invisible ones are removed from the tab order. */
 
 body { padding-bottom: var(--space-2); }
+
+.quotebar {
+  padding-top: var(--shell-pad);
+}
 
 .quotebar__list {
     max-width: var(--measure);
