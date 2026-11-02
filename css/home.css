@@ -50,7 +50,7 @@
   padding: 0;
   list-style-type: none;
   display: grid;
-  gap: var(--space-6);
+  gap: var(--space-12);
 }
 
 .plate__title {
@@ -78,16 +78,12 @@
    and they hold still as they fade in and out.
    Invisible ones are removed from the tab order. */
 
-body { padding-bottom: var(--space-2); }
-
-.quotebar {
-  padding-top: var(--shell-pad);
-}
+body { padding-bottom: var(--space-12); }
 
 .quotebar__list {
     max-width: var(--measure);
     padding: var(--space-4) 0 0;
-    margin: var(--space-8) auto var(--space-4);
+    margin: var(--space-12) auto 0;
     list-style-type: none;
     display: grid;
     width: 100%;
@@ -118,7 +114,7 @@ body { padding-bottom: var(--space-2); }
     max-width: none;
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--space-6);
+    gap: var(--space-12);
   }
 
   .intro__text {
@@ -150,6 +146,7 @@ body { padding-bottom: var(--space-2); }
   .quotebar__list {
     max-width: none;
     border-top: 0;
+    padding-top: 0;
   }
 
   .quotebar__item {
@@ -159,28 +156,8 @@ body { padding-bottom: var(--space-2); }
   }
 }
 
-/* --------------------------------------------------------
-The page adjusts to the viewport,
-scales with height and width,
-and is capped by the smaller dimension.
--------------------------------------------------------- */
 @media (min-width: 1140px) and (min-height: 700px) {
-  
-  .hero {
-    --top-clamp: clamp(1.25rem, 3.4vh, 2rem);
-    --bottom-clamp: clamp(1.75rem, 5.2vh, 3rem);
-
-    padding-bottom: var(--bottom-clamp);
-  }
-
-  .hero .wordmark {
-    padding-top: var(--top-clamp);
-    padding-bottom: var(--bottom-clamp);
-  }
-  
   .hero .wordmark__mark { max-width: min(100%, 160vh); }
-
-  .quotebar__list { margin-top: var(--top-clamp);}
 }
 
 /* --- print -------------------------------------------------------- */
