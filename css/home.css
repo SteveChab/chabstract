@@ -70,6 +70,8 @@
   display: inline;
 }
 
+.group--poly { margin-top: var(--space-12); }
+
 /* --- the quote footer ----------------------------------------------
    The quotes all share a grid cell,
    height is determined by the tallest,
@@ -143,6 +145,18 @@ body { padding-bottom: var(--space-2); }
   }
 
   .plate { grid-column: span 3; }
+  .plates--poly .plate { grid-column: span 4; }
+
+  .quotebar__list {
+    max-width: none;
+    border-top: 0;
+  }
+
+  .quotebar__item {
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+    line-height: 1.3;
+    letter-spacing: -.01em;
+  }
 }
 
 /* --------------------------------------------------------
